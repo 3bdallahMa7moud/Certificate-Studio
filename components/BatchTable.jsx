@@ -34,29 +34,29 @@ export default function BatchTable({ students, duplicates, updateStudent, previe
         <tbody>
           {students.map((student, index) => (
             <tr key={student.serial} className={duplicates.has(index) ? 'duplicate' : ''}>
-              <td>{index + 1}</td>
-              <td>
+              <td data-label="#">{index + 1}</td>
+              <td data-label="الطالب">
                 <input
                   className="table-input ar"
                   value={student.studentNameAr}
                   onChange={e => updateStudent(index, { studentNameAr: e.target.value })}
                 />
               </td>
-              <td>
+              <td data-label="English">
                 <input
                   className="table-input en"
                   value={student.studentNameEn}
                   onChange={e => updateStudent(index, { studentNameEn: e.target.value })}
                 />
               </td>
-              <td>
+              <td data-label="الصف">
                 <input
                   className="table-input en small"
                   value={student.grade}
                   onChange={e => updateStudent(index, { grade: e.target.value })}
                 />
               </td>
-              <td>
+              <td data-label="المادة">
                 <select
                   className="table-input"
                   value={student.subject}
@@ -65,7 +65,7 @@ export default function BatchTable({ students, duplicates, updateStudent, previe
                   {SUBJECTS.map(subject => <option key={subject.id} value={subject.id}>{subject.ar}</option>)}
                 </select>
               </td>
-              <td>
+              <td data-label="التميز">
                 <select
                   className="table-input"
                   value={student.behavior}
@@ -74,7 +74,7 @@ export default function BatchTable({ students, duplicates, updateStudent, previe
                   {BEHAVIORS.map(behavior => <option key={behavior.id} value={behavior.id}>{behavior.ar}</option>)}
                 </select>
               </td>
-              <td>
+              <td data-label="إجراءات">
                 <div className="row-actions">
                   <button type="button" title="معاينة" onClick={() => previewStudent(student)}>
                     <Icon name="Eye" size={14} />
