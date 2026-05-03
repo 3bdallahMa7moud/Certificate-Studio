@@ -1,0 +1,25 @@
+.react-visible {
+  display: block !important;
+}
+
+.react-visible-grid {
+  display: grid !important;
+}
+
+#root {
+  min-height: 100%;
+}
+
+.field-input[type="color"] {
+  padding: 0;
+}
+
+.batch-table .empty-row {
+  min-width: 100%;
+}
+
+@media print {
+  #root {
+    display: contents;
+  }
+}
