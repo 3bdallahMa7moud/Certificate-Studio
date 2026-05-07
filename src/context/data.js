@@ -6,6 +6,8 @@ export const SUBJECTS = [
   { id:'physics', icon:'Atom', ar:'الفيزياء', en:'Physics' },
   { id:'arabic', icon:'BookOpen', ar:'اللغة العربية', en:'Arabic' },
   { id:'english', icon:'Languages', ar:'اللغة الإنجليزية', en:'English' },
+  { id:'social_studies', icon:'Map', ar:'الدراسات الاجتماعية', en:'Social Studies' },
+  { id:'national_education', icon:'Flag', ar:'التربية الوطنية', en:'National Education' },
   { id:'art', icon:'Brush', ar:'الفنون', en:'Arts' },
   { id:'music', icon:'Music', ar:'الموسيقى', en:'Music' },
   { id:'sport', icon:'Activity', ar:'التربية الرياضية', en:'Physical Ed.' },
@@ -67,6 +69,8 @@ export const MESSAGE_TEMPLATES = [
   { id:'physics', subject:'physics', label:'الفيزياء', text:'تقديراً للتميز في الفيزياء، والقدرة على تفسير القوانين والظواهر بتفكير تحليلي منظم.' },
   { id:'arabic', subject:'arabic', label:'اللغة العربية', text:'تقديراً للتميز في اللغة العربية، وجمال التعبير، وحسن القراءة والكتابة بثقة وذوق.' },
   { id:'english', subject:'english', label:'اللغة الإنجليزية', text:'In recognition of excellent progress in English, confident communication, and active class participation.' },
+  { id:'social_studies', subject:'social_studies', label:'الدراسات الاجتماعية', text:'تقديراً للتميز في الدراسات الاجتماعية، وفهم المجتمع والتاريخ والجغرافيا بروح واعية ومشاركة فعالة.' },
+  { id:'national_education', subject:'national_education', label:'التربية الوطنية', text:'تقديراً للتميز في التربية الوطنية، والوعي بالقيم والمسؤولية والانتماء والمشاركة الإيجابية.' },
   { id:'activities', subject:'all', label:'الأنشطة', text:'تقديراً للمشاركة الفاعلة في الأنشطة المدرسية، وروح المبادرة والعمل الجماعي.' },
 ];
 
