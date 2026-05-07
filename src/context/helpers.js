@@ -1,4 +1,4 @@
-import { BEHAVIORS, SUBJECTS, genSerial } from './data.js';
+import { BEHAVIORS, GRADE_LEVELS, SUBJECTS, genSerial } from './data.js';
 
 export const AR_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 
@@ -39,11 +39,29 @@ export function getBehavior(id) {
   return BEHAVIORS.find(b => b.id === id) || BEHAVIORS[0];
 }
 
+export function normalizeGradeValue(value, fallback = GRADE_LEVELS[0]) {
+  const fallbackGrade = GRADE_LEVELS.includes(fallback) ? fallback : GRADE_LEVELS[0];
+  const raw = String(value || '').trim();
+  if (!raw) return fallbackGrade;
+
+  const compact = raw.replace(/\s+/g, '').toLowerCase();
+  const exact = GRADE_LEVELS.find(grade => grade.replace(/\s+/g, '').toLowerCase() === compact);
+  if (exact) return exact;
+
+  const kg = compact.match(/^kg([12])$/);
+  if (kg) return `KG${kg[1]}`;
+
+  const grade = compact.match(/^(?:grade|g)?0?([1-9]|1[0-2])(?:[a-z]\d*)?$/);
+  if (grade) return `Grade ${Number(grade[1])}`;
+
+  return fallbackGrade;
+}
+
 export function createBatchStudent(state, data = {}) {
   return {
     studentNameAr: data.studentNameAr || '',
     studentNameEn: data.studentNameEn || '',
-    grade: data.grade || state.grade || '',
+    grade: normalizeGradeValue(data.grade, state.grade),
     subject: data.subject || state.subject,
     behavior: data.behavior || state.behavior,
     customMessage: data.customMessage || '',
@@ -125,7 +143,7 @@ export function rowsToStudents(rows, state) {
 
     const ar = get(0, ['الاسم العربي','اسم الطالب','الاسم','arabic','student ar','studentnamear','name ar']);
     const en = get(1, ['english','name en','student en','studentnameen','الانجليزي','الإنجليزي']);
-    const grade = get(2, ['grade','class','الصف','الشعبة']);
+    const grade = normalizeGradeValue(get(2, ['grade','class','الصف','الشعبة']), state.grade);
     const subjectValue = get(3, ['subject','المادة']);
     const behaviorValue = get(4, ['achievement','behavior','تميز','التميز']);
     const message = get(5, ['message','نص','رسالة']);

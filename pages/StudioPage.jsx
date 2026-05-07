@@ -14,6 +14,7 @@ import Icon from '../components/Icon.jsx';
 import {
   BEHAVIORS,
   FONT_STYLES,
+  GRADE_LEVELS,
   LANGUAGE_MODES,
   LEGACY_SETTINGS_KEY,
   MESSAGE_TEMPLATES,
@@ -31,6 +32,7 @@ import {
   createBatchStudent,
   dateInputValue,
   duplicateIndexes,
+  normalizeGradeValue,
   parseCsv,
   rowsToStudents,
 } from '../src/context/helpers.js';
@@ -52,8 +54,13 @@ function useToast() {
 function normalizeLoadedState(data) {
   const defaults = getDefaultState();
   const merged = { ...defaults, ...(data || {}) };
+  merged.grade = normalizeGradeValue(merged.grade, defaults.grade);
   merged.date = merged.date ? new Date(merged.date).toISOString() : defaults.date;
   if (!Array.isArray(merged.batchStudents)) merged.batchStudents = [];
+  merged.batchStudents = merged.batchStudents.map(student => ({
+    ...student,
+    grade: normalizeGradeValue(student.grade, merged.grade),
+  }));
   return merged;
 }
 
@@ -320,7 +327,7 @@ function StudioPage() {
 
   const downloadCsvTemplate = () => {
     const header = 'studentNameAr,studentNameEn,grade,subject,achievement,message\n';
-    const sample = 'محمد أحمد علي,Mohamed Ahmed Ali,7G2,الكيمياء,الإبداع,تقديرا للتميز في الكيمياء والمشاركة الفاعلة\n';
+    const sample = 'محمد أحمد علي,Mohamed Ahmed Ali,Grade 7,الكيمياء,الإبداع,تقديرا للتميز في الكيمياء والمشاركة الفاعلة\n';
     downloadBlob(new Blob(['\ufeff' + header + sample], { type:'text/csv;charset=utf-8' }), 'certificate-studio-template.csv');
   };
 
@@ -491,7 +498,11 @@ function StudioPage() {
               <Section title="الطالب" sub="STUDENT">
                 <BoundInput label="الاسم بالعربية" value={state.studentNameAr} onChange={studentNameAr => updateState({ studentNameAr })} ar />
                 <BoundInput label="Name in English" value={state.studentNameEn} onChange={studentNameEn => updateState({ studentNameEn })} en />
-                <BoundInput label="الصف / الشعبة" value={state.grade} onChange={grade => updateState({ grade })} en />
+                <Field label="الصف">
+                  <select className="field-input en" value={state.grade} onChange={e => updateState({ grade: e.target.value })}>
+                    {GRADE_LEVELS.map(grade => <option key={grade} value={grade}>{grade}</option>)}
+                  </select>
+                </Field>
               </Section>
               <Section title="المدرسة" sub="SCHOOL">
                 <BoundInput label="اسم المدرسة بالعربية" value={state.schoolNameAr} onChange={schoolNameAr => updateState({ schoolNameAr })} ar />
@@ -541,7 +552,7 @@ function StudioPage() {
                   </label>
                   <button className="btn-save" onClick={downloadCsvTemplate}><Icon name="Download" /> نموذج CSV</button>
                 </div>
-                <textarea className="batch-names" value={batchText} onChange={e => setBatchText(e.target.value)} placeholder={'الاسم العربي, English Name, 7G2, الكيمياء, الإبداع'} />
+                <textarea className="batch-names" value={batchText} onChange={e => setBatchText(e.target.value)} placeholder={'الاسم العربي, English Name, Grade 7, الكيمياء, الإبداع'} />
                 <div className="save-row">
                   <button className="btn-save" onClick={parseBatch}><Icon name="Table" /> تحويل لجدول</button>
                   <button className="btn-save" onClick={addCurrentToBatch}><Icon name="CopyPlus" /> نسخ الحالية</button>

@@ -14,6 +14,23 @@ export const SUBJECTS = [
   { id:'tech', icon:'Cpu', ar:'التكنولوجيا', en:'Technology' },
 ];
 
+export const GRADE_LEVELS = [
+  'KG1',
+  'KG2',
+  'Grade 1',
+  'Grade 2',
+  'Grade 3',
+  'Grade 4',
+  'Grade 5',
+  'Grade 6',
+  'Grade 7',
+  'Grade 8',
+  'Grade 9',
+  'Grade 10',
+  'Grade 11',
+  'Grade 12',
+];
+
 export const BEHAVIORS = [
   { id:'activities', icon:'Sparkles', ar:'الأنشطة المدرسية', en:'School Activities' },
   { id:'cooperation', icon:'HeartHandshake', ar:'التعاون', en:'Cooperation' },
@@ -92,7 +109,7 @@ export function getDefaultState() {
     customAccent: '',
     studentNameAr: 'محمد أحمد علي',
     studentNameEn: 'Mohamed Ahmed Ali',
-    grade: '7G2',
+    grade: 'Grade 7',
     schoolNameAr: 'مدرسة الفجر النموذجية',
     schoolNameEn: 'Al Fajr Model School',
     subject: 'science',

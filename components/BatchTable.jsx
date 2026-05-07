@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from './Icon.jsx';
-import { BEHAVIORS, SUBJECTS } from '../src/context/data.js';
+import { BEHAVIORS, GRADE_LEVELS, SUBJECTS } from '../src/context/data.js';
 
 export default function BatchTable({ students, duplicates, updateStudent, previewStudent, deleteStudent }) {
   if (!students.length) {
@@ -50,11 +50,13 @@ export default function BatchTable({ students, duplicates, updateStudent, previe
                 />
               </td>
               <td data-label="الصف">
-                <input
+                <select
                   className="table-input en small"
                   value={student.grade}
                   onChange={e => updateStudent(index, { grade: e.target.value })}
-                />
+                >
+                  {GRADE_LEVELS.map(grade => <option key={grade} value={grade}>{grade}</option>)}
+                </select>
               </td>
               <td data-label="المادة">
                 <select
