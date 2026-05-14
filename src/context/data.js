@@ -95,6 +95,15 @@ export const QUICK_SETTINGS_KEY = 'cert-studio-react';
 export const LEGACY_SETTINGS_KEY = 'cert-studio';
 export const PRESETS_KEY = 'cert-studio-react-presets';
 
+export const FIXED_CERTIFICATE_IDENTITY = {
+  schoolNameAr: 'أم الفضل بنت الحارث ح ٢',
+  schoolNameEn: 'Umm Al-Fadl Bint Al-Harith C2',
+  teacherNameAr: 'فاطمة العالم',
+  teacherNameEn: 'Fatma Alalem',
+  principalNameAr: 'سلمى العبيدي',
+  principalNameEn: 'Salma Alobaidi',
+};
+
 export function genSerial() {
   const year = new Date().getFullYear();
   const code = Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -110,14 +119,14 @@ export function getDefaultState() {
     studentNameAr: 'محمد أحمد علي',
     studentNameEn: 'Mohamed Ahmed Ali',
     grade: 'Grade 7',
-    schoolNameAr: 'مدرسة الفجر النموذجية',
-    schoolNameEn: 'Al Fajr Model School',
+    schoolNameAr: FIXED_CERTIFICATE_IDENTITY.schoolNameAr,
+    schoolNameEn: FIXED_CERTIFICATE_IDENTITY.schoolNameEn,
     subject: 'science',
     behavior: 'creativity',
-    teacherNameAr: 'أ. سارة المنصوري',
-    teacherNameEn: 'Ms. Sara Almansoori',
-    principalNameAr: 'د. خالد العامري',
-    principalNameEn: 'Dr. Khaled Alameri',
+    teacherNameAr: FIXED_CERTIFICATE_IDENTITY.teacherNameAr,
+    teacherNameEn: FIXED_CERTIFICATE_IDENTITY.teacherNameEn,
+    principalNameAr: FIXED_CERTIFICATE_IDENTITY.principalNameAr,
+    principalNameEn: FIXED_CERTIFICATE_IDENTITY.principalNameEn,
     academicYear: '2025 / 2026',
     term: 'الفصل الدراسي الثاني',
     customMessage: MESSAGE_TEMPLATES[0].text,

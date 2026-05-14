@@ -191,8 +191,26 @@
     letter-spacing: 0;
   }
 
+  .single-line-name {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: visible;
+  }
+
+  .multi-line-name {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
   .student-name-ar.latin-name {
     direction: ltr;
+    text-align: left;
     font-family: var(--student-font-en, 'Marcellus', serif) !important;
   }
 
@@ -204,7 +222,7 @@
     inset: 0;
   }
   .cert-editorial .left {
-    padding: 6cqw 5cqw 5cqw;
+    padding: 5cqw 5cqw 4.2cqw;
     display: flex; flex-direction: column; justify-content: space-between;
     position: relative;
   }
@@ -232,12 +250,31 @@
     color: var(--muted); text-transform: uppercase;
     padding-top: 0.6cqw; border-top: 1px solid var(--hairline-strong);
   }
-  .cert-editorial .center { margin-top: 4cqw; }
+  .cert-editorial .center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 0;
+    padding: 2cqw 0 1.5cqw;
+  }
   .cert-editorial .pre-name {
     font-family: 'Marcellus', serif;
     font-size: 1.4cqw; letter-spacing: 0.3em;
     color: var(--muted); text-transform: uppercase;
-    margin-bottom: 1.2cqw;
+    margin-bottom: 1cqw;
+    width: 100%;
+  }
+  .cert-editorial .pre-name.text-ltr {
+    direction: ltr;
+    text-align: left;
+  }
+  .cert-editorial .pre-name.text-rtl {
+    direction: rtl;
+    text-align: right;
+  }
+  .cert-editorial .pre-name.text-mixed {
+    text-align: center;
   }
   .cert-editorial .student-name-ar {
     font-family: 'El Messiri', serif;
@@ -245,27 +282,42 @@
     font-size: 7.5cqw;
     line-height: 1.05;
     color: var(--primary);
-    word-wrap: break-word;
-    max-width: 92%;
+    width: 100%;
+    max-width: 100%;
   }
   .cert-editorial .student-name-en {
     font-family: 'Marcellus', serif;
     font-size: 1.6cqw;
     color: var(--muted-soft);
     margin-top: 1cqw; letter-spacing: 0.05em;
+    direction: ltr;
+    text-align: left;
   }
   .cert-editorial .message {
     font-family: 'Tajawal', sans-serif;
     font-size: 1.25cqw; line-height: 1.7;
     color: var(--text); opacity: 0.85;
-    max-width: 85%; margin-top: 2.5cqw;
+    width: 85%; margin-top: 2cqw;
+  }
+  .cert-editorial .message.text-ltr {
+    direction: ltr;
+    text-align: left;
+    margin-left: 0;
+    margin-right: auto;
+    font-family: 'Outfit', sans-serif;
+  }
+  .cert-editorial .message.text-rtl {
+    direction: rtl;
+    text-align: right;
+    margin-left: auto;
+    margin-right: 0;
   }
   .cert-editorial .footer {
     display: grid; grid-template-columns: 1fr 1fr 1fr;
     gap: 2cqw;
-    padding-top: 2.5cqw;
+    padding-top: 2cqw;
     border-top: 1px solid var(--hairline-strong);
-    margin-top: 3cqw;
+    margin-top: 0;
   }
   .cert-editorial .sign { text-align: center; }
   .cert-editorial .sign .role {
@@ -299,12 +351,21 @@
     text-align: center;
     box-shadow: 0 0 0 2px var(--soft), 0 0 0 3px var(--accent);
   }
+  .cert-editorial .seal-circle.seal-en {
+    direction: ltr;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.68cqw;
+    line-height: 1.25;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
   /* Right vertical block */
   .cert-editorial .right {
     background: var(--primary);
     color: var(--soft);
     padding: 4cqw 2.5cqw;
-    display: flex; flex-direction: column; justify-content: space-between;
+    display: flex; flex-direction: column; justify-content: flex-start;
+    gap: 8cqw;
     position: relative;
     overflow: hidden;
   }
@@ -336,7 +397,7 @@
   }
   .cert-editorial .right-mid {
     display: flex; flex-direction: column; gap: 1.5cqw;
-    margin-top: 2cqw;
+    margin-top: 0;
   }
   .cert-editorial .right-mid .row .lab {
     font-family: 'Outfit', sans-serif;
@@ -353,14 +414,37 @@
     font-family: 'El Messiri', serif;
     font-size: 1.5cqw; font-weight: 500;
   }
-  .cert-editorial .right-bottom {
-    border-top: 1px solid rgba(255,255,255,0.15);
-    padding-top: 1.5cqw;
-    font-family: 'Outfit', sans-serif;
-    font-size: 0.85cqw; letter-spacing: 0.25em;
-    text-transform: uppercase; color: var(--accent);
+  .cert-editorial .right-mid .row .term-rtl {
+    direction: rtl;
+    font-family: 'El Messiri', serif;
+    font-size: 1.5cqw; font-weight: 500;
   }
-
+  .cert-editorial .right-mid .row .term-ltr {
+    direction: ltr;
+    font-family: 'Marcellus', serif;
+    font-size: 1.3cqw;
+    text-align: left;
+  }
+  body[data-language="en"] .cert-editorial .right {
+    direction: ltr;
+    text-align: left;
+  }
+  body[data-language="en"] .cert-editorial .right-top,
+  body[data-language="en"] .cert-editorial .right-mid {
+    align-items: flex-start;
+    text-align: left;
+  }
+  body[data-language="en"] .cert-editorial .right-mid .row {
+    width: 100%;
+    text-align: left;
+  }
+  body[data-language="en"] .cert-editorial .right .label,
+  body[data-language="en"] .cert-editorial .right .school-en,
+  body[data-language="en"] .cert-editorial .right-mid .row .lab,
+  body[data-language="en"] .cert-editorial .right-mid .row .val {
+    direction: ltr;
+    text-align: left;
+  }
   /* ----- Geometric template ----- */
   .cert-geometric {
     padding: 5cqw;
@@ -456,11 +540,15 @@
     font-family: 'El Messiri', serif;
     font-weight: 700; font-size: 6.5cqw;
     color: var(--primary); line-height: 1.05;
+    width: 100%;
+    max-width: 100%;
   }
   .cert-geometric .student-name-en {
     font-family: 'Marcellus', serif;
     font-size: 1.5cqw; letter-spacing: 0.1em;
     color: var(--muted-soft); margin-top: 0.8cqw;
+    direction: ltr;
+    text-align: center;
   }
   .cert-geometric .grade-tag {
     display: inline-block;
@@ -476,6 +564,15 @@
     font-size: 1.15cqw; line-height: 1.7;
     color: var(--text); opacity: 0.8;
     max-width: 70%; margin: 2.5cqw 0;
+  }
+  .cert-geometric .message.text-ltr {
+    direction: ltr;
+    text-align: left;
+    font-family: 'Outfit', sans-serif;
+  }
+  .cert-geometric .message.text-rtl {
+    direction: rtl;
+    text-align: right;
   }
   .cert-geometric .footer {
     width: 100%;
@@ -512,7 +609,15 @@
     color: var(--muted);
   }
   .cert-geometric .date-row .ar { font-family: 'El Messiri', serif; letter-spacing: 0; }
-  .cert-geometric .date-row .sep { color: var(--accent); margin: 0 0.8cqw; }
+  .cert-geometric .date-row .term-rtl {
+    direction: rtl;
+    font-family: 'El Messiri', serif;
+    letter-spacing: 0;
+  }
+  .cert-geometric .date-row .term-ltr {
+    direction: ltr;
+    font-family: 'Outfit', sans-serif;
+  }
 
   /* ----- Minimal template ----- */
   .cert-minimal {
@@ -520,12 +625,6 @@
     padding: 6cqw 8cqw;
     position: absolute;
     inset: 0;
-  }
-  .cert-minimal .corner-tl {
-    position: absolute; top: 4cqw; right: 4cqw;
-    font-family: 'Outfit', sans-serif;
-    font-size: 0.85cqw; letter-spacing: 0.25em;
-    color: var(--muted); text-transform: uppercase;
   }
   .cert-minimal .corner-tr {
     position: absolute; top: 4cqw; left: 4cqw;
@@ -563,6 +662,8 @@
     font-weight: 600; font-size: 8cqw;
     color: var(--primary); line-height: 1;
     letter-spacing: 0;
+    width: 100%;
+    max-width: 100%;
   }
   .cert-minimal .hairline {
     width: 30%; height: 1px;
@@ -573,6 +674,8 @@
     font-family: 'Marcellus', serif;
     font-size: 1.5cqw; letter-spacing: 0.3em;
     color: var(--muted-soft); text-transform: uppercase;
+    direction: ltr;
+    text-align: center;
   }
   .cert-minimal .achievement-line {
     margin-top: 3cqw;
@@ -590,6 +693,15 @@
     font-size: 1.05cqw; line-height: 1.8;
     color: var(--text); opacity: 0.7;
     max-width: 75%;
+  }
+  .cert-minimal .message.text-ltr {
+    direction: ltr;
+    text-align: left;
+    font-family: 'Outfit', sans-serif;
+  }
+  .cert-minimal .message.text-rtl {
+    direction: rtl;
+    text-align: right;
   }
   .cert-minimal .footer {
     display: flex; justify-content: space-between; align-items: flex-end;
@@ -610,11 +722,13 @@
     margin-top: 0.4cqw;
     letter-spacing: 0;
   }
-
-  .cert-editorial .right-bottom {
-    display: flex;
-    flex-direction: column;
-    gap: 1cqw;
+  .cert-minimal .footer .col.center .subval.term-ltr {
+    direction: ltr;
+    font-family: 'Outfit', sans-serif;
+  }
+  .cert-minimal .footer .col.center .subval.term-rtl {
+    direction: rtl;
+    font-family: 'Tajawal', sans-serif;
   }
 
   /* =========================================

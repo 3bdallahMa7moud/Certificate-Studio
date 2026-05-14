@@ -13,6 +13,7 @@ import {
 import Icon from '../components/Icon.jsx';
 import {
   BEHAVIORS,
+  FIXED_CERTIFICATE_IDENTITY,
   FONT_STYLES,
   GRADE_LEVELS,
   LANGUAGE_MODES,
@@ -53,7 +54,7 @@ function useToast() {
 
 function normalizeLoadedState(data) {
   const defaults = getDefaultState();
-  const merged = { ...defaults, ...(data || {}) };
+  const merged = { ...defaults, ...(data || {}), ...FIXED_CERTIFICATE_IDENTITY };
   merged.grade = normalizeGradeValue(merged.grade, defaults.grade);
   merged.date = merged.date ? new Date(merged.date).toISOString() : defaults.date;
   if (!Array.isArray(merged.batchStudents)) merged.batchStudents = [];
@@ -126,7 +127,6 @@ function StudioPage() {
   const [messageTemplateId, setMessageTemplateId] = useState('general');
   const [batchText, setBatchText] = useState('');
   const [printStudents, setPrintStudents] = useState(null);
-  const previewRef = useRef(null);
   const autosaveReady = useRef(false);
 
   const paper = PAPER_SIZES[0];
@@ -331,54 +331,6 @@ function StudioPage() {
     downloadBlob(new Blob(['\ufeff' + header + sample], { type:'text/csv;charset=utf-8' }), 'certificate-studio-template.csv');
   };
 
-  const exportPng = async () => {
-    const cert = previewRef.current;
-    if (!cert) return;
-    if (document.fonts?.ready) {
-      try { await document.fonts.ready; } catch {}
-    }
-    await waitForImages(cert);
-    await nextFrame();
-
-    const width = paper.width;
-    const height = Math.round(width / paper.ratioNum);
-    const clone = cert.cloneNode(true);
-    inlineComputedStyles(cert, clone);
-    clone.style.width = `${width}px`;
-    clone.style.height = `${height}px`;
-    clone.style.aspectRatio = 'auto';
-
-    const markup = new XMLSerializer().serializeToString(clone);
-    const xhtml = `<html xmlns="http://www.w3.org/1999/xhtml"><body style="margin:0;width:${width}px;height:${height}px;overflow:hidden;">${markup}</body></html>`;
-    const svg = `<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="100%" height="100%" fill="#ffffff"/><foreignObject width="100%" height="100%">${xhtml}</foreignObject></svg>`;
-    const svgBlob = new Blob([svg], { type:'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(svgBlob);
-    const img = new Image();
-
-    img.onload = async () => {
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        canvas.getContext('2d').drawImage(img, 0, 0);
-        URL.revokeObjectURL(url);
-        const png = await canvasToBlob(canvas);
-        downloadBlob(png, `${state.serial}.png`);
-        showToast('تم تحميل صورة PNG');
-      } catch {
-        URL.revokeObjectURL(url);
-        downloadBlob(svgBlob, `${state.serial}.svg`);
-        showToast('تعذر PNG، تم تحميل SVG كصورة بديلة');
-      }
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      downloadBlob(svgBlob, `${state.serial}.svg`);
-      showToast('تعذر PNG، تم تحميل SVG كصورة بديلة');
-    };
-    img.src = url;
-  };
-
   const presetNames = Object.keys(presets).sort((a, b) => a.localeCompare(b, 'ar'));
 
   return (
@@ -411,7 +363,7 @@ function StudioPage() {
             <div className="serial-display"><span>SERIAL</span><span className="num">{state.serial}</span></div>
           </div>
           <div className="cert-wrap">
-            <div className="cert" ref={previewRef}>
+            <div className="cert">
               <Certificate state={state} />
             </div>
           </div>
@@ -568,7 +520,6 @@ function StudioPage() {
             <div className={`panel ${tab === 'output' ? 'active' : ''}`}>
               <Section title="التصدير" sub="EXPORT">
                 <div className="save-row">
-                  <button className="btn-save" onClick={exportPng}><Icon name="ImageDown" /> PNG للحالية</button>
                   <button className="btn-save" onClick={printCurrent}><Icon name="Printer" /> PDF للحالية</button>
                 </div>
               </Section>
@@ -612,50 +563,6 @@ function StudioPage() {
       <div className={`toast ${toast ? 'show' : ''}`}>{toast}</div>
     </>
   );
-}
-
-function nextFrame() {
-  return new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-}
-
-function waitForImages(root) {
-  return Promise.all([...root.querySelectorAll('img')].map(img => {
-    if (img.complete) return Promise.resolve();
-    return new Promise(resolve => {
-      img.addEventListener('load', resolve, { once:true });
-      img.addEventListener('error', resolve, { once:true });
-    });
-  }));
-}
-
-function inlineComputedStyles(source, target) {
-  const computed = window.getComputedStyle(source);
-  for (const prop of computed) {
-    const value = computed.getPropertyValue(prop);
-    if (value) target.style.setProperty(prop, value, computed.getPropertyPriority(prop));
-  }
-  [...source.children].forEach((sourceChild, index) => {
-    const targetChild = target.children[index];
-    if (targetChild) inlineComputedStyles(sourceChild, targetChild);
-  });
-}
-
-function canvasToBlob(canvas) {
-  return new Promise((resolve, reject) => {
-    if (canvas.toBlob) {
-      canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Canvas export failed')), 'image/png');
-      return;
-    }
-    try {
-      const dataUrl = canvas.toDataURL('image/png');
-      const bytes = atob(dataUrl.split(',')[1]);
-      const buffer = new Uint8Array(bytes.length);
-      for (let i = 0; i < bytes.length; i++) buffer[i] = bytes.charCodeAt(i);
-      resolve(new Blob([buffer], { type:'image/png' }));
-    } catch(e) {
-      reject(e);
-    }
-  });
 }
 
 function downloadBlob(blob, filename) {
