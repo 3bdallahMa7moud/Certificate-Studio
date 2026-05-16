@@ -28,7 +28,10 @@ export function UploadField({ label, stateKey, preview, onFile, onClear }) {
         <label className="upload-btn">
           <Icon name="ImagePlus" size={14} />
           <span>{preview ? 'تم الرفع' : 'رفع الملف'}</span>
-          <input type="file" accept="image/*" hidden onChange={e => onFile(stateKey, e.target.files?.[0])} />
+          <input type="file" accept="image/*" hidden onChange={e => {
+            onFile(stateKey, e.target.files?.[0]);
+            e.target.value = '';
+          }} />
         </label>
         {preview && <img className="upload-preview react-visible" src={preview} alt="" />}
         {preview && (

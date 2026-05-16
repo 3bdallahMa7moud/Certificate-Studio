@@ -13,7 +13,6 @@ import {
 import Icon from '../components/Icon.jsx';
 import {
   BEHAVIORS,
-  FIXED_CERTIFICATE_IDENTITY,
   FONT_STYLES,
   GRADE_LEVELS,
   LANGUAGE_MODES,
@@ -54,7 +53,8 @@ function useToast() {
 
 function normalizeLoadedState(data) {
   const defaults = getDefaultState();
-  const merged = { ...defaults, ...(data || {}), ...FIXED_CERTIFICATE_IDENTITY };
+  const merged = { ...defaults, ...(data || {}) };
+  if (!PAPER_SIZES.some(paper => paper.id === merged.paperSize)) merged.paperSize = defaults.paperSize;
   merged.grade = normalizeGradeValue(merged.grade, defaults.grade);
   merged.date = merged.date ? new Date(merged.date).toISOString() : defaults.date;
   if (!Array.isArray(merged.batchStudents)) merged.batchStudents = [];
@@ -117,6 +117,49 @@ function arrayBufferFile(file) {
   });
 }
 
+const IMAGE_UPLOAD_LIMITS = {
+  logo: { maxWidth: 700, maxHeight: 700, quality: 0.9 },
+  teacherSig: { maxWidth: 900, maxHeight: 360, quality: 0.9 },
+  principalSig: { maxWidth: 900, maxHeight: 360, quality: 0.9 },
+};
+
+function resizedImageDataUrl(file, limits = {}) {
+  if (!file.type.startsWith('image/') || file.type === 'image/svg+xml') return fileToDataUrl(file);
+
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    const url = URL.createObjectURL(file);
+    const cleanup = () => URL.revokeObjectURL(url);
+
+    image.onload = () => {
+      cleanup();
+      const maxWidth = limits.maxWidth || 900;
+      const maxHeight = limits.maxHeight || 900;
+      const scale = Math.min(1, maxWidth / image.naturalWidth, maxHeight / image.naturalHeight);
+      const width = Math.max(1, Math.round(image.naturalWidth * scale));
+      const height = Math.max(1, Math.round(image.naturalHeight * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext('2d');
+      if (!context) {
+        reject(new Error('Canvas is not available'));
+        return;
+      }
+      context.drawImage(image, 0, 0, width, height);
+      const mimeType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+      resolve(canvas.toDataURL(mimeType, limits.quality || 0.9));
+    };
+
+    image.onerror = () => {
+      cleanup();
+      reject(new Error('Image could not be loaded'));
+    };
+
+    image.src = url;
+  });
+}
+
 function StudioPage() {
   const [state, setState] = useState(loadInitialState);
   const [tab, setTab] = useState('design');
@@ -129,7 +172,7 @@ function StudioPage() {
   const [printStudents, setPrintStudents] = useState(null);
   const autosaveReady = useRef(false);
 
-  const paper = PAPER_SIZES[0];
+  const paper = useMemo(() => PAPER_SIZES.find(item => item.id === state.paperSize) || PAPER_SIZES[0], [state.paperSize]);
   const fontStyle = useMemo(() => FONT_STYLES.find(f => f.id === state.fontStyle) || FONT_STYLES[0], [state.fontStyle]);
   const theme = useMemo(() => THEMES.find(t => t.id === state.theme) || THEMES[0], [state.theme]);
   const duplicateRows = useMemo(() => duplicateIndexes(state.batchStudents), [state.batchStudents]);
@@ -197,6 +240,12 @@ function StudioPage() {
     setMessageTemplateId(subjectTemplate ? subjectTemplate.id : 'general');
   }, [state.subject]);
 
+  useEffect(() => {
+    const onAfterPrint = () => setPrintStudents(null);
+    window.addEventListener('afterprint', onAfterPrint);
+    return () => window.removeEventListener('afterprint', onAfterPrint);
+  }, []);
+
   const updateState = patch => setState(prev => ({ ...prev, ...patch }));
   const updateStudent = (index, patch) => setState(prev => ({
     ...prev,
@@ -205,8 +254,12 @@ function StudioPage() {
 
   const handleImage = async (key, file) => {
     if (!file) return;
-    const dataUrl = await fileToDataUrl(file);
-    updateState({ [key]: dataUrl });
+    try {
+      const dataUrl = await resizedImageDataUrl(file, IMAGE_UPLOAD_LIMITS[key]);
+      updateState({ [key]: dataUrl });
+    } catch {
+      showToast('تعذّر رفع الصورة. جرّب ملف صورة آخر.');
+    }
   };
 
   const clearImage = key => updateState({ [key]: null });
@@ -219,22 +272,27 @@ function StudioPage() {
 
   const importBatchFile = async (file) => {
     if (!file) return;
-    if (/\.(xlsx|xls)$/i.test(file.name)) {
-      const buffer = await arrayBufferFile(file);
-      const XLSX = await import('xlsx');
-      const workbook = XLSX.read(buffer, { type:'array' });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(sheet, { header:1, defval:'' });
+    try {
+      let rows = [];
+      if (/\.(xlsx|xls)$/i.test(file.name)) {
+        const buffer = await arrayBufferFile(file);
+        const XLSX = await import('xlsx');
+        const workbook = XLSX.read(buffer, { type:'array' });
+        const sheetName = workbook.SheetNames[0];
+        if (!sheetName) throw new Error('Workbook has no sheets');
+        const sheet = workbook.Sheets[sheetName];
+        rows = XLSX.utils.sheet_to_json(sheet, { header:1, defval:'' });
+      } else {
+        const text = await textFile(file);
+        rows = parseCsv(text);
+      }
+
       const students = rowsToStudents(rows, state);
       updateState({ batchStudents: students });
       showToast(`تم استيراد ${students.length} طالب`);
-      return;
+    } catch {
+      showToast('تعذّر استيراد الملف. تأكد من أنه CSV أو Excel صالح.');
     }
-
-    const text = await textFile(file);
-    const students = rowsToStudents(parseCsv(text), state);
-    updateState({ batchStudents: students });
-    showToast(`تم استيراد ${students.length} طالب`);
   };
 
   const addCurrentToBatch = () => {
@@ -260,9 +318,15 @@ function StudioPage() {
     serial: student.serial || genSerial(),
   });
 
+  const schedulePrint = () => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => window.print());
+    });
+  };
+
   const printCurrent = () => {
     setPrintStudents(null);
-    setTimeout(() => window.print(), 50);
+    schedulePrint();
   };
 
   const printBatch = () => {
@@ -271,10 +335,7 @@ function StudioPage() {
       return;
     }
     setPrintStudents(state.batchStudents);
-    setTimeout(() => {
-      window.print();
-      setTimeout(() => setPrintStudents(null), 500);
-    }, 50);
+    schedulePrint();
   };
 
   const saveQuick = () => {
@@ -387,6 +448,11 @@ function StudioPage() {
             <div className={`panel ${tab === 'design' ? 'active' : ''}`}>
               <Section title="القالب" sub="TEMPLATE">
                 <TileGrid items={TEMPLATES} selected={state.template} onSelect={template => updateState({ template })} />
+                <Field label="مقاس الورق">
+                  <select className="field-input" value={state.paperSize} onChange={e => updateState({ paperSize: e.target.value })}>
+                    {PAPER_SIZES.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
+                  </select>
+                </Field>
               </Section>
               <Section title="الباليت اللوني" sub="COLOR THEME">
                 <div className="grid-2">
@@ -440,8 +506,8 @@ function StudioPage() {
                   <MiniSlider label="حجم الشعار" value={state.logoSize} min={60} max={180} onChange={logoSize => updateState({ logoSize })} />
                   <MiniSlider label="إزاحة الشعار أفقيًا" value={state.logoX} min={-80} max={80} onChange={logoX => updateState({ logoX })} />
                   <MiniSlider label="إزاحة الشعار رأسيًا" value={state.logoY} min={-80} max={80} onChange={logoY => updateState({ logoY })} />
-                  <MiniSlider label="حجم توقيع المعلم" value={state.teacherSigSize} min={60} max={180} onChange={teacherSigSize => updateState({ teacherSigSize })} />
-                  <MiniSlider label="حجم توقيع المدير" value={state.principalSigSize} min={60} max={180} onChange={principalSigSize => updateState({ principalSigSize })} />
+                  <MiniSlider label="حجم توقيع المعلم/ة" value={state.teacherSigSize} min={60} max={180} onChange={teacherSigSize => updateState({ teacherSigSize })} />
+                  <MiniSlider label="حجم توقيع المدير/ة" value={state.principalSigSize} min={60} max={180} onChange={principalSigSize => updateState({ principalSigSize })} />
                 </div>
               </Section>
             </div>
@@ -461,13 +527,13 @@ function StudioPage() {
                 <BoundInput label="School Name in English" value={state.schoolNameEn} onChange={schoolNameEn => updateState({ schoolNameEn })} en />
                 <UploadField label="شعار المدرسة (اختياري)" stateKey="logo" preview={state.logo} onFile={handleImage} onClear={clearImage} />
               </Section>
-              <Section title="المعلم والمدير" sub="STAFF">
+              <Section title="المعلم/ة والمدير/ة" sub="STAFF">
                 <BoundInput label="اسم المعلم/المعلمة" value={state.teacherNameAr} onChange={teacherNameAr => updateState({ teacherNameAr })} ar />
                 <BoundInput label="Teacher Name" value={state.teacherNameEn} onChange={teacherNameEn => updateState({ teacherNameEn })} en />
                 <BoundInput label="اسم المدير/المديرة" value={state.principalNameAr} onChange={principalNameAr => updateState({ principalNameAr })} ar />
                 <BoundInput label="Principal Name" value={state.principalNameEn} onChange={principalNameEn => updateState({ principalNameEn })} en />
-                <UploadField label="توقيع المعلم (اختياري)" stateKey="teacherSig" preview={state.teacherSig} onFile={handleImage} onClear={clearImage} />
-                <UploadField label="توقيع المدير (اختياري)" stateKey="principalSig" preview={state.principalSig} onFile={handleImage} onClear={clearImage} />
+                <UploadField label="توقيع المعلم/ة (اختياري)" stateKey="teacherSig" preview={state.teacherSig} onFile={handleImage} onClear={clearImage} />
+                <UploadField label="توقيع المدير/ة (اختياري)" stateKey="principalSig" preview={state.principalSig} onFile={handleImage} onClear={clearImage} />
               </Section>
               <Section title="التاريخ والعام الدراسي" sub="DATE">
                 <Field><input type="date" className="field-input en" value={dateInputValue(state.date)} onChange={e => updateState({ date:new Date(e.target.value + 'T12:00:00').toISOString() })} /></Field>
@@ -500,7 +566,10 @@ function StudioPage() {
                 <div className="action-row">
                   <label className="btn-save import-label">
                     <Icon name="FileSpreadsheet" /> Excel / CSV
-                    <input type="file" accept=".csv,.xlsx,.xls" hidden onChange={e => importBatchFile(e.target.files?.[0])} />
+                    <input type="file" accept=".csv,.xlsx,.xls" hidden onChange={e => {
+                      importBatchFile(e.target.files?.[0]);
+                      e.target.value = '';
+                    }} />
                   </label>
                   <button className="btn-save" onClick={downloadCsvTemplate}><Icon name="Download" /> نموذج CSV</button>
                 </div>

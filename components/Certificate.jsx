@@ -41,7 +41,7 @@ function roleLabel(state, ar, en) {
 }
 
 function primaryDisplayName(state, ar, en, fallback = '—') {
-  return shouldShowAr(state) ? (ar || fallback) : (en || fallback);
+  return shouldShowAr(state) ? (ar || en || fallback) : (en || ar || fallback);
 }
 
 function secondaryEnglishName(state, en) {
@@ -116,29 +116,49 @@ function schoolLine(state) {
 
 function StudentName({ state, size, fitWidth = 70 }) {
   if (!shouldShowAr(state) && shouldShowEn(state)) {
-    const name = state.studentNameEn || 'Student Name';
+    const name = state.studentNameEn || state.studentNameAr || 'Student Name';
     const nameProps = fittedNameProps(name, size, state, fitWidth);
     return (
-      <div className={`student-name-ar latin-name ${nameProps.className}`} style={nameProps.style}>
+      <div
+        className={`student-name-ar ${isLtrText(name) ? 'latin-name' : ''} ${nameProps.className}`}
+        style={nameProps.style}
+        dir={textDirection(name)}
+      >
         {name}
       </div>
     );
   }
 
-  const arabicName = state.studentNameAr || 'اسم الطالب';
-  const arabicNameProps = fittedNameProps(arabicName, size, state, fitWidth);
+  const primaryName = state.studentNameAr || state.studentNameEn || 'اسم الطالب';
+  const primaryNameProps = fittedNameProps(primaryName, size, state, fitWidth);
+  const primaryIsEnglish = !String(state.studentNameAr || '').trim() && String(state.studentNameEn || '').trim();
+  const showSecondaryEnglish = shouldShowEn(state) && String(state.studentNameEn || '').trim() && state.studentNameEn !== primaryName;
 
   return (
     <>
       {shouldShowAr(state) && (
-        <div className={`student-name-ar ${arabicNameProps.className}`} style={arabicNameProps.style}>
-          {arabicName}
+        <div
+          className={`student-name-ar ${primaryIsEnglish ? 'latin-name' : ''} ${primaryNameProps.className}`}
+          style={primaryNameProps.style}
+          dir={textDirection(primaryName)}
+        >
+          {primaryName}
         </div>
       )}
-      {shouldShowEn(state) && (
-        <div className="student-name-en single-line-name">{state.studentNameEn || 'Student Name'}</div>
+      {showSecondaryEnglish && (
+        <div className="student-name-en single-line-name" dir="ltr">{state.studentNameEn}</div>
       )}
     </>
+  );
+}
+
+function TemplateLogo({ state, className = '' }) {
+  if (!state.logo) return null;
+  const classes = ['cert-logo-template', className].filter(Boolean).join(' ');
+  return (
+    <div className={classes}>
+      <img className="cert-logo" src={state.logo} alt="شعار" />
+    </div>
   );
 }
 
@@ -173,7 +193,7 @@ function EditorialCertificate({ state }) {
 
         <div className="footer">
           <div className="sign">
-            <div className="role">{roleLabel(state, 'المعلم', 'Teacher')}</div>
+            <div className="role">{roleLabel(state, 'المعلم/ة', 'Teacher')}</div>
             {state.teacherSig && <img className="cert-sig cert-sig-teacher" src={state.teacherSig} alt="توقيع المعلم" />}
             <div className="name-ar">{primaryDisplayName(state, state.teacherNameAr, state.teacherNameEn)}</div>
             <div className="name-en">{secondaryEnglishName(state, state.teacherNameEn)}</div>
@@ -184,7 +204,7 @@ function EditorialCertificate({ state }) {
             </div>
           </div>
           <div className="sign">
-            <div className="role">{roleLabel(state, 'المدير', 'Principal')}</div>
+            <div className="role">{roleLabel(state, 'المدير/ة', 'Principal')}</div>
             {state.principalSig && <img className="cert-sig cert-sig-principal" src={state.principalSig} alt="توقيع المدير" />}
             <div className="name-ar">{primaryDisplayName(state, state.principalNameAr, state.principalNameEn)}</div>
             <div className="name-en">{secondaryEnglishName(state, state.principalNameEn)}</div>
@@ -233,6 +253,7 @@ function GeometricCertificate({ state }) {
       <div className="shape-square" />
       <div className="diag-line-1" />
       <div className="diag-line-2" />
+      <TemplateLogo state={state} className="cert-logo-geometric" />
 
       <div className="content">
         <div className="top-row">
@@ -255,13 +276,13 @@ function GeometricCertificate({ state }) {
 
         <div className="footer">
           <div className="sign-block">
-            <div className="role">{roleLabel(state, 'المعلم', 'Teacher')}</div>
+            <div className="role">{roleLabel(state, 'المعلم/ة', 'Teacher')}</div>
             {state.teacherSig && <img className="cert-sig cert-sig-teacher" src={state.teacherSig} alt="" />}
             <div className="name">{primaryDisplayName(state, state.teacherNameAr, state.teacherNameEn)}</div>
             <div className="name-en">{secondaryEnglishName(state, state.teacherNameEn)}</div>
           </div>
           <div className="sign-block">
-            <div className="role">{roleLabel(state, 'المدير', 'Principal')}</div>
+            <div className="role">{roleLabel(state, 'المدير/ة', 'Principal')}</div>
             {state.principalSig && <img className="cert-sig cert-sig-principal" src={state.principalSig} alt="" />}
             <div className="name">{primaryDisplayName(state, state.principalNameAr, state.principalNameEn)}</div>
             <div className="name-en">{secondaryEnglishName(state, state.principalNameEn)}</div>
@@ -285,6 +306,7 @@ function MinimalCertificate({ state }) {
 
   return (
     <div className="cert-minimal">
+      <TemplateLogo state={state} className="cert-logo-minimal" />
       <div className="corner-tr">{state.serial}</div>
       <div className="top-label">{shouldShowEn(state) ? 'Certificate of Excellence' : ''}</div>
       <div className="top-label-ar">{shouldShowAr(state) ? 'شهادة تقدير وتميز' : ''}</div>
@@ -305,7 +327,7 @@ function MinimalCertificate({ state }) {
 
       <div className="footer">
         <div className="col">
-          <div className="lab">{roleLabel(state, 'المعلم', 'Teacher')}</div>
+          <div className="lab">{roleLabel(state, 'المعلم/ة', 'Teacher')}</div>
           {state.teacherSig && <img className="cert-sig cert-sig-teacher" src={state.teacherSig} alt="" />}
           <div className="val">{primaryDisplayName(state, state.teacherNameAr, state.teacherNameEn)}</div>
         </div>
@@ -315,7 +337,7 @@ function MinimalCertificate({ state }) {
           <div className={`subval ${termClass}`}>{termText} · {state.academicYear}</div>
         </div>
         <div className="col">
-          <div className="lab">{roleLabel(state, 'المدير', 'Principal')}</div>
+          <div className="lab">{roleLabel(state, 'المدير/ة', 'Principal')}</div>
           {state.principalSig && <img className="cert-sig cert-sig-principal" src={state.principalSig} alt="" />}
           <div className="val">{primaryDisplayName(state, state.principalNameAr, state.principalNameEn)}</div>
         </div>

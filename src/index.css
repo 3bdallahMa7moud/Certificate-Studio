@@ -184,11 +184,13 @@
   .student-name-ar {
     font-family: var(--student-font-ar, 'El Messiri', serif) !important;
     letter-spacing: 0;
+    text-align: center;
   }
 
   .student-name-en {
     font-family: var(--student-font-en, 'Marcellus', serif) !important;
     letter-spacing: 0;
+    text-align: center;
   }
 
   .single-line-name {
@@ -204,13 +206,13 @@
     width: 100%;
     max-width: 100%;
     white-space: normal;
-    overflow-wrap: normal;
+    overflow-wrap: anywhere;
     word-break: normal;
   }
 
   .student-name-ar.latin-name {
     direction: ltr;
-    text-align: left;
+    text-align: center;
     font-family: var(--student-font-en, 'Marcellus', serif) !important;
   }
 
@@ -291,7 +293,7 @@
     color: var(--muted-soft);
     margin-top: 1cqw; letter-spacing: 0.05em;
     direction: ltr;
-    text-align: left;
+    text-align: center;
   }
   .cert-editorial .message {
     font-family: 'Tajawal', sans-serif;
@@ -466,14 +468,14 @@
     opacity: 0.4;
   }
   .cert-geometric .diag-line-1 {
-    position: absolute; top: 5cqw; right: 5cqw;
-    width: 14cqw; height: 1px;
+    position: absolute; top: 11cqw; right: 1.8cqw;
+    width: 8cqw; height: 1px;
     background: var(--primary); opacity: 0.4;
     transform: rotate(-45deg); transform-origin: right;
   }
   .cert-geometric .diag-line-2 {
-    position: absolute; bottom: 5cqw; left: 5cqw;
-    width: 14cqw; height: 1px;
+    position: absolute; bottom: 11cqw; left: 1.8cqw;
+    width: 8cqw; height: 1px;
     background: var(--primary); opacity: 0.4;
     transform: rotate(-45deg); transform-origin: left;
   }
@@ -1180,11 +1182,36 @@
   .btn-save svg { width: 13px; height: 13px; }
 
   /* Logo in cert */
+  .cert-logo-template {
+    position: absolute;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .cert-logo-geometric {
+    top: 3.2cqw;
+    left: 50%;
+    width: 8cqw;
+    height: 5cqw;
+    transform: translateX(-50%);
+  }
+  .cert-logo-minimal {
+    top: 4cqw;
+    right: 4cqw;
+    width: 8cqw;
+    height: 5cqw;
+  }
   .cert-logo {
     max-height: 5cqw; max-width: 8cqw;
     object-fit: contain; display: block;
     transform: translate(var(--logo-x, 0), var(--logo-y, 0)) scale(var(--logo-scale, 1));
     transform-origin: center;
+  }
+  .cert-logo-template .cert-logo {
+    max-height: 100%;
+    max-width: 100%;
   }
   .cert-sig {
     max-height: 3.5cqw; max-width: 9cqw;

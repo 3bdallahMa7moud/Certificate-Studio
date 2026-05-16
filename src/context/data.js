@@ -113,6 +113,7 @@ export function genSerial() {
 export function getDefaultState() {
   return {
     template: 'editorial',
+    paperSize: 'a4-landscape',
     theme: 'midnight',
     customPrimary: '',
     customAccent: '',
