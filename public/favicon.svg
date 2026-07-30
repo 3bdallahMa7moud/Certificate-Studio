@@ -1,24 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
   <defs>
-    <linearGradient id="favGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F9E8B2" />
-      <stop offset="35%" stop-color="#D4AF37" />
-      <stop offset="75%" stop-color="#A37812" />
-      <stop offset="100%" stop-color="#F5D061" />
+    <linearGradient id="oscarGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF3B0" />
+      <stop offset="25%" stop-color="#FFD700" />
+      <stop offset="60%" stop-color="#D4AF37" />
+      <stop offset="85%" stop-color="#8C6511" />
+      <stop offset="100%" stop-color="#FFE082" />
     </linearGradient>
-    <linearGradient id="favGlassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="50%" stop-color="#FFFDF7" />
-      <stop offset="100%" stop-color="#FFF7E6" />
+    <linearGradient id="ribbonDarkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4AF37" />
+      <stop offset="100%" stop-color="#664606" />
     </linearGradient>
   </defs>
-  <rect x="4" y="4" width="92" height="92" rx="24" fill="url(#favGlassGrad)" stroke="url(#favGoldGrad)" stroke-width="4.5"/>
-  <circle cx="50" cy="50" r="38" fill="none" stroke="url(#favGoldGrad)" stroke-width="2" stroke-dasharray="4 2.5" opacity="0.9"/>
-  <path d="M34 68 L24 88 L34 82 L44 88 L40 68 Z" fill="url(#favGoldGrad)" opacity="0.95"/>
-  <path d="M66 68 L56 88 L66 82 L76 88 L60 68 Z" fill="url(#favGoldGrad)" opacity="0.85"/>
-  <path d="M20 62 Q50 68 80 62 L76 74 Q50 80 24 74 Z" fill="url(#favGoldGrad)"/>
-  <rect x="30" y="22" width="40" height="34" rx="6" fill="rgba(212, 175, 55, 0.08)" stroke="url(#favGoldGrad)" stroke-width="2.5"/>
-  <line x1="36" y1="30" x2="64" y2="30" stroke="url(#favGoldGrad)" stroke-width="2.5" stroke-linecap="round"/>
-  <line x1="36" y1="37" x2="56" y2="37" stroke="#996E10" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
-  <polygon points="50,44 52.5,49 58,49.5 54,53 55.5,58.5 50,55.5 44.5,58.5 46,53 42,49.5 47.5,49" fill="url(#favGoldGrad)"/>
+  <path d="M34 64 L20 94 L34 87 L48 94 L44 64 Z" fill="url(#ribbonDarkGrad)" opacity="0.95"/>
+  <path d="M66 64 L52 94 L66 87 L80 94 L76 64 Z" fill="url(#oscarGoldGrad)"/>
+  <path d="M50 8 L54 13 L60 9 L62 15 L69 13 L69 20 L76 20 L74 26 L80 29 L76 34 L81 39 L75 42 L78 49 L71 50 L72 57 L65 56 L64 63 L57 60 L54 66 L48 62 L44 67 L40 61 L33 64 L32 57 L25 57 L26 50 L19 48 L22 42 L16 38 L21 34 L17 28 L23 26 L22 19 L29 20 L30 13 L37 15 L39 9 L45 13 Z" fill="url(#oscarGoldGrad)" opacity="0.9"/>
+  <circle cx="50" cy="38" r="28" fill="url(#oscarGoldGrad)" stroke="#FFFFFF" stroke-width="3"/>
+  <circle cx="50" cy="38" r="22" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="4 2.5" opacity="0.95"/>
+  <polygon points="50,22 54,31 63,32 56,38 58,48 50,43 42,48 44,38 37,32 46,31" fill="#FFFFFF"/>
+  <path d="M30 46 C26 38, 36 30, 42 29 C40 33, 38 40, 30 46 Z" fill="#FFFFFF" opacity="0.8"/>
+  <path d="M70 46 C74 38, 64 30, 58 29 C60 33, 62 40, 70 46 Z" fill="#FFFFFF" opacity="0.8"/>
 </svg>

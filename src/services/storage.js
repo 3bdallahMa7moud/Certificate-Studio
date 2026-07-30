@@ -65,8 +65,13 @@ export function normalizeLoadedState(data) {
     .filter(isRecord)
     .map(student => ({
       ...student,
+      gender: student.gender ? String(student.gender) : '',
       grade: normalizeGradeValue(student.grade, merged.grade),
+      notes: student.notes ? String(student.notes) : '',
     }));
+  merged.isSetupCompleted = source.isSetupCompleted !== undefined
+    ? Boolean(source.isSetupCompleted)
+    : Boolean(merged.teacherNameAr && merged.schoolNameAr);
   merged.templateCustomizationVersion = 1;
   merged.templateCustomizations = sanitizeTemplateCustomizations(source.templateCustomizations);
   return merged;

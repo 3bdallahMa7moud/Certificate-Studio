@@ -85,7 +85,7 @@ test('template registry entries remain serializable metadata only and landscape 
   }
 });
 
-test('registry exposes approved categories and exactly eight active templates', () => {
+test('registry exposes approved categories and exactly twelve active templates', () => {
   assert.deepEqual(
     CERTIFICATE_TEMPLATE_CATEGORIES.map(category => category.id),
     [

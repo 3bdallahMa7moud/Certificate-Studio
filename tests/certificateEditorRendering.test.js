@@ -325,7 +325,7 @@ test('all child-friendly templates preserve long Arabic, English, and bilingual 
   }
 });
 
-test('all eight templates tolerate missing logo and signatures without broken image hosts', () => {
+test('all twelve templates tolerate missing logo and signatures without broken image hosts', () => {
   for (const template of Object.keys(TEMPLATE_ROOTS)) {
     const html = renderCertificate(stateFor(template, {
       logo: null,

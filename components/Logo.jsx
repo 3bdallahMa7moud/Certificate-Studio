@@ -19,107 +19,89 @@ export function LogoMark({ size = 42, className = '' }) {
         style={{ width: '100%', height: '100%', display: 'block' }}
       >
         <defs>
-          {/* Luminous Royal Gold Gradient */}
-          <linearGradient id="certGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#F9E8B2" />
-            <stop offset="35%" stopColor="#D4AF37" />
-            <stop offset="75%" stopColor="#A37812" />
-            <stop offset="100%" stopColor="#F5D061" />
+          {/* Ultra Luxury 3D Oscar Gold Gradient */}
+          <linearGradient id="oscarGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#FFF3B0" />
+            <stop offset="25%" stopColor="#FFD700" />
+            <stop offset="60%" stopColor="#D4AF37" />
+            <stop offset="85%" stopColor="#8C6511" />
+            <stop offset="100%" stopColor="#FFE082" />
           </linearGradient>
 
-          {/* Luminous Pure White Glass Gradient */}
-          <linearGradient id="certGlassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FFFFFF" />
-            <stop offset="50%" stopColor="#FFFDF7" />
-            <stop offset="100%" stopColor="#FFF7E6" />
+          {/* Deep Silk Ribbon Shadow */}
+          <linearGradient id="ribbonDarkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#D4AF37" />
+            <stop offset="100%" stopColor="#664606" />
           </linearGradient>
 
-          {/* Warm Luxury Glow Shadow */}
-          <filter id="certGlow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#D4AF37" floodOpacity="0.4" />
+          {/* Warm Royal Glow Shadow */}
+          <filter id="oscarGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#D4AF37" floodOpacity="0.5" />
           </filter>
         </defs>
 
-        {/* Outer Luminous Seal Base */}
-        <rect
-          x="6"
-          y="6"
-          width="88"
-          height="88"
-          rx="22"
-          fill="url(#certGlassGrad)"
-          stroke="url(#certGoldGrad)"
-          strokeWidth="3.5"
-          filter="url(#certGlow)"
-        />
+        <g filter="url(#oscarGlow)">
+          {/* Left Ribbon Tail */}
+          <path
+            d="M34 64 L20 94 L34 87 L48 94 L44 64 Z"
+            fill="url(#ribbonDarkGrad)"
+            opacity="0.95"
+          />
 
-        {/* Inner Decorative Dashed Ring */}
-        <circle
-          cx="50"
-          cy="50"
-          r="38"
-          fill="none"
-          stroke="url(#certGoldGrad)"
-          strokeWidth="1.5"
-          strokeDasharray="4 2.5"
-          opacity="0.9"
-        />
+          {/* Right Ribbon Tail */}
+          <path
+            d="M66 64 L52 94 L66 87 L80 94 L76 64 Z"
+            fill="url(#oscarGoldGrad)"
+          />
 
-        {/* Ribbon Tail Left */}
-        <path
-          d="M34 68 L24 88 L34 82 L44 88 L40 68 Z"
-          fill="url(#certGoldGrad)"
-          opacity="0.95"
-        />
+          {/* Outer Starburst Scalloped Rosette Petals */}
+          <path
+            d="M50 8 L54 13 L60 9 L62 15 L69 13 L69 20 L76 20 L74 26 L80 29 L76 34 L81 39 L75 42 L78 49 L71 50 L72 57 L65 56 L64 63 L57 60 L54 66 L48 62 L44 67 L40 61 L33 64 L32 57 L25 57 L26 50 L19 48 L22 42 L16 38 L21 34 L17 28 L23 26 L22 19 L29 20 L30 13 L37 15 L39 9 L45 13 Z"
+            fill="url(#oscarGoldGrad)"
+            opacity="0.9"
+          />
 
-        {/* Ribbon Tail Right */}
-        <path
-          d="M66 68 L56 88 L66 82 L76 88 L60 68 Z"
-          fill="url(#certGoldGrad)"
-          opacity="0.85"
-        />
+          {/* Outer Medal Circle */}
+          <circle
+            cx="50"
+            cy="38"
+            r="28"
+            fill="url(#oscarGoldGrad)"
+            stroke="#FFFFFF"
+            strokeWidth="3"
+          />
 
-        {/* Center Ribbon Banner */}
-        <path
-          d="M20 62 Q50 68 80 62 L76 74 Q50 80 24 74 Z"
-          fill="url(#certGoldGrad)"
-        />
+          {/* Inner Beveled Ring */}
+          <circle
+            cx="50"
+            cy="38"
+            r="22"
+            fill="none"
+            stroke="#FFFFFF"
+            strokeWidth="2"
+            strokeDasharray="4 2.5"
+            opacity="0.95"
+          />
 
-        {/* Certificate Scroll Outline inside */}
-        <rect
-          x="30"
-          y="22"
-          width="40"
-          height="34"
-          rx="6"
-          fill="rgba(212, 175, 55, 0.08)"
-          stroke="url(#certGoldGrad)"
-          strokeWidth="2.2"
-        />
+          {/* Center Royal Trophy Star */}
+          <polygon
+            points="50,22 54,31 63,32 56,38 58,48 50,43 42,48 44,38 37,32 46,31"
+            fill="#FFFFFF"
+            filter="url(#oscarGlow)"
+          />
 
-        {/* Certificate Header Lines */}
-        <line x1="36" y1="30" x2="64" y2="30" stroke="url(#certGoldGrad)" strokeWidth="2.5" strokeLinecap="round" />
-        <line x1="36" y1="36" x2="56" y2="36" stroke="#996E10" strokeWidth="1.8" strokeLinecap="round" opacity="0.75" />
-        <line x1="36" y1="42" x2="60" y2="42" stroke="#996E10" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />
-
-        {/* Gold Star Emblem at Center Bottom */}
-        <polygon
-          points="50,44 52.5,49 58,49.5 54,53 55.5,58.5 50,55.5 44.5,58.5 46,53 42,49.5 47.5,49"
-          fill="url(#certGoldGrad)"
-          filter="url(#certGlow)"
-        />
-
-        {/* Laurel Wreath Accents (Left & Right) */}
-        <path
-          d="M24 45 C22 36, 30 27, 34 26 C32 30, 31 37, 24 45 Z"
-          fill="url(#certGoldGrad)"
-          opacity="0.9"
-        />
-        <path
-          d="M76 45 C78 36, 70 27, 66 26 C68 30, 69 37, 76 45 Z"
-          fill="url(#certGoldGrad)"
-          opacity="0.9"
-        />
+          {/* Laurel Leaves Orbiting Bottom */}
+          <path
+            d="M30 46 C26 38, 36 30, 42 29 C40 33, 38 40, 30 46 Z"
+            fill="#FFFFFF"
+            opacity="0.8"
+          />
+          <path
+            d="M70 46 C74 38, 64 30, 58 29 C60 33, 62 40, 70 46 Z"
+            fill="#FFFFFF"
+            opacity="0.8"
+          />
+        </g>
       </svg>
     </div>
   );

@@ -59,15 +59,25 @@ export function normalizeGradeValue(value, fallback = GRADE_LEVELS[0]) {
   return fallbackGrade;
 }
 
+export function normalizeGenderValue(value) {
+  const raw = String(value || '').trim().toLowerCase();
+  if (!raw) return '';
+  if (['ذكر', 'طالب', 'male', 'm', 'ولد'].includes(raw)) return 'male';
+  if (['أنثى', 'انثى', 'طالبة', 'female', 'f', 'بنت'].includes(raw)) return 'female';
+  return '';
+}
+
 export function createBatchStudent(state, data = {}) {
   return {
     studentNameAr: data.studentNameAr || '',
     studentNameEn: data.studentNameEn || '',
-    grade: normalizeGradeValue(data.grade, state.grade),
-    subject: data.subject || state.subject,
-    behavior: data.behavior || state.behavior,
+    gender: normalizeGenderValue(data.gender || ''),
+    grade: normalizeGradeValue(data.grade, state?.grade),
+    subject: data.subject || state?.subject,
+    behavior: data.behavior || state?.behavior,
     customMessage: data.customMessage || '',
     serial: data.serial || genSerial(),
+    notes: data.notes || '',
   };
 }
 
@@ -145,18 +155,22 @@ export function rowsToStudents(rows, state) {
 
     const ar = get(0, ['الاسم العربي','اسم الطالب','الاسم','arabic','student ar','studentnamear','name ar']);
     const en = get(1, ['english','name en','student en','studentnameen','الانجليزي','الإنجليزي']);
-    const grade = normalizeGradeValue(get(2, ['grade','class','الصف','الشعبة']), state.grade);
-    const subjectValue = get(3, ['subject','المادة']);
-    const behaviorValue = get(4, ['achievement','behavior','تميز','التميز']);
-    const message = get(5, ['message','نص','رسالة']);
+    const genderRaw = get(2, ['gender','الجنس','النوع','ذكر/أنثى','sex']);
+    const grade = normalizeGradeValue(get(3, ['grade','class','الصف','الشعبة']), state?.grade);
+    const subjectValue = get(4, ['subject','المادة']);
+    const behaviorValue = get(5, ['achievement','behavior','تميز','التميز']);
+    const message = get(6, ['message','نص','رسالة']);
+    const notes = get(7, ['notes','ملاحظات']);
 
     return createBatchStudent(state, {
       studentNameAr: ar,
       studentNameEn: en,
+      gender: genderRaw,
       grade,
-      subject: findSubjectFromValue(subjectValue, state.subject),
-      behavior: findBehaviorFromValue(behaviorValue, state.behavior),
+      subject: findSubjectFromValue(subjectValue, state?.subject),
+      behavior: findBehaviorFromValue(behaviorValue, state?.behavior),
       customMessage: message,
+      notes,
     });
   }).filter(student => student.studentNameAr || student.studentNameEn);
 }

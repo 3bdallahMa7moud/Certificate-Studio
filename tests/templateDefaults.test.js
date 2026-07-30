@@ -36,7 +36,7 @@ test('template defaults clone deeply and do not share nested references', () => 
   assert.equal(TEMPLATE_DEFAULTS.editorial.elements[0].labelEn, 'Certificate title');
 });
 
-test('all eight template defaults return independent deep clones', () => {
+test('all twelve template defaults return independent deep clones', () => {
   assert.equal(Object.keys(TEMPLATE_DEFAULTS).length, 12);
 
   for (const templateId of Object.keys(TEMPLATE_DEFAULTS)) {

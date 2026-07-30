@@ -58,22 +58,24 @@ function ConfirmModal({ count, onConfirm, onCancel }) {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Bulk Edit Panel (grade / subject / behavior only)
+   Bulk Edit Panel (grade / subject / behavior / gender)
    ───────────────────────────────────────────────────────────────────── */
 function BulkEditPanel({ count, onApply, onClose }) {
   const [grade, setGrade]       = useState('');
   const [subject, setSubject]   = useState('');
   const [behavior, setBehavior] = useState('');
+  const [gender, setGender]     = useState('');
 
   const handleApply = () => {
     const patch = {};
     if (grade)    patch.grade    = grade;
     if (subject)  patch.subject  = subject;
     if (behavior) patch.behavior = behavior;
+    if (gender !== undefined && gender !== '') patch.gender = gender;
     onApply(patch);
   };
 
-  const hasChange = grade || subject || behavior;
+  const hasChange = grade || subject || behavior || gender;
 
   return (
     <div className="sm-bulk-edit-panel">
@@ -90,6 +92,14 @@ function BulkEditPanel({ count, onApply, onClose }) {
           <select className="sm-bulk-select" value={grade} onChange={e => setGrade(e.target.value)}>
             <option value="">— لا تغيير —</option>
             {GRADE_LEVELS.map(g => <option key={g} value={g}>{g}</option>)}
+          </select>
+        </label>
+        <label className="sm-bulk-label">
+          <span>الجنس</span>
+          <select className="sm-bulk-select" value={gender} onChange={e => setGender(e.target.value)}>
+            <option value="">— لا تغيير —</option>
+            <option value="male">طالب (ذكر)</option>
+            <option value="female">طالبة (أنثى)</option>
           </select>
         </label>
         <label className="sm-bulk-label">
@@ -137,11 +147,8 @@ function SortBtn({ label, colKey, sortKey, sortDir, onToggle }) {
    Main StudentManager component
    ───────────────────────────────────────────────────────────────────── */
 export default function StudentManager({
-  // data
   students,
-  // student manager hook state (passed as a prop object for clean API)
   manager,
-  // callbacks that mutate batchStudents in StudioPage
   updateStudent,
   deleteStudent,
   duplicateStudent,
@@ -167,7 +174,6 @@ export default function StudentManager({
 
   const selectedCount = selectedSerials.size;
 
-  /* ── Handlers ─────────────────────────────────────────────────── */
   const handleBulkDelete = () => {
     bulkDelete([...selectedSerials]);
     clearSelection();
@@ -184,7 +190,6 @@ export default function StudentManager({
     else selectAllVisible();
   };
 
-  /* ── Empty state ───────────────────────────────────────────────── */
   if (!students.length) {
     return (
       <div className="sm-empty">
@@ -194,11 +199,8 @@ export default function StudentManager({
     );
   }
 
-  /* ── Main render ───────────────────────────────────────────────── */
   return (
     <div className="student-manager">
-
-      {/* ── Stats bar ───────────────────────────────────────────── */}
       <div className="sm-stats">
         <StatPill label="الإجمالي"    count={stats.total}          variant="total" />
         <StatPill label="جاهزة"       count={stats.ready}          variant="ready" />
@@ -208,7 +210,6 @@ export default function StudentManager({
           <StatPill label="مكررة"     count={stats.duplicateCount} variant="dup" />}
       </div>
 
-      {/* ── Toolbar ─────────────────────────────────────────────── */}
       <div className="sm-toolbar">
         <div className="sm-search-wrap">
           <Icon name="Search" size={14} className="sm-search-icon" />
@@ -251,7 +252,6 @@ export default function StudentManager({
         </select>
       </div>
 
-      {/* ── Bulk action bar (visible when selection > 0) ─────────── */}
       {selectedCount > 0 && (
         <div className="sm-bulk-bar">
           <span className="sm-bulk-count">
@@ -278,7 +278,6 @@ export default function StudentManager({
         </div>
       )}
 
-      {/* ── Bulk Edit Panel ──────────────────────────────────────── */}
       {showBulkEdit && selectedCount > 0 && (
         <BulkEditPanel
           count={selectedCount}
@@ -287,7 +286,6 @@ export default function StudentManager({
         />
       )}
 
-      {/* ── No results indicator ─────────────────────────────────── */}
       {visibleStudents.length === 0 && students.length > 0 && (
         <div className="sm-no-results">
           <Icon name="SearchX" size={18} />
@@ -302,7 +300,6 @@ export default function StudentManager({
         </div>
       )}
 
-      {/* ── Table ───────────────────────────────────────────────── */}
       {visibleStudents.length > 0 && (
         <div className="batch-table-wrap">
           <table className="batch-table" aria-label="جدول إدارة الطلاب">
@@ -323,6 +320,7 @@ export default function StudentManager({
                   <SortBtn label="الطالب" colKey="name" sortKey={sortKey} sortDir={sortDir} onToggle={toggleSort} />
                 </th>
                 <th scope="col">English</th>
+                <th scope="col">الجنس</th>
                 <th scope="col">
                   <SortBtn label="الصف" colKey="grade" sortKey={sortKey} sortDir={sortDir} onToggle={toggleSort} />
                 </th>
@@ -350,7 +348,6 @@ export default function StudentManager({
 
                 return (
                   <tr key={student.serial} className={rowClass}>
-                    {/* Checkbox */}
                     <td data-label="" className="sm-td-check">
                       <input
                         type="checkbox"
@@ -360,7 +357,6 @@ export default function StudentManager({
                       />
                     </td>
 
-                    {/* Row number */}
                     <td data-label="#">
                       <span className="sm-row-num">{idx + 1}</span>
                       {isMissing && (
@@ -370,7 +366,6 @@ export default function StudentManager({
                       )}
                     </td>
 
-                    {/* Arabic name */}
                     <td data-label="الطالب">
                       <input
                         className={`table-input ar${isMissing ? ' input-error' : ''}`}
@@ -380,7 +375,6 @@ export default function StudentManager({
                       />
                     </td>
 
-                    {/* English name */}
                     <td data-label="English">
                       <input
                         className="table-input en"
@@ -390,7 +384,18 @@ export default function StudentManager({
                       />
                     </td>
 
-                    {/* Grade */}
+                    <td data-label="الجنس">
+                      <select
+                        className="table-input small"
+                        value={student.gender || ''}
+                        onChange={e => updateStudent(idx, { gender: e.target.value })}
+                      >
+                        <option value="">محايد</option>
+                        <option value="male">طالب</option>
+                        <option value="female">طالبة</option>
+                      </select>
+                    </td>
+
                     <td data-label="الصف">
                       <select
                         className="table-input en small"
@@ -401,7 +406,6 @@ export default function StudentManager({
                       </select>
                     </td>
 
-                    {/* Subject */}
                     <td data-label="المادة">
                       <select
                         className="table-input"
@@ -412,7 +416,6 @@ export default function StudentManager({
                       </select>
                     </td>
 
-                    {/* Behavior */}
                     <td data-label="التميز">
                       <select
                         className="table-input"
@@ -423,11 +426,10 @@ export default function StudentManager({
                       </select>
                     </td>
 
-                    {/* Actions */}
                     <td data-label="إجراءات">
                       <div className="row-actions">
-                        <button type="button" title="معاينة" aria-label="معاينة الشهادة" onClick={() => previewStudent(student)}>
-                          <Icon name="Eye" size={14} />
+                        <button type="button" title="معاينة وإصدار شهادة" aria-label="معاينة وإصدار شهادة" className="row-preview-btn" onClick={() => previewStudent(student)}>
+                          <Icon name="Award" size={15} />
                         </button>
                         <button type="button" title="تكرار" aria-label="تكرار الطالب" onClick={() => duplicateStudent(idx)}>
                           <Icon name="Copy" size={14} />
