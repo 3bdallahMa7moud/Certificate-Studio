@@ -131,7 +131,8 @@
 /* Full Page Container Layout */
 .full-page-view {
   width: 100%;
-  height: calc(100vh - 72px);
+  min-height: calc(100vh - 72px);
+  height: auto;
   background: var(--shell-bg, #efeae2);
   padding: 32px 24px 60px 24px;
   overflow-y: auto !important;
@@ -1091,14 +1092,6 @@
    Mobile & Responsive Layout Optimization System
    ========================================================================== */
 
-.topbar-main-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  gap: 12px;
-}
-
 .page-footer {
   position: static !important;
   width: 100%;
@@ -1111,6 +1104,39 @@
   color: var(--muted, #888);
   opacity: 0.7;
   margin-top: 24px;
+}
+
+@media (min-width: 1024px) {
+  .topbar-inner {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 16px !important;
+    padding: 12px 24px !important;
+    max-width: 1600px !important;
+    margin: 0 auto !important;
+    height: 72px !important;
+  }
+
+  .brand {
+    display: flex !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  .topbar-nav {
+    display: flex !important;
+    align-items: center !important;
+    gap: 3px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .topbar-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
+  }
 }
 
 @media (max-width: 1023px) {
@@ -1131,13 +1157,33 @@
   }
 
   .topbar-inner {
+    display: grid !important;
+    grid-template-columns: auto 1fr !important;
+    grid-template-areas:
+      "brand actions"
+      "nav nav" !important;
+    gap: 8px 12px !important;
     padding: 8px 12px !important;
-    flex-direction: column !important;
-    gap: 8px !important;
+    height: auto !important;
     max-width: 100% !important;
   }
 
+  .brand {
+    grid-area: brand !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .topbar-actions {
+    grid-area: actions !important;
+    justify-self: end !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+
   .topbar-nav {
+    grid-area: nav !important;
     width: 100% !important;
     max-width: 100% !important;
     overflow-x: auto !important;
@@ -1151,13 +1197,6 @@
 
   .topbar-nav::-webkit-scrollbar {
     display: none;
-  }
-
-  .topbar-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
   }
 
   .layout {

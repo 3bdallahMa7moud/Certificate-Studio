@@ -371,53 +371,8 @@ function StudioPage() {
     <>
       <header className="topbar no-print">
         <div className="topbar-inner">
-          <div className="topbar-main-row">
-            <div className="brand">
-              <Logo size={42} />
-            </div>
-
-            <div className="topbar-actions">
-              <button
-                className="btn btn-ghost"
-                onClick={handleSaveDraft}
-                disabled={busy}
-                title="حفظ كمسودة"
-                aria-label="حفظ كمسودة"
-              >
-                <Icon name="Save" size={14} /><span className="btn-label-desktop">حفظ كمسودة</span>
-              </button>
-
-              <button
-                className="btn btn-ghost"
-                onClick={() => updateState({ serial: genSerial() })}
-                disabled={busy}
-                title="توليد رقم تسلسلي جديد"
-                aria-label="توليد رقم تسلسلي جديد"
-              >
-                <Icon name="RefreshCw" size={14} /><span className="btn-label-desktop">رقم تسلسلي</span>
-              </button>
-
-              <button
-                className="btn btn-ghost"
-                onClick={doExportPng}
-                disabled={busy}
-                title="تصدير الشهادة الحالية كصورة PNG"
-                aria-label="تصدير الشهادة الحالية كصورة PNG"
-              >
-                <Icon name="Image" size={14} /><span className="btn-label-desktop">تصدير PNG</span>
-              </button>
-
-              <button
-                className="btn btn-primary topbar-cta-btn"
-                onClick={beginPrintCurrent}
-                disabled={busy}
-                title="طباعة أو حفظ الشهادة كـ PDF"
-                aria-label="طباعة أو حفظ الشهادة كـ PDF"
-              >
-                {isPrinting ? <Icon name="RefreshCw" size={14} className="spin" /> : <Icon name="Printer" size={14} />}
-                <span className="btn-label-desktop">طباعة / PDF</span>
-              </button>
-            </div>
+          <div className="brand">
+            <Logo size={42} />
           </div>
 
           {/* Centered Segmented Navigation Track */}
@@ -442,6 +397,39 @@ function StudioPage() {
               </button>
             ))}
           </nav>
+
+          <div className="topbar-actions">
+            <button
+              className="btn btn-ghost"
+              onClick={() => updateState({ serial: genSerial() })}
+              disabled={busy}
+              title="توليد رقم تسلسلي جديد"
+              aria-label="توليد رقم تسلسلي جديد"
+            >
+              <Icon name="RefreshCw" size={14} /><span className="btn-label-desktop">رقم تسلسلي</span>
+            </button>
+
+            <button
+              className="btn btn-ghost"
+              onClick={doExportPng}
+              disabled={busy}
+              title="تصدير الشهادة الحالية كصورة PNG"
+              aria-label="تصدير الشهادة الحالية كصورة PNG"
+            >
+              <Icon name="Image" size={14} /><span className="btn-label-desktop">تصدير PNG</span>
+            </button>
+
+            <button
+              className="btn btn-primary topbar-cta-btn"
+              onClick={beginPrintCurrent}
+              disabled={busy}
+              title="طباعة أو حفظ الشهادة كـ PDF"
+              aria-label="طباعة أو حفظ الشهادة كـ PDF"
+            >
+              {isPrinting ? <Icon name="RefreshCw" size={14} className="spin" /> : <Icon name="Printer" size={14} />}
+              <span className="btn-label-desktop">طباعة / PDF</span>
+            </button>
+          </div>
         </div>
       </header>
 
