@@ -1,23 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
   <defs>
     <linearGradient id="favGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F6E09E" />
+      <stop offset="0%" stop-color="#F9E8B2" />
       <stop offset="35%" stop-color="#D4AF37" />
-      <stop offset="70%" stop-color="#AA7C11" />
-      <stop offset="100%" stop-color="#E6C656" />
+      <stop offset="75%" stop-color="#A37812" />
+      <stop offset="100%" stop-color="#F5D061" />
     </linearGradient>
-    <linearGradient id="favDarkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#17263C" />
-      <stop offset="100%" stop-color="#0B1320" />
+    <linearGradient id="favGlassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFFDF7" />
+      <stop offset="100%" stop-color="#FFF7E6" />
     </linearGradient>
   </defs>
-  <rect x="4" y="4" width="92" height="92" rx="24" fill="url(#favDarkGrad)" stroke="url(#favGoldGrad)" stroke-width="4"/>
-  <circle cx="50" cy="50" r="38" fill="none" stroke="url(#favGoldGrad)" stroke-width="2" stroke-dasharray="4 2.5" opacity="0.85"/>
-  <path d="M34 68 L24 88 L34 82 L44 88 L40 68 Z" fill="url(#favGoldGrad)" opacity="0.9"/>
-  <path d="M66 68 L56 88 L66 82 L76 88 L60 68 Z" fill="url(#favGoldGrad)" opacity="0.75"/>
+  <rect x="4" y="4" width="92" height="92" rx="24" fill="url(#favGlassGrad)" stroke="url(#favGoldGrad)" stroke-width="4.5"/>
+  <circle cx="50" cy="50" r="38" fill="none" stroke="url(#favGoldGrad)" stroke-width="2" stroke-dasharray="4 2.5" opacity="0.9"/>
+  <path d="M34 68 L24 88 L34 82 L44 88 L40 68 Z" fill="url(#favGoldGrad)" opacity="0.95"/>
+  <path d="M66 68 L56 88 L66 82 L76 88 L60 68 Z" fill="url(#favGoldGrad)" opacity="0.85"/>
   <path d="M20 62 Q50 68 80 62 L76 74 Q50 80 24 74 Z" fill="url(#favGoldGrad)"/>
-  <rect x="30" y="22" width="40" height="34" rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="url(#favGoldGrad)" stroke-width="2.5"/>
+  <rect x="30" y="22" width="40" height="34" rx="6" fill="rgba(212, 175, 55, 0.08)" stroke="url(#favGoldGrad)" stroke-width="2.5"/>
   <line x1="36" y1="30" x2="64" y2="30" stroke="url(#favGoldGrad)" stroke-width="2.5" stroke-linecap="round"/>
-  <line x1="36" y1="37" x2="56" y2="37" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+  <line x1="36" y1="37" x2="56" y2="37" stroke="#996E10" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
   <polygon points="50,44 52.5,49 58,49.5 54,53 55.5,58.5 50,55.5 44.5,58.5 46,53 42,49.5 47.5,49" fill="url(#favGoldGrad)"/>
 </svg>

@@ -9,6 +9,7 @@ import {
   sanitizeTemplateCustomizations,
 } from '../src/certificate-editor/customizationModel.js';
 import { resolveTemplateId } from '../src/certificate-templates/templateUtils.js';
+import { THEMES } from '../src/context/data.js';
 import CertificateEditorOverlay from './CertificateEditor/CertificateEditorOverlay.jsx';
 
 function unitToCqw(value, canvasWidth) {
@@ -133,12 +134,24 @@ function createTemplateRender(state, editor) {
 export default function Certificate({ state, editor }) {
   const TemplateComponent = resolveTemplateComponent(state?.template);
   const render = createTemplateRender(state, editor);
+  const themeObj = THEMES.find(t => t.id === state?.theme) || THEMES[0];
+  const primary = state?.customPrimary || themeObj?.primary;
+  const accent = state?.customAccent || themeObj?.accent;
+  const soft = state?.customBackground || themeObj?.soft;
+
+  const themeStyle = {
+    ...(primary ? { '--primary': primary } : {}),
+    ...(accent ? { '--accent': accent } : {}),
+    ...(soft ? { '--soft': soft } : {}),
+  };
+
   return (
-    <>
+    <div className="certificate-theme-container" style={themeStyle}>
       <TemplateComponent state={state} render={render} />
       {editor && <CertificateEditorOverlay state={state} editor={editor} />}
-    </>
+    </div>
   );
 }
 
 export { createTemplateRender, customizationStyle };
+

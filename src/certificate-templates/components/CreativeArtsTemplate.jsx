@@ -54,20 +54,6 @@ export default function CreativeArtsTemplate({ state, render }) {
         <span className="arts-splash arts-splash-1" />
         <span className="arts-splash arts-splash-2" />
         <span className="arts-splash arts-splash-3" />
-        <div className="arts-palette-icon">
-          <svg viewBox="0 0 48 48" fill="none" className="arts-palette-svg">
-            <path
-              d="M24 6C14.06 6 6 14.06 6 24C6 33.94 14.06 42 24 42C26.5 42 28.5 40 28.5 37.5C28.5 36.3 28 35.2 27.2 34.4C26.4 33.6 26 32.5 26 31.3C26 28.9 28 26.9 30.4 26.9H35C38.9 26.9 42 23.8 42 19.9C42 12.2 33.9 6 24 6Z"
-              fill="#FFF"
-              stroke="#6C3483"
-              strokeWidth="2.5"
-            />
-            <circle cx="15" cy="18" r="3" fill="#FF4757" />
-            <circle cx="23" cy="14" r="3" fill="#FFA502" />
-            <circle cx="32" cy="18" r="3" fill="#2ED573" />
-            <circle cx="16" cy="28" r="3" fill="#1E90FF" />
-          </svg>
-        </div>
       </div>
 
       <header className="arts-header">
@@ -81,9 +67,25 @@ export default function CreativeArtsTemplate({ state, render }) {
           })}
         />
         <div className="arts-school-lockup">
-          <span className="arts-badge-label" aria-hidden="true">
-            {showAr ? 'أنشطة وفنون ومواهب' : 'CREATIVE STUDIO'}
-          </span>
+          <div className="arts-badge-row">
+            <span className="arts-badge-label" aria-hidden="true">
+              {showAr ? 'أنشطة وفنون ومواهب' : 'CREATIVE STUDIO'}
+            </span>
+            <div className="arts-palette-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" className="arts-palette-svg">
+                <path
+                  d="M24 6C14.06 6 6 14.06 6 24C6 33.94 14.06 42 24 42C26.5 42 28.5 40 28.5 37.5C28.5 36.3 28 35.2 27.2 34.4C26.4 33.6 26 32.5 26 31.3C26 28.9 28 26.9 30.4 26.9H35C38.9 26.9 42 23.8 42 19.9C42 12.2 33.9 6 24 6Z"
+                  fill="#FFF"
+                  stroke="var(--primary, #6C3483)"
+                  strokeWidth="2.5"
+                />
+                <circle cx="15" cy="18" r="3" fill="#FF4757" />
+                <circle cx="23" cy="14" r="3" fill="#FFA502" />
+                <circle cx="32" cy="18" r="3" fill="#2ED573" />
+                <circle cx="16" cy="28" r="3" fill="#1E90FF" />
+              </svg>
+            </div>
+          </div>
           <div className="arts-school">
             {showAr && (
               <span

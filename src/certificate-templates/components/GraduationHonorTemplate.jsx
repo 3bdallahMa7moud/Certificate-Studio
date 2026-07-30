@@ -52,14 +52,6 @@ export default function GraduationHonorTemplate({ state, render }) {
     <div className="cert-graduation-honor">
       <div className="grad-art" aria-hidden="true">
         <div className="grad-gold-border" />
-        <div className="grad-cap-emblem">
-          <svg viewBox="0 0 48 48" fill="none" className="grad-cap-svg">
-            <path d="M24 8L4 18L24 28L44 18L24 8Z" fill="#C9A35F" stroke="#0F1B2D" strokeWidth="2"/>
-            <path d="M12 23.5V33C12 33 17 38 24 38C31 38 36 33 36 33V23.5" stroke="#C9A35F" strokeWidth="2.5"/>
-            <path d="M40 20V32" stroke="#C9A35F" strokeWidth="2.5" strokeLinecap="round"/>
-            <circle cx="40" cy="33.5" r="2.5" fill="#C9A35F"/>
-          </svg>
-        </div>
         <span className="grad-sparkle grad-sparkle-1" />
         <span className="grad-sparkle grad-sparkle-2" />
         <span className="grad-sparkle grad-sparkle-3" />
@@ -76,9 +68,19 @@ export default function GraduationHonorTemplate({ state, render }) {
           })}
         />
         <div className="grad-school-lockup">
-          <span className="grad-class-year" aria-hidden="true">
-            {showAr ? 'دفعة التخرج والمستقبل' : 'GRADUATION CLASS'}
-          </span>
+          <div className="grad-badge-row">
+            <span className="grad-class-year" aria-hidden="true">
+              {showAr ? 'دفعة التخرج والمستقبل' : 'GRADUATION CLASS'}
+            </span>
+            <div className="grad-cap-emblem" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" className="grad-cap-svg">
+                <path d="M24 8L4 18L24 28L44 18L24 8Z" fill="var(--accent, #C9A35F)" stroke="var(--primary, #0F1B2D)" strokeWidth="2"/>
+                <path d="M12 23.5V33C12 33 17 38 24 38C31 38 36 33 36 33V23.5" stroke="var(--accent, #C9A35F)" strokeWidth="2.5"/>
+                <path d="M40 20V32" stroke="var(--accent, #C9A35F)" strokeWidth="2.5" strokeLinecap="round"/>
+                <circle cx="40" cy="33.5" r="2.5" fill="var(--accent, #C9A35F)"/>
+              </svg>
+            </div>
+          </div>
           <div className="grad-school">
             {showAr && (
               <span

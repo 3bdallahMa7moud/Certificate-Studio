@@ -57,16 +57,6 @@ export default function SportsChampionTemplate({ state, render }) {
           <span className="sports-ribbon-body" />
           <span className="sports-ribbon-tail sports-ribbon-tail-end" />
         </div>
-        <div className="sports-trophy-badge">
-          <svg viewBox="0 0 48 48" fill="none" className="sports-trophy-svg">
-            <path d="M14 6H34V18C34 23.5 29.5 28 24 28C18.5 28 14 23.5 14 18V6Z" fill="#F39C12" stroke="#D35400" strokeWidth="2"/>
-            <path d="M14 10H8C6.3 10 5 11.3 5 13V15C5 17.8 7.2 20 10 20H14" stroke="#F39C12" strokeWidth="2"/>
-            <path d="M34 10H40C41.7 10 43 11.3 43 13V15C43 17.8 40.8 20 38 20H34" stroke="#F39C12" strokeWidth="2"/>
-            <path d="M24 28V36" stroke="#D35400" strokeWidth="3"/>
-            <path d="M16 36H32V42H16V36Z" fill="#D35400"/>
-            <path d="M24 11L26 15H30L27 17.5L28 21.5L24 19L20 21.5L21 17.5L18 15H22L24 11Z" fill="#FFF"/>
-          </svg>
-        </div>
         <span className="sports-laurel sports-laurel-start" />
         <span className="sports-laurel sports-laurel-end" />
       </div>
@@ -82,9 +72,21 @@ export default function SportsChampionTemplate({ state, render }) {
           })}
         />
         <div className="sports-school-lockup">
-          <span className="sports-champ-tag" aria-hidden="true">
-            {showAr ? 'بطولات ومسابقات' : 'CHAMPIONSHIP'}
-          </span>
+          <div className="sports-champ-tag-row">
+            <span className="sports-champ-tag" aria-hidden="true">
+              {showAr ? 'بطولات ومسابقات' : 'CHAMPIONSHIP'}
+            </span>
+            <div className="sports-trophy-badge" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" className="sports-trophy-svg">
+                <path d="M14 6H34V18C34 23.5 29.5 28 24 28C18.5 28 14 23.5 14 18V6Z" fill="#F39C12" stroke="#D35400" strokeWidth="2"/>
+                <path d="M14 10H8C6.3 10 5 11.3 5 13V15C5 17.8 7.2 20 10 20H14" stroke="#F39C12" strokeWidth="2"/>
+                <path d="M34 10H40C41.7 10 43 11.3 43 13V15C43 17.8 40.8 20 38 20H34" stroke="#F39C12" strokeWidth="2"/>
+                <path d="M24 28V36" stroke="#D35400" strokeWidth="3"/>
+                <path d="M16 36H32V42H16V36Z" fill="#D35400"/>
+                <path d="M24 11L26 15H30L27 17.5L28 21.5L24 19L20 21.5L21 17.5L18 15H22L24 11Z" fill="#FFF"/>
+              </svg>
+            </div>
+          </div>
           <div className="sports-school">
             {showAr && (
               <span
