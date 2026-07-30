@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import BatchTable from '../components/BatchTable.jsx';
+import StudentManager from '../components/StudentManager.jsx';
+import TemplateManager from '../components/TemplateManager.jsx';
 import Certificate from '../components/Certificate.jsx';
 import {
   BoundInput,
@@ -11,6 +12,10 @@ import {
   UploadField,
 } from '../components/FormControls.jsx';
 import Icon from '../components/Icon.jsx';
+import Logo from '../components/Logo.jsx';
+import TemplateGallery from '../components/TemplateGallery.jsx';
+import EditorToolbar from '../components/CertificateEditor/EditorToolbar.jsx';
+import ElementInspector from '../components/CertificateEditor/ElementInspector.jsx';
 import {
   BEHAVIORS,
   FONT_STYLES,
@@ -19,163 +24,184 @@ import {
   LEGACY_SETTINGS_KEY,
   MESSAGE_TEMPLATES,
   PAPER_SIZES,
-  PRESETS_KEY,
   QUICK_SETTINGS_KEY,
   SUBJECTS,
-  TEMPLATES,
   TERMS,
   THEMES,
   genSerial,
   getDefaultState,
 } from '../src/context/data.js';
 import {
-  createBatchStudent,
   dateInputValue,
-  duplicateIndexes,
-  normalizeGradeValue,
-  parseCsv,
-  rowsToStudents,
 } from '../src/context/helpers.js';
-
-function useToast() {
-  const [toast, setToast] = useState('');
-  const timer = useRef(null);
-
-  const showToast = (message) => {
-    setToast(message);
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => setToast(''), 2000);
-  };
-
-  useEffect(() => () => clearTimeout(timer.current), []);
-  return [toast, showToast];
-}
-
-function normalizeLoadedState(data) {
-  const defaults = getDefaultState();
-  const merged = { ...defaults, ...(data || {}) };
-  if (!PAPER_SIZES.some(paper => paper.id === merged.paperSize)) merged.paperSize = defaults.paperSize;
-  merged.grade = normalizeGradeValue(merged.grade, defaults.grade);
-  merged.date = merged.date ? new Date(merged.date).toISOString() : defaults.date;
-  if (!Array.isArray(merged.batchStudents)) merged.batchStudents = [];
-  merged.batchStudents = merged.batchStudents.map(student => ({
-    ...student,
-    grade: normalizeGradeValue(student.grade, merged.grade),
-  }));
-  return merged;
-}
-
-function loadInitialState() {
-  try {
-    const raw = localStorage.getItem(QUICK_SETTINGS_KEY) || localStorage.getItem(LEGACY_SETTINGS_KEY);
-    return raw ? normalizeLoadedState(JSON.parse(raw)) : getDefaultState();
-  } catch {
-    return getDefaultState();
-  }
-}
-
-function persistState(state) {
-  localStorage.setItem(QUICK_SETTINGS_KEY, JSON.stringify(state));
-}
-
-function loadPresets() {
-  try {
-    return JSON.parse(localStorage.getItem(PRESETS_KEY) || '{}');
-  } catch {
-    return {};
-  }
-}
-
-function savePresets(presets) {
-  localStorage.setItem(PRESETS_KEY, JSON.stringify(presets));
-}
-
-function fileToDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = e => resolve(e.target.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-function textFile(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = e => resolve(e.target.result);
-    reader.onerror = reject;
-    reader.readAsText(file, 'utf-8');
-  });
-}
-
-function arrayBufferFile(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = e => resolve(e.target.result);
-    reader.onerror = reject;
-    reader.readAsArrayBuffer(file);
-  });
-}
-
-const IMAGE_UPLOAD_LIMITS = {
-  logo: { maxWidth: 700, maxHeight: 700, quality: 0.9 },
-  teacherSig: { maxWidth: 900, maxHeight: 360, quality: 0.9 },
-  principalSig: { maxWidth: 900, maxHeight: 360, quality: 0.9 },
-};
-
-function resizedImageDataUrl(file, limits = {}) {
-  if (!file.type.startsWith('image/') || file.type === 'image/svg+xml') return fileToDataUrl(file);
-
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-    const url = URL.createObjectURL(file);
-    const cleanup = () => URL.revokeObjectURL(url);
-
-    image.onload = () => {
-      cleanup();
-      const maxWidth = limits.maxWidth || 900;
-      const maxHeight = limits.maxHeight || 900;
-      const scale = Math.min(1, maxWidth / image.naturalWidth, maxHeight / image.naturalHeight);
-      const width = Math.max(1, Math.round(image.naturalWidth * scale));
-      const height = Math.max(1, Math.round(image.naturalHeight * scale));
-      const canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-      const context = canvas.getContext('2d');
-      if (!context) {
-        reject(new Error('Canvas is not available'));
-        return;
-      }
-      context.drawImage(image, 0, 0, width, height);
-      const mimeType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
-      resolve(canvas.toDataURL(mimeType, limits.quality || 0.9));
-    };
-
-    image.onerror = () => {
-      cleanup();
-      reject(new Error('Image could not be loaded'));
-    };
-
-    image.src = url;
-  });
-}
+import { useAutoSave } from '../src/hooks/useAutoSave.js';
+import { useExport } from '../src/hooks/useExport.js';
+import { usePresetManager } from '../src/hooks/usePresetManager.js';
+import { usePrintManager } from '../src/hooks/usePrintManager.js';
+import { useStudentImport } from '../src/hooks/useStudentImport.js';
+import { useStudentManager } from '../src/hooks/useStudentManager.js';
+import { useImportWizard } from '../src/hooks/useImportWizard.js';
+import { useToast } from '../src/hooks/useToast.js';
+import { useCertificateEditor } from '../src/hooks/useCertificateEditor.js';
+import { IMAGE_UPLOAD_LIMITS, resizedImageDataUrl } from '../src/services/imageUtils.js';
+import {
+  extractImageAssets,
+  loadInitialState,
+  loadInitialStateAsync,
+  persistImageAssets,
+} from '../src/services/storage.js';
+import ImportWizard from '../components/ImportWizard.jsx';
+import { resolveTemplateId } from '../src/certificate-templates/templateUtils.js';
 
 function StudioPage() {
   const [state, setState] = useState(loadInitialState);
   const [tab, setTab] = useState('design');
   const [toast, showToast] = useToast();
-  const [presets, setPresets] = useState(loadPresets);
-  const [presetName, setPresetName] = useState('');
-  const [selectedPreset, setSelectedPreset] = useState('');
   const [messageTemplateId, setMessageTemplateId] = useState('general');
-  const [batchText, setBatchText] = useState('');
-  const [printStudents, setPrintStudents] = useState(null);
-  const autosaveReady = useRef(false);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [isFullscreenPreview, setIsFullscreenPreview] = useState(false);
+  const [isPrintPending, setIsPrintPending] = useState(false);
+  const previewCertificateRef = useRef(null);
+  const staticCertificateRef = useRef(null);
+  const staticExportHostRef = useRef(null);
+  const editorRef = useRef(null);
+
+  useEffect(() => {
+    loadInitialStateAsync().then(asyncState => {
+      if (asyncState.logo || asyncState.teacherSig || asyncState.principalSig) {
+        setState(prev => ({
+          ...prev,
+          ...(asyncState.logo ? { logo: asyncState.logo } : {}),
+          ...(asyncState.teacherSig ? { teacherSig: asyncState.teacherSig } : {}),
+          ...(asyncState.principalSig ? { principalSig: asyncState.principalSig } : {}),
+        }));
+      }
+    });
+  }, []);
 
   const paper = useMemo(() => PAPER_SIZES.find(item => item.id === state.paperSize) || PAPER_SIZES[0], [state.paperSize]);
   const fontStyle = useMemo(() => FONT_STYLES.find(f => f.id === state.fontStyle) || FONT_STYLES[0], [state.fontStyle]);
   const theme = useMemo(() => THEMES.find(t => t.id === state.theme) || THEMES[0], [state.theme]);
-  const duplicateRows = useMemo(() => duplicateIndexes(state.batchStudents), [state.batchStudents]);
+
+  const saveStatus = useAutoSave(state, showToast);
+
+  const TAB_IDS = ['design', 'content', 'batch', 'output'];
+  const handleTabKeyDown = (e, currentId) => {
+    const currentIndex = TAB_IDS.indexOf(currentId);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      setTab(TAB_IDS[(currentIndex + 1) % TAB_IDS.length]);
+    } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      setTab(TAB_IDS[(currentIndex - 1 + TAB_IDS.length) % TAB_IDS.length]);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      setTab(TAB_IDS[0]);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      setTab(TAB_IDS[TAB_IDS.length - 1]);
+    }
+  };
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (saveStatus === 'saving') {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [saveStatus]);
+
+  const presetManager = usePresetManager(
+    state,
+    setState,
+    showToast,
+    templateId => editorRef.current?.clearHistoryForTemplate(templateId),
+  );
+  const { saveQuick } = presetManager;
+
+  const {
+    printStudents,
+    setPrintStudents,
+    isPrinting,
+    printCurrent,
+    printBatch,
+  } = usePrintManager(paper, state, showToast);
+  const printCycleStartedRef = useRef(false);
+
+  useEffect(() => {
+    if (isPrinting) {
+      printCycleStartedRef.current = true;
+    } else if (printCycleStartedRef.current) {
+      printCycleStartedRef.current = false;
+      setIsPrintPending(false);
+    }
+  }, [isPrinting]);
+
+  const beginPrintCurrent = () => {
+    setIsPrintPending(true);
+    printCurrent();
+  };
+
+  const beginPrintBatch = () => {
+    if (!state.batchStudents?.length) {
+      printBatch();
+      return;
+    }
+    setIsPrintPending(true);
+    printBatch();
+  };
+
+  const updateState = patch => setState(prev => ({ ...prev, ...patch }));
+
+  const {
+    isExporting,
+    exportProgress,
+    doExportPng,
+    doExportBatchZip,
+  } = useExport(
+    state,
+    paper,
+    setPrintStudents,
+    showToast,
+    { previewCertificateRef, staticCertificateRef, staticExportHostRef },
+  );
+
+  const {
+    batchText,
+    setBatchText,
+    parseBatch,
+    importBatchFile,
+    addCurrentToBatch,
+    clearBatchStudents,
+    downloadCsvTemplate,
+    exportProject,
+    importProjectFile,
+  } = useStudentImport(
+    state,
+    updateState,
+    setState,
+    showToast,
+    () => editorRef.current?.clearHistory(),
+  );
+
+  const importWizard = useImportWizard(state, updateState, showToast);
+  const wizardHandlers = {
+    close: importWizard.close,
+    selectFile: importWizard.selectFile,
+    selectSheet: importWizard.selectSheet,
+    confirmSheet: importWizard.confirmSheet,
+    setHeaderRow: importWizard.setHeaderRow,
+    confirmHeaders: importWizard.confirmHeaders,
+    setColumnMapping: importWizard.setColumnMapping,
+    confirmMapping: importWizard.confirmMapping,
+    confirmValidation: importWizard.confirmValidation,
+    confirmImport: importWizard.confirmImport,
+    back: importWizard.back,
+    patchWiz: importWizard.patchWiz,
+  };
 
   const cssVars = {
     '--paper-ratio': paper.ratio,
@@ -200,113 +226,79 @@ function StudioPage() {
   }, [state.theme, state.languageMode, state.customPrimary, state.customAccent, state.logoSize, state.logoX, state.logoY, state.teacherSigSize, state.principalSigSize, fontStyle.id, paper.id]);
 
   useEffect(() => {
-    let style = document.getElementById('dynamic-print-page');
-    if (!style) {
-      style = document.createElement('style');
-      style.id = 'dynamic-print-page';
-      document.head.appendChild(style);
-    }
-    style.textContent = `@media print { @page { size: ${paper.page}; margin: 0; } }`;
-  }, [paper.page]);
-
-  useEffect(() => {
-    if (!autosaveReady.current) {
-      autosaveReady.current = true;
-      return;
-    }
-    const timer = setTimeout(() => {
-      try { persistState(state); }
-      catch { showToast('تعذّر الحفظ التلقائي. قد تكون الصور كبيرة جدًا.'); }
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [state]);
-
-  useEffect(() => {
-    const onBeforeUnload = () => {
-      try { persistState(state); } catch {}
-    };
-    window.addEventListener('beforeunload', onBeforeUnload);
-    return () => window.removeEventListener('beforeunload', onBeforeUnload);
-  }, [state]);
-
-  useEffect(() => {
-    const names = Object.keys(presets).sort((a, b) => a.localeCompare(b, 'ar'));
-    if (!selectedPreset && names[0]) setSelectedPreset(names[0]);
-    else if (selectedPreset && !presets[selectedPreset]) setSelectedPreset(names[0] || '');
-  }, [presets, selectedPreset]);
-
-  useEffect(() => {
     const subjectTemplate = MESSAGE_TEMPLATES.find(item => item.subject === state.subject);
     setMessageTemplateId(subjectTemplate ? subjectTemplate.id : 'general');
   }, [state.subject]);
 
-  useEffect(() => {
-    const onAfterPrint = () => setPrintStudents(null);
-    window.addEventListener('afterprint', onAfterPrint);
-    return () => window.removeEventListener('afterprint', onAfterPrint);
-  }, []);
-
-  const updateState = patch => setState(prev => ({ ...prev, ...patch }));
   const updateStudent = (index, patch) => setState(prev => ({
     ...prev,
     batchStudents: prev.batchStudents.map((student, i) => i === index ? { ...student, ...patch } : student),
   }));
 
+  const duplicateStudent = (index) => {
+    const original = state.batchStudents[index];
+    if (!original) return;
+    const copy = { ...original, serial: genSerial() };
+    const next = [...state.batchStudents];
+    next.splice(index + 1, 0, copy);
+    updateState({ batchStudents: next });
+    showToast('تم تكرار السجل');
+  };
+
+  const bulkDelete = (serials) => {
+    const serialSet = new Set(serials);
+    updateState({ batchStudents: state.batchStudents.filter(s => !serialSet.has(s.serial)) });
+    showToast(`تم حذف ${serials.length} طالب`);
+  };
+
+  const bulkEditFields = (serials, patch) => {
+    const serialSet = new Set(serials);
+    setState(prev => ({
+      ...prev,
+      batchStudents: prev.batchStudents.map(s =>
+        serialSet.has(s.serial) ? { ...s, ...patch } : s
+      ),
+    }));
+    showToast(`تم تعديل ${serials.length} طالب`);
+  };
+
+  const studentManager = useStudentManager(state.batchStudents);
+
   const handleImage = async (key, file) => {
     if (!file) return;
     try {
       const dataUrl = await resizedImageDataUrl(file, IMAGE_UPLOAD_LIMITS[key]);
+      await persistImageAssets(
+        { ...state, [key]: dataUrl },
+        extractImageAssets(state),
+      );
       updateState({ [key]: dataUrl });
     } catch {
       showToast('تعذّر رفع الصورة. جرّب ملف صورة آخر.');
     }
   };
 
-  const clearImage = key => updateState({ [key]: null });
-
-  const parseBatch = () => {
-    const students = rowsToStudents(parseCsv(batchText), state);
-    updateState({ batchStudents: students });
-    showToast(`تم تجهيز ${students.length} شهادة`);
+  const clearImage = async key => {
+    await persistImageAssets(
+      { ...state, [key]: null },
+      extractImageAssets(state),
+    );
+    updateState({ [key]: null });
   };
 
-  const importBatchFile = async (file) => {
-    if (!file) return;
-    try {
-      let rows = [];
-      if (/\.(xlsx|xls)$/i.test(file.name)) {
-        const buffer = await arrayBufferFile(file);
-        const XLSX = await import('xlsx');
-        const workbook = XLSX.read(buffer, { type:'array' });
-        const sheetName = workbook.SheetNames[0];
-        if (!sheetName) throw new Error('Workbook has no sheets');
-        const sheet = workbook.Sheets[sheetName];
-        rows = XLSX.utils.sheet_to_json(sheet, { header:1, defval:'' });
-      } else {
-        const text = await textFile(file);
-        rows = parseCsv(text);
-      }
+  const editor = useCertificateEditor({
+    state,
+    setState,
+    canvasRef: previewCertificateRef,
+    zoomLevel,
+    onAssetFile: handleImage,
+    onAssetClear: clearImage,
+  });
+  editorRef.current = editor;
 
-      const students = rowsToStudents(rows, state);
-      updateState({ batchStudents: students });
-      showToast(`تم استيراد ${students.length} طالب`);
-    } catch {
-      showToast('تعذّر استيراد الملف. تأكد من أنه CSV أو Excel صالح.');
-    }
-  };
-
-  const addCurrentToBatch = () => {
-    const student = createBatchStudent(state, {
-      studentNameAr: state.studentNameAr,
-      studentNameEn: state.studentNameEn,
-      grade: state.grade,
-      subject: state.subject,
-      behavior: state.behavior,
-      customMessage: state.customMessage,
-    });
-    updateState({ batchStudents: [...state.batchStudents, student] });
-    showToast('تم نسخ الشهادة الحالية للقائمة');
-  };
+  const editorDisabled = state.paperSize === 'a4-portrait';
+  const outputBusy = isPrintPending || isPrinting || isExporting;
+  const busy = outputBusy || editor.isInteracting;
 
   const previewStudent = student => updateState({
     studentNameAr: student.studentNameAr || state.studentNameAr,
@@ -318,81 +310,16 @@ function StudioPage() {
     serial: student.serial || genSerial(),
   });
 
-  const schedulePrint = () => {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => window.print());
-    });
-  };
-
-  const printCurrent = () => {
-    setPrintStudents(null);
-    schedulePrint();
-  };
-
-  const printBatch = () => {
-    if (!state.batchStudents.length) {
-      showToast('أضف أسماء الطلاب أولاً');
-      return;
-    }
-    setPrintStudents(state.batchStudents);
-    schedulePrint();
-  };
-
-  const saveQuick = () => {
-    try {
-      persistState(state);
-      showToast('تم حفظ الإعدادات');
-    } catch {
-      showToast('تعذّر الحفظ. قد تكون الصور كبيرة جدًا.');
-    }
-  };
-
-  const savePreset = () => {
-    const name = presetName.trim();
-    if (!name) {
-      showToast('اكتب اسم القالب أولاً');
-      return;
-    }
-    const next = { ...presets, [name]: state };
-    setPresets(next);
-    savePresets(next);
-    setSelectedPreset(name);
-    setPresetName('');
-    showToast('تم حفظ القالب');
-  };
-
-  const loadPreset = (name) => {
-    if (!presets[name]) return;
-    setState(normalizeLoadedState(presets[name]));
-    showToast('تم تحميل القالب');
-  };
-
-  const deletePreset = (name) => {
-    if (!presets[name]) return;
-    const next = { ...presets };
-    delete next[name];
-    setPresets(next);
-    savePresets(next);
-    if (selectedPreset === name) {
-      const names = Object.keys(next).sort((a, b) => a.localeCompare(b, 'ar'));
-      setSelectedPreset(names[0] || '');
-    }
-    showToast('تم حذف القالب');
-  };
-
-  const resetSettings = () => {
+  const resetSettings = async () => {
+    if (window.confirm && !window.confirm('هل أنت تأكد من إعادة ضبط كافة الإعدادات إلى الوضع الافتراضي؟')) return;
+    const nextState = getDefaultState();
+    await persistImageAssets(nextState, extractImageAssets(state));
     localStorage.removeItem(QUICK_SETTINGS_KEY);
-    setState(getDefaultState());
+    localStorage.removeItem(LEGACY_SETTINGS_KEY);
+    editor.clearHistory();
+    setState(nextState);
     showToast('تمت إعادة الضبط');
   };
-
-  const downloadCsvTemplate = () => {
-    const header = 'studentNameAr,studentNameEn,grade,subject,achievement,message\n';
-    const sample = 'محمد أحمد علي,Mohamed Ahmed Ali,Grade 7,الكيمياء,الإبداع,تقديرا للتميز في الكيمياء والمشاركة الفاعلة\n';
-    downloadBlob(new Blob(['\ufeff' + header + sample], { type:'text/csv;charset=utf-8' }), 'certificate-studio-template.csv');
-  };
-
-  const presetNames = Object.keys(presets).sort((a, b) => a.localeCompare(b, 'ar'));
 
   return (
     <>
@@ -400,54 +327,154 @@ function StudioPage() {
       <header className="topbar no-print">
         <div className="topbar-inner">
           <div className="brand">
-            <div className="brand-mark"><Icon name="Award" size={20} /></div>
-            <div className="brand-name">
-              <h1>مولّد شهادات التقدير</h1>
-              <div className="sub">CERTIFICATE STUDIO · REACT</div>
-            </div>
+            <Logo size={42} />
           </div>
           <div className="topbar-actions">
-            <button className="btn btn-ghost" onClick={() => updateState({ serial: genSerial() })}>
+            <button
+              className="btn btn-ghost"
+              onClick={() => updateState({ serial: genSerial() })}
+              disabled={busy}
+              title="توليد رقم تسلسلي جديد"
+              aria-label="توليد رقم تسلسلي جديد"
+            >
               <Icon name="RefreshCw" /><span>رقم تسلسلي جديد</span>
             </button>
-            <button className="btn btn-primary" onClick={printCurrent}>
-              <Icon name="Printer" /><span>طباعة / حفظ PDF</span>
+            <button
+              className="btn btn-ghost"
+              onClick={doExportPng}
+              disabled={busy}
+              title="تصدير الشهادة الحالية كصورة PNG"
+              aria-label="تصدير الشهادة الحالية كصورة PNG"
+            >
+              <Icon name="Image" /><span>تصدير PNG</span>
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={beginPrintCurrent}
+              disabled={busy}
+              title="طباعة أو حفظ الشهادة كـ PDF"
+              aria-label="طباعة أو حفظ الشهادة كـ PDF"
+            >
+              {isPrinting ? <Icon name="RefreshCw" /> : <Icon name="Printer" />}
+              <span>طباعة / حفظ PDF</span>
             </button>
           </div>
         </div>
       </header>
 
-      <main className="layout no-print">
+      <main
+        className="layout no-print"
+        inert={outputBusy ? '' : undefined}
+        aria-busy={outputBusy}
+      >
         <section className="preview-pane">
           <div className="preview-meta">
-            <div className="label"><Icon name="Eye" size={14} /><span>معاينة مباشرة</span></div>
-            <div className="serial-display"><span>SERIAL</span><span className="num">{state.serial}</span></div>
+            <div className="label">
+              <Icon name="Eye" size={14} />
+              <span>معاينة مباشرة</span>
+              {saveStatus === 'saving' && <span className="status-badge saving"><Icon name="RefreshCw" size={11} /> جاري الحفظ...</span>}
+              {saveStatus === 'saved' && <span className="status-badge saved"><Icon name="Check" size={11} /> تم الحفظ</span>}
+              {saveStatus === 'error' && <span className="status-badge error"><Icon name="Shield" size={11} /> تعذّر الحفظ</span>}
+            </div>
+            <div className="preview-tools">
+              <div className="zoom-controls">
+                <button
+                  className="zoom-btn"
+                  onClick={() => setZoomLevel(z => Math.max(0.6, Math.round((z - 0.1) * 10) / 10))}
+                  title="تصغير المعاينة"
+                  aria-label="تصغير المعاينة"
+                  disabled={zoomLevel <= 0.6}
+                >
+                  <Icon name="ZoomOut" size={13} />
+                </button>
+                <button
+                  className="zoom-value"
+                  onClick={() => setZoomLevel(1)}
+                  title="إعادة تعيين الحجم إلى 100%"
+                  aria-label="إعادة تعيين الحجم إلى 100%"
+                >
+                  {Math.round(zoomLevel * 100)}%
+                </button>
+                <button
+                  className="zoom-btn"
+                  onClick={() => setZoomLevel(z => Math.min(1.8, Math.round((z + 0.1) * 10) / 10))}
+                  title="تكبير المعاينة"
+                  aria-label="تكبير المعاينة"
+                  disabled={zoomLevel >= 1.8}
+                >
+                  <Icon name="ZoomIn" size={13} />
+                </button>
+                <button
+                  className="zoom-btn fullscreen-btn"
+                  onClick={() => setIsFullscreenPreview(true)}
+                  title="معاينة بشاشة كاملة"
+                  aria-label="معاينة بشاشة كاملة"
+                >
+                  <Icon name="Maximize2" size={13} />
+                </button>
+              </div>
+              <div className="serial-display"><span>SERIAL</span><span className="num">{state.serial}</span></div>
+            </div>
           </div>
-          <div className="cert-wrap">
-            <div className="cert">
-              <Certificate state={state} />
+          <EditorToolbar editor={editor} disabled={editorDisabled || outputBusy} />
+          <div className="cert-wrap-outer">
+            <div
+              className="cert-wrap"
+              style={zoomLevel !== 1 ? { transform: `scale(${zoomLevel})`, transformOrigin: 'top center' } : undefined}
+            >
+              <div
+                ref={previewCertificateRef}
+                className={`cert${editor.isInteracting ? ' certificate-editor-interacting' : ''}`}
+                {...(!editorDisabled ? editor.canvasProps : {})}
+              >
+                <Certificate
+                  state={editor.previewState}
+                  editor={editorDisabled || outputBusy ? undefined : editor}
+                />
+              </div>
             </div>
           </div>
         </section>
 
         <aside className="settings-pane">
           <div className="settings-card">
-            <nav className="tabs">
+            <ElementInspector editor={editor} disabled={editorDisabled || outputBusy} />
+            <nav className="tabs" role="tablist" aria-label="أقسام الإعدادات">
               {[
                 ['design', 'Palette', 'التصميم'],
                 ['content', 'Settings2', 'المحتوى'],
                 ['batch', 'Layers', 'جماعي'],
                 ['output', 'FileDown', 'الإخراج'],
               ].map(([id, icon, label]) => (
-                <button key={id} className={`tab ${tab === id ? 'active' : ''}`} onClick={() => setTab(id)}>
+                <button
+                  key={id}
+                  id={`tab-${id}`}
+                  role="tab"
+                  aria-selected={tab === id}
+                  aria-controls={`panel-${id}`}
+                  tabIndex={tab === id ? 0 : -1}
+                  className={`tab ${tab === id ? 'active' : ''}`}
+                  onClick={() => setTab(id)}
+                  onKeyDown={e => handleTabKeyDown(e, id)}
+                >
                   <Icon name={icon} /><span>{label}</span>
                 </button>
               ))}
             </nav>
 
-            <div className={`panel ${tab === 'design' ? 'active' : ''}`}>
+            <div
+              id="panel-design"
+              role="tabpanel"
+              aria-labelledby="tab-design"
+              tabIndex={0}
+              className={`panel ${tab === 'design' ? 'active' : ''}`}
+            >
               <Section title="القالب" sub="TEMPLATE">
-                <TileGrid items={TEMPLATES} selected={state.template} onSelect={template => updateState({ template })} />
+                <TemplateGallery
+                  selected={resolveTemplateId(state.template)}
+                  onSelect={template => updateState({ template })}
+                  direction={state.languageMode === 'ar' ? 'rtl' : state.languageMode === 'en' ? 'ltr' : 'auto'}
+                />
                 <Field label="مقاس الورق">
                   <select className="field-input" value={state.paperSize} onChange={e => updateState({ paperSize: e.target.value })}>
                     {PAPER_SIZES.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
@@ -512,7 +539,13 @@ function StudioPage() {
               </Section>
             </div>
 
-            <div className={`panel ${tab === 'content' ? 'active' : ''}`}>
+            <div
+              id="panel-content"
+              role="tabpanel"
+              aria-labelledby="tab-content"
+              tabIndex={0}
+              className={`panel ${tab === 'content' ? 'active' : ''}`}
+            >
               <Section title="الطالب" sub="STUDENT">
                 <BoundInput label="الاسم بالعربية" value={state.studentNameAr} onChange={studentNameAr => updateState({ studentNameAr })} ar />
                 <BoundInput label="Name in English" value={state.studentNameEn} onChange={studentNameEn => updateState({ studentNameEn })} en />
@@ -561,51 +594,107 @@ function StudioPage() {
               </Section>
             </div>
 
-            <div className={`panel ${tab === 'batch' ? 'active' : ''}`}>
+            <div
+              id="panel-batch"
+              role="tabpanel"
+              aria-labelledby="tab-batch"
+              tabIndex={0}
+              className={`panel ${tab === 'batch' ? 'active' : ''}`}
+            >
               <Section title="استيراد الطلاب" sub={`${state.batchStudents.length} طالب`}>
                 <div className="action-row">
-                  <label className="btn-save import-label">
-                    <Icon name="FileSpreadsheet" /> Excel / CSV
-                    <input type="file" accept=".csv,.xlsx,.xls" hidden onChange={e => {
-                      importBatchFile(e.target.files?.[0]);
-                      e.target.value = '';
-                    }} />
-                  </label>
+                  <button className="btn-save import-label" onClick={importWizard.open}>
+                    <Icon name="FileSpreadsheet" /> معالج الاستيراد
+                  </button>
                   <button className="btn-save" onClick={downloadCsvTemplate}><Icon name="Download" /> نموذج CSV</button>
                 </div>
                 <textarea className="batch-names" value={batchText} onChange={e => setBatchText(e.target.value)} placeholder={'الاسم العربي, English Name, Grade 7, الكيمياء, الإبداع'} />
                 <div className="save-row">
                   <button className="btn-save" onClick={parseBatch}><Icon name="Table" /> تحويل لجدول</button>
                   <button className="btn-save" onClick={addCurrentToBatch}><Icon name="CopyPlus" /> نسخ الحالية</button>
+                  {state.batchStudents.length > 0 && (
+                    <button className="btn-save" onClick={clearBatchStudents} style={{ color: '#d9534f' }}>
+                      <Icon name="Trash2" /> مسح القائمة
+                    </button>
+                  )}
                 </div>
-                {duplicateRows.size > 0 && <div className="batch-alert">تنبيه: يوجد أسماء مكررة في القائمة</div>}
               </Section>
-              <Section title="معاينة القائمة" sub="PREVIEW">
-                <BatchTable students={state.batchStudents} duplicates={duplicateRows} updateStudent={updateStudent} previewStudent={previewStudent} deleteStudent={index => updateState({ batchStudents: state.batchStudents.filter((_, i) => i !== index) })} />
-                <button className="btn btn-batch" onClick={printBatch}><Icon name="Printer" /> طباعة PDF واحد للقائمة</button>
+              <Section title="قائمة الطلاب" sub="STUDENTS">
+                <StudentManager
+                  students={state.batchStudents}
+                  manager={studentManager}
+                  updateStudent={updateStudent}
+                  deleteStudent={index =>
+                    updateState({ batchStudents: state.batchStudents.filter((_, i) => i !== index) })
+                  }
+                  duplicateStudent={duplicateStudent}
+                  previewStudent={previewStudent}
+                  bulkDelete={bulkDelete}
+                  bulkEditFields={bulkEditFields}
+                />
+                <button className="btn btn-batch" onClick={beginPrintBatch} disabled={busy}><Icon name="Printer" /> طباعة PDF واحد للقائمة</button>
               </Section>
             </div>
 
-            <div className={`panel ${tab === 'output' ? 'active' : ''}`}>
-              <Section title="التصدير" sub="EXPORT">
+            <div
+              id="panel-output"
+              role="tabpanel"
+              aria-labelledby="tab-output"
+              tabIndex={0}
+              className={`panel ${tab === 'output' ? 'active' : ''}`}
+            >
+              <Section title="التصدير والطباعة" sub="PRINT & EXPORT">
+                {exportProgress && (
+                  <div className="export-progress-wrap">
+                    <div className="export-progress-label">{exportProgress.label}</div>
+                    <div className="export-progress-track">
+                      <div
+                        className="export-progress-bar"
+                        style={{ width: exportProgress.total > 0 ? `${Math.round((exportProgress.current / exportProgress.total) * 100)}%` : '0%' }}
+                      />
+                    </div>
+                    <div className="export-progress-count">{exportProgress.current} / {exportProgress.total}</div>
+                  </div>
+                )}
                 <div className="save-row">
-                  <button className="btn-save" onClick={printCurrent}><Icon name="Printer" /> PDF للحالية</button>
+                  <button className="btn-save" onClick={beginPrintCurrent} disabled={busy}>
+                    {isPrinting ? <Icon name="RefreshCw" size={14} /> : <Icon name="Printer" size={14} />}
+                    {isPrinting ? 'جاري الطباعة…' : 'طباعة / PDF'}
+                  </button>
+                  <button className="btn-save" onClick={doExportPng} disabled={busy}>
+                    <Icon name="Image" size={14} /> تصدير PNG
+                  </button>
+                </div>
+                <div className="save-row" style={{ marginTop: '8px' }}>
+                  <button
+                    className="btn-save full"
+                    onClick={() => doExportBatchZip(state.batchStudents)}
+                    disabled={busy || !state.batchStudents.length}
+                    title={!state.batchStudents.length ? 'أضف طلاباً في تبويب جماعي أولاً' : `تصدير ${state.batchStudents.length} شهادة كصور ZIP`}
+                  >
+                    {isExporting
+                      ? <><Icon name="RefreshCw" size={14} /> جاري التصدير…</>
+                      : <><Icon name="FolderArchive" size={14} /> تصدير ZIP جماعي ({state.batchStudents.length} شهادة)</>}
+                  </button>
+                </div>
+                <div className="save-row" style={{ marginTop: '8px' }}>
+                  <button className="btn-save" onClick={exportProject} disabled={busy}><Icon name="FileDown" /> تصدير مشروع (JSON)</button>
+                </div>
+                <div className="save-row" style={{ marginTop: '8px' }}>
+                  <label className={`btn-save import-label full${busy ? ' disabled-label' : ''}`}>
+                    <Icon name="FolderOpen" /> استيراد ملف مشروع (JSON)
+                    <input type="file" accept=".json" hidden onChange={e => {
+                      importProjectFile(e.target.files?.[0]);
+                      e.target.value = '';
+                    }} />
+                  </label>
                 </div>
               </Section>
-              <Section title="القوالب المحفوظة" sub="PRESETS">
-                <Field><input className="field-input ar" value={presetName} onChange={e => setPresetName(e.target.value)} placeholder="اسم القالب" /></Field>
-                <div className="save-row">
-                  <button className="btn-save" onClick={savePreset}><Icon name="Save" /> حفظ كقالب</button>
-                  <button className="btn-save" onClick={saveQuick}><Icon name="HardDrive" /> حفظ سريع</button>
-                </div>
-                <div className="action-row">
-                  <select className="field-input" value={selectedPreset} onChange={e => setSelectedPreset(e.target.value)}>
-                    {presetNames.length ? presetNames.map(name => <option key={name} value={name}>{name}</option>) : <option value="">لا توجد قوالب محفوظة</option>}
-                  </select>
-                  <button className="btn-save" onClick={() => loadPreset(selectedPreset)}><Icon name="FolderOpen" /> تحميل</button>
-                  <button className="btn-save" onClick={() => deletePreset(selectedPreset)}><Icon name="Trash2" /> حذف</button>
-                </div>
-                <button className="btn-save full" onClick={resetSettings}><Icon name="RotateCcw" /> إعادة ضبط الإعدادات</button>
+              <Section title="قوالب التصميم المحفوظة" sub="TEMPLATES & PRESETS">
+                <TemplateManager presetManager={presetManager} />
+                <button className="btn-save full" onClick={resetSettings} style={{ marginTop: '12px' }}>
+                  <Icon name="RotateCcw" /> إعادة ضبط الإعدادات
+                </button>
               </Section>
             </div>
           </div>
@@ -616,6 +705,16 @@ function StudioPage() {
           </div>
         </aside>
       </main>
+
+      <div
+        ref={staticExportHostRef}
+        className="certificate-static-export-host no-print"
+        aria-hidden="true"
+      >
+        <div ref={staticCertificateRef} className="cert">
+          <Certificate state={state} />
+        </div>
+      </div>
 
       <div className="print-only">
         {printStudents ? printStudents.map(student => (
@@ -629,20 +728,45 @@ function StudioPage() {
         )}
       </div>
 
-      <div className={`toast ${toast ? 'show' : ''}`}>{toast}</div>
+      {isFullscreenPreview && (
+        <div
+          className="fullscreen-preview-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="معاينة الشهادة الشاملة"
+          onClick={() => setIsFullscreenPreview(false)}
+          onKeyDown={e => { if (e.key === 'Escape') setIsFullscreenPreview(false); }}
+        >
+          <div className="fullscreen-preview-modal" onClick={e => e.stopPropagation()}>
+            <div className="fullscreen-preview-header">
+              <div className="fullscreen-preview-title">
+                <Icon name="Eye" size={18} />
+                <span>معاينة الشهادة الشاملة</span>
+              </div>
+              <button
+                className="fullscreen-preview-close"
+                onClick={() => setIsFullscreenPreview(false)}
+                title="إغلاق المعاينة"
+                aria-label="إغلاق المعاينة"
+              >
+                <Icon name="X" size={18} />
+              </button>
+            </div>
+            <div className="fullscreen-preview-body">
+              <div className="cert-wrap fullscreen-cert">
+                <div className="cert">
+                  <Certificate state={state} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className={`toast ${toast ? 'show' : ''}`} role="status" aria-live="polite">{toast}</div>
+      <ImportWizard wiz={importWizard.wiz} handlers={wizardHandlers} />
     </>
   );
-}
-
-function downloadBlob(blob, filename) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 export default StudioPage;

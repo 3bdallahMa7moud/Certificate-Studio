@@ -3,7 +3,9 @@ import { BEHAVIORS, GRADE_LEVELS, SUBJECTS, genSerial } from './data.js';
 export const AR_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 
 export function toDate(value) {
-  return value instanceof Date ? value : new Date(value);
+  if (!value) return new Date();
+  const date = value instanceof Date ? value : new Date(value);
+  return isNaN(date.getTime()) ? new Date() : date;
 }
 
 export function dateInputValue(value) {

@@ -1,3 +1,6 @@
+import { TEMPLATE_REGISTRY } from '../certificate-templates/registry.js';
+import { createEmptyTemplateCustomizations } from '../certificate-editor/customizationModel.js';
+
 export const SUBJECTS = [
   { id:'math', icon:'Calculator', ar:'الرياضيات', en:'Mathematics' },
   { id:'science', icon:'FlaskConical', ar:'العلوم', en:'Science' },
@@ -51,11 +54,135 @@ export const THEMES = [
   { id:'classic', name:'Classic B&W', primary:'#212121', accent:'#9E9E9E' },
 ];
 
-export const TEMPLATES = [
-  { id:'editorial', name:'EDITORIAL', icon:'Layout' },
-  { id:'geometric', name:'GEOMETRIC', icon:'Square' },
-  { id:'minimal', name:'MINIMAL', icon:'Minus' },
+export const TEMPLATE_CATEGORIES = [
+  { id: 'all', ar: 'كل التصنيفات', icon: 'Layers' },
+  { id: 'achievement', ar: 'تفوق وإنجاز', icon: 'Award' },
+  { id: 'attendance', ar: 'حضور ومواظبة', icon: 'Shield' },
+  { id: 'appreciation', ar: 'شكر وتقدير', icon: 'Heart' },
+  { id: 'course_completion', ar: 'إتمام دورة', icon: 'BookOpen' },
+  { id: 'participation', ar: 'مشاركة', icon: 'Sparkles' },
+  { id: 'competition', ar: 'مسابقة', icon: 'Crown' },
+  { id: 'employee_recognition', ar: 'تقدير موظف', icon: 'BadgeCheck' },
 ];
+
+export const BUILTIN_PRESETS = {
+  'شهادة التفوق الأكاديمي': {
+    category: 'achievement',
+    template: 'editorial',
+    theme: 'midnight',
+    paperSize: 'a4-landscape',
+    fontStyle: 'classic',
+    subject: 'math',
+    behavior: 'creativity',
+    nameFontSize: 105,
+    customMessage: 'تقديراً لتفوقها الباهر وحصولها على درجات متميزة، متمنين لها دوام التوفيق والنجاح.',
+  },
+  'شهادة الحضور والمواظبة': {
+    category: 'attendance',
+    template: 'geometric',
+    theme: 'sage',
+    paperSize: 'a4-landscape',
+    fontStyle: 'modern',
+    subject: 'arabic',
+    behavior: 'discipline',
+    nameFontSize: 100,
+    customMessage: 'تقديراً لالتزامها الكامل بالحضور والمواظبة اليومية والانضباط المتميز طوال الفصل الدراسي.',
+  },
+  'شهادة الشكر والتقدير': {
+    category: 'appreciation',
+    template: 'minimal',
+    theme: 'burgundy',
+    paperSize: 'a4-landscape',
+    fontStyle: 'serif',
+    subject: 'science',
+    behavior: 'kindness',
+    nameFontSize: 110,
+    customMessage: 'يعبر هذا الخطاب عن خالص الشكر والتقدير لجهودها المتميزة والمثمرة في إنجاح الفعاليات.',
+  },
+  'شهادة إتمام الدورة التدريبية': {
+    category: 'course_completion',
+    template: 'editorial',
+    theme: 'ocean',
+    paperSize: 'a4-landscape',
+    fontStyle: 'classic',
+    subject: 'tech',
+    behavior: 'activities',
+    nameFontSize: 100,
+    customMessage: 'نشهد بأن الطالبة قد أتمت بنجاح الدورة التدريبية المتقدمة واستوفت كافة المتطلبات بنجاح.',
+  },
+  'شهادة المشاركة الفعالة': {
+    category: 'participation',
+    template: 'geometric',
+    theme: 'forest',
+    paperSize: 'a4-landscape',
+    fontStyle: 'modern',
+    subject: 'social_studies',
+    behavior: 'cooperation',
+    nameFontSize: 100,
+    customMessage: 'تقديراً لمشاركتها الفعالة وإسهاماتها القيمة في المعارض والفعاليات المدرسية.',
+  },
+  'شهادة الفوز بالمسابقة': {
+    category: 'competition',
+    template: 'editorial',
+    theme: 'sunset',
+    paperSize: 'a4-landscape',
+    fontStyle: 'classic',
+    subject: 'art',
+    behavior: 'leadership',
+    nameFontSize: 105,
+    customMessage: 'فوز مستحق في المسابقة المدرسية وحصولها على المركز الأول بفضل إبداعها وتميزها.',
+  },
+  'شهادة البطولة الرياضية': {
+    category: 'competition',
+    template: 'sports-champion',
+    theme: 'sunset',
+    paperSize: 'a4-landscape',
+    fontStyle: 'modern',
+    subject: 'sport',
+    behavior: 'leadership',
+    nameFontSize: 105,
+    customMessage: 'تقديراً للروح الرياضية العالية، واللياقة البدنية المتميزة، والإنجاز الرائع في البطولة.',
+  },
+  'شهادة التميز والتراث الإسلامي': {
+    category: 'achievement',
+    template: 'islamic-heritage',
+    theme: 'forest',
+    paperSize: 'a4-landscape',
+    fontStyle: 'classic',
+    subject: 'arabic',
+    behavior: 'discipline',
+    nameFontSize: 105,
+    customMessage: 'قد تميز/ت بالجهد المبارك، والسلوك القويم، وحسن الخُلق، مع أطيب الأومنيات بدوام التوفيق والنجاح.',
+  },
+  'وسام التخرج الأكاديمي': {
+    category: 'course_completion',
+    template: 'graduation-honor',
+    theme: 'midnight',
+    paperSize: 'a4-landscape',
+    fontStyle: 'serif',
+    subject: 'science',
+    behavior: 'creativity',
+    nameFontSize: 105,
+    customMessage: 'قد أتمـ/ـت كافة المتطلبات الأكاديمية بنجاح واقتدار، واجتاز/ت مرحلة التخرج بتفوق متميز.',
+  },
+  'شهادة الأنشطة والإبداع الفني': {
+    category: 'participation',
+    template: 'creative-arts',
+    theme: 'plum',
+    paperSize: 'a4-landscape',
+    fontStyle: 'modern',
+    subject: 'art',
+    behavior: 'creativity',
+    nameFontSize: 105,
+    customMessage: 'تقديراً للحس الفني الراقي، واللمسات الإبداعية المتميزة، والمشاركة الفعالة في الأنشطة المدرسية.',
+  },
+};
+
+export const TEMPLATES = TEMPLATE_REGISTRY.map(template => ({
+  id: template.id,
+  name: template.displayNameEn.toUpperCase(),
+  icon: template.icon,
+}));
 
 export const PAPER_SIZES = [
   { id:'a4-landscape', name:'A4 أفقي', page:'A4 landscape', ratio:'297 / 210', ratioNum:297/210, width:1400 },
@@ -145,5 +272,7 @@ export function getDefaultState() {
     teacherSig: null,
     principalSig: null,
     batchStudents: [],
+    templateCustomizationVersion: 1,
+    templateCustomizations: createEmptyTemplateCustomizations(),
   };
 }

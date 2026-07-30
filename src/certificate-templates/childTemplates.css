@@ -1,0 +1,1409 @@
+/* ===== Child-Friendly Certificate Templates Styles ===== */
+
+/* Base reset & layout for child templates */
+.cert-rainbow-stars,
+.cert-jungle-friends,
+.cert-space-explorer,
+.cert-ocean-adventure,
+.cert-storybook-castle {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* ==========================================================================
+   1. Rainbow Stars Template (kg-playful)
+   ========================================================================== */
+.cert-rainbow-stars {
+  background: #FFFDF7;
+  color: #2D2755;
+  padding: 4cqw 5cqw;
+}
+
+.cert-rainbow-stars .rainbow-art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cert-rainbow-stars .rainbow-arc {
+  position: absolute;
+  top: -6cqw;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70cqw;
+  height: 16cqw;
+  border-radius: 50% 50% 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0.85;
+}
+
+.cert-rainbow-stars .rainbow-band {
+  width: 100%;
+  height: 1cqw;
+}
+
+.cert-rainbow-stars .rainbow-band-coral { background: #FF7B7B; }
+.cert-rainbow-stars .rainbow-band-gold { background: #FFC04D; }
+.cert-rainbow-stars .rainbow-band-mint { background: #4ECDC4; }
+.cert-rainbow-stars .rainbow-band-sky { background: #45B7D1; }
+.cert-rainbow-stars .rainbow-band-violet { background: #96CEB4; }
+
+.cert-rainbow-stars .rainbow-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2cqw;
+}
+
+.cert-rainbow-stars .rainbow-school {
+  font-family: 'El Messiri', 'Outfit', sans-serif;
+  font-size: 1.4cqw;
+  font-weight: 600;
+  color: #6657C8;
+  display: flex;
+  align-items: center;
+  gap: 0.8cqw;
+}
+
+.cert-rainbow-stars .rainbow-school-separator {
+  color: #FFB84D;
+}
+
+.cert-rainbow-stars .rainbow-main {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: auto 0;
+  gap: 1.5cqw;
+}
+
+.cert-rainbow-stars .rainbow-title {
+  font-family: 'El Messiri', 'Outfit', sans-serif;
+  font-size: 2.2cqw;
+  font-weight: 700;
+  color: #6657C8;
+  background: linear-gradient(135deg, #6657C8 0%, #96CEB4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 1cqw;
+}
+
+.cert-rainbow-stars .rainbow-name-stage {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 1cqw 0;
+}
+
+.cert-rainbow-stars .rainbow-message {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1.2cqw;
+  line-height: 1.6;
+  color: #4A4468;
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+.cert-rainbow-stars .rainbow-info-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.2cqw;
+  margin-top: 1cqw;
+}
+
+.cert-rainbow-stars .rainbow-info-chip {
+  background: #F2EFFF;
+  border: 1px dashed #B8AEF5;
+  border-radius: 999px;
+  padding: 0.6cqw 1.4cqw;
+  display: flex;
+  align-items: center;
+  gap: 0.6cqw;
+  font-size: 0.95cqw;
+}
+
+.cert-rainbow-stars .rainbow-chip-label {
+  color: #6657C8;
+  font-weight: 600;
+}
+
+.cert-rainbow-stars .rainbow-chip-value {
+  color: #2D2755;
+  font-weight: 700;
+}
+
+.cert-rainbow-stars .rainbow-footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.cert-rainbow-stars .rainbow-signature-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 16cqw;
+  gap: 0.4cqw;
+}
+
+.cert-rainbow-stars .rainbow-signature-role {
+  font-size: 0.9cqw;
+  font-weight: 600;
+  color: #6657C8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cert-rainbow-stars .rainbow-signature-name {
+  font-family: 'El Messiri', serif;
+  font-size: 1.1cqw;
+  font-weight: 700;
+  color: #2D2755;
+}
+
+.cert-rainbow-stars .rainbow-signature-name-en {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85cqw;
+  color: #787399;
+}
+
+.cert-rainbow-stars .rainbow-signature-line {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #B8AEF5, transparent);
+  margin-top: 0.4cqw;
+}
+
+
+/* ==========================================================================
+   2. Jungle Friends Template (kg-playful)
+   ========================================================================== */
+.cert-jungle-friends {
+  background: #FFF9E8;
+  color: #1E3F20;
+  padding: 4cqw 5cqw;
+}
+
+.cert-jungle-friends .jungle-scene {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cert-jungle-friends .jungle-paper {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cert-jungle-friends .jungle-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cert-jungle-friends .jungle-school {
+  font-family: 'El Messiri', sans-serif;
+  font-size: 1.4cqw;
+  font-weight: 700;
+  color: #2E7D5A;
+}
+
+.cert-jungle-friends .jungle-date-badge {
+  background: #E2F4E9;
+  border-radius: 8px;
+  padding: 0.5cqw 1cqw;
+  font-size: 0.9cqw;
+  color: #2E7D5A;
+}
+
+.cert-jungle-friends .jungle-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: auto 0;
+  gap: 1.5cqw;
+}
+
+.cert-jungle-friends .jungle-title-vine {
+  font-family: 'El Messiri', sans-serif;
+  font-size: 2.2cqw;
+  font-weight: 700;
+  color: #2E7D5A;
+  display: flex;
+  align-items: center;
+  gap: 1cqw;
+}
+
+.cert-jungle-friends .jungle-name-clearing {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cert-jungle-friends .jungle-message {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1.2cqw;
+  line-height: 1.6;
+  color: #385E3B;
+  max-width: 80%;
+}
+
+.cert-jungle-friends .jungle-facts {
+  display: flex;
+  gap: 2cqw;
+  justify-content: center;
+}
+
+.cert-jungle-friends .jungle-fact {
+  background: #FFF;
+  border: 1px solid #D1E7DD;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  border-radius: 12px;
+  padding: 0.6cqw 1.2cqw;
+  font-size: 0.9cqw;
+}
+
+.cert-jungle-friends .jungle-fact-label {
+  color: #729E76;
+  margin-right: 0.4cqw;
+}
+
+.cert-jungle-friends .jungle-fact-value {
+  font-weight: 700;
+  color: #1E3F20;
+}
+
+.cert-jungle-friends .jungle-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.cert-jungle-friends .jungle-signature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 16cqw;
+  gap: 0.3cqw;
+}
+
+.cert-jungle-friends .jungle-signature-role {
+  font-size: 0.85cqw;
+  font-weight: 700;
+  color: #2E7D5A;
+  text-transform: uppercase;
+}
+
+.cert-jungle-friends .jungle-signature-name {
+  font-family: 'El Messiri', serif;
+  font-size: 1.1cqw;
+  font-weight: 700;
+  color: #1E3F20;
+}
+
+
+/* ==========================================================================
+   3. Space Explorer Template (science-stem)
+   ========================================================================== */
+.cert-space-explorer {
+  background: #F7FAFF;
+  color: #0F1C3F;
+  padding: 4cqw 5cqw;
+  border: 12px solid #1D3B78;
+}
+
+.cert-space-explorer .space-art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cert-space-explorer .space-command-bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #E1E9F8;
+  padding-bottom: 1cqw;
+}
+
+.cert-space-explorer .space-school-lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.cert-space-explorer .space-command-label {
+  font-size: 0.7cqw;
+  letter-spacing: 0.2em;
+  color: #F4B942;
+  font-weight: 800;
+}
+
+.cert-space-explorer .space-school {
+  font-family: 'El Messiri', sans-serif;
+  font-size: 1.3cqw;
+  font-weight: 700;
+  color: #1D3B78;
+}
+
+.cert-space-explorer .space-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: auto 0;
+  gap: 1.4cqw;
+}
+
+.cert-space-explorer .space-title-orbit {
+  font-family: 'El Messiri', sans-serif;
+  font-size: 2.3cqw;
+  font-weight: 800;
+  color: #1D3B78;
+  letter-spacing: 0.02em;
+}
+
+.cert-space-explorer .space-hero-name {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cert-space-explorer .space-message {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1.2cqw;
+  line-height: 1.6;
+  color: #3B4D78;
+  max-width: 82%;
+}
+
+.cert-space-explorer .space-telemetry {
+  display: flex;
+  gap: 1.5cqw;
+  justify-content: center;
+}
+
+.cert-space-explorer .space-metric {
+  background: #EDF3FC;
+  border-left: 3px solid #1D3B78;
+  padding: 0.5cqw 1cqw;
+  font-size: 0.85cqw;
+  display: flex;
+  gap: 0.5cqw;
+}
+
+.cert-space-explorer .space-metric-label {
+  color: #5C72A5;
+  font-weight: 600;
+}
+
+.cert-space-explorer .space-metric-value {
+  color: #1D3B78;
+  font-weight: 700;
+}
+
+.cert-space-explorer .space-signatures {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.cert-space-explorer .space-sig-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 16cqw;
+  gap: 0.3cqw;
+}
+
+.cert-space-explorer .space-sig-title {
+  font-size: 0.8cqw;
+  font-weight: 800;
+  color: #1D3B78;
+  letter-spacing: 0.1em;
+}
+
+.cert-space-explorer .space-sig-name {
+  font-family: 'El Messiri', serif;
+  font-size: 1.1cqw;
+  font-weight: 700;
+  color: #0F1C3F;
+}
+
+
+/* ==========================================================================
+   4. Ocean Adventure Template (kg-playful)
+   ========================================================================== */
+.cert-ocean-adventure {
+  background: #F4FCFD;
+  color: #054A53;
+  padding: 4cqw 5cqw;
+}
+
+.cert-ocean-adventure .ocean-art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cert-ocean-adventure .ocean-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cert-ocean-adventure .ocean-school-copy {
+  font-family: 'El Messiri', sans-serif;
+  font-size: 1.4cqw;
+  font-weight: 700;
+  color: #087E8B;
+}
+
+.cert-ocean-adventure .ocean-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: auto 0;
+  gap: 1.5cqw;
+}
+
+.cert-ocean-adventure .ocean-title-banner {
+  font-family: 'El Messiri', sans-serif;
+  font-size: 2.3cqw;
+  font-weight: 700;
+  color: #087E8B;
+}
+
+.cert-ocean-adventure .ocean-student-bay {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cert-ocean-adventure .ocean-message {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1.2cqw;
+  line-height: 1.6;
+  color: #246B74;
+  max-width: 80%;
+}
+
+.cert-ocean-adventure .ocean-chip-row {
+  display: flex;
+  gap: 1.5cqw;
+  justify-content: center;
+}
+
+.cert-ocean-adventure .ocean-chip {
+  background: #E2F7F9;
+  border-radius: 20px;
+  padding: 0.5cqw 1.2cqw;
+  font-size: 0.9cqw;
+}
+
+.cert-ocean-adventure .ocean-chip-label {
+  color: #087E8B;
+  font-weight: 600;
+}
+
+.cert-ocean-adventure .ocean-chip-value {
+  color: #054A53;
+  font-weight: 700;
+  margin-left: 0.4cqw;
+}
+
+.cert-ocean-adventure .ocean-footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.cert-ocean-adventure .ocean-signature-dock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 16cqw;
+  gap: 0.3cqw;
+}
+
+.cert-ocean-adventure .ocean-sig-role {
+  font-size: 0.85cqw;
+  font-weight: 700;
+  color: #087E8B;
+}
+
+.cert-ocean-adventure .ocean-sig-name {
+  font-family: 'El Messiri', serif;
+  font-size: 1.1cqw;
+  font-weight: 700;
+  color: #054A53;
+}
+
+
+/* ==========================================================================
+   5. Storybook Castle Template (reading)
+   ========================================================================== */
+.cert-storybook-castle {
+  background: #FFF8FC;
+  color: #382456;
+  padding: 4cqw 5cqw;
+  border: 8px double #6B4FA1;
+}
+
+.cert-storybook-castle .storybook-background {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cert-storybook-castle .storybook-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cert-storybook-castle .storybook-school-copy {
+  font-family: 'El Messiri', serif;
+  font-size: 1.4cqw;
+  font-weight: 700;
+  color: #6B4FA1;
+}
+
+.cert-storybook-castle .storybook-main {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: auto 0;
+  gap: 1.4cqw;
+}
+
+.cert-storybook-castle .storybook-title-scroll {
+  font-family: 'El Messiri', serif;
+  font-size: 2.4cqw;
+  font-weight: 700;
+  color: #6B4FA1;
+}
+
+.cert-storybook-castle .storybook-hero-name {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cert-storybook-castle .storybook-message {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1.2cqw;
+  line-height: 1.6;
+  color: #553E78;
+  max-width: 80%;
+}
+
+.cert-storybook-castle .storybook-details {
+  display: flex;
+  gap: 1.8cqw;
+  justify-content: center;
+}
+
+.cert-storybook-castle .storybook-detail-pill {
+  background: #F3EAF8;
+  border: 1px solid #E1D0F0;
+  border-radius: 16px;
+  padding: 0.5cqw 1.2cqw;
+  font-size: 0.9cqw;
+}
+
+.cert-storybook-castle .storybook-detail-label {
+  color: #6B4FA1;
+  font-weight: 600;
+}
+
+.cert-storybook-castle .storybook-detail-value {
+  color: #382456;
+  font-weight: 700;
+  margin-left: 0.4cqw;
+}
+
+.cert-storybook-castle .storybook-signatures {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.cert-storybook-castle .storybook-sig-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 16cqw;
+  gap: 0.3cqw;
+}
+
+.cert-storybook-castle .storybook-sig-role {
+  font-size: 0.85cqw;
+  font-weight: 700;
+  color: #6B4FA1;
+}
+
+.cert-storybook-castle .storybook-sig-name {
+  font-family: 'El Messiri', serif;
+  font-size: 1.1cqw;
+  font-weight: 700;
+  color: #382456;
+}
+
+/* ==========================================================================
+   SPORTS CHAMPION TEMPLATE (.cert-sports-champion)
+   ========================================================================== */
+.cert-sports-champion {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #FFFBF5 0%, #FFF5E6 100%);
+  border: 1.2cqw solid #D35400;
+  box-sizing: border-box;
+  padding: 2cqw 3cqw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.cert-sports-champion .sports-art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cert-sports-champion .sports-stadium-glow {
+  position: absolute;
+  top: -20%;
+  left: 20%;
+  width: 60%;
+  height: 50%;
+  background: radial-gradient(ellipse at center, rgba(243, 156, 18, 0.15) 0%, transparent 70%);
+}
+
+.cert-sports-champion .sports-trophy-badge {
+  position: absolute;
+  top: 1.5cqw;
+  right: 2cqw;
+  width: 5cqw;
+  height: 5cqw;
+}
+
+.cert-sports-champion .sports-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.cert-sports-champion .cert-logo-sports-champion {
+  width: 4.5cqw;
+  height: 4.5cqw;
+  object-fit: contain;
+}
+
+.cert-sports-champion .sports-school-lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.cert-sports-champion .sports-champ-tag {
+  background: #D35400;
+  color: #FFF;
+  font-size: 0.7cqw;
+  font-weight: 800;
+  padding: 0.2cqw 0.8cqw;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.cert-sports-champion .sports-school {
+  font-size: 1.1cqw;
+  font-weight: 700;
+  color: #2C3E50;
+  margin-top: 0.3cqw;
+}
+
+.cert-sports-champion .sports-title-block {
+  text-align: center;
+  margin-top: 0.5cqw;
+  position: relative;
+  z-index: 2;
+}
+
+.cert-sports-champion .sports-title {
+  font-family: 'Changa', sans-serif;
+  font-size: 2.8cqw;
+  font-weight: 800;
+  color: #D35400;
+  margin: 0;
+  line-height: 1.1;
+  text-shadow: 0 2px 4px rgba(211, 84, 0, 0.15);
+}
+
+.cert-sports-champion .sports-award-label {
+  font-size: 0.85cqw;
+  font-weight: 700;
+  color: #F39C12;
+  letter-spacing: 0.08em;
+  margin-top: 0.4cqw;
+}
+
+.cert-sports-champion .sports-recipient-zone {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  margin: 0.5cqw 0;
+}
+
+.cert-sports-champion .sports-message {
+  font-size: 1.1cqw;
+  color: #34495E;
+  max-width: 80%;
+  margin: 0.8cqw auto 0;
+  line-height: 1.5;
+}
+
+.cert-sports-champion .sports-meta-bar {
+  display: flex;
+  justify-content: center;
+  gap: 2cqw;
+  position: relative;
+  z-index: 2;
+}
+
+.cert-sports-champion .sports-meta-pill {
+  background: rgba(243, 156, 18, 0.12);
+  border: 1px solid rgba(243, 156, 18, 0.3);
+  border-radius: 8px;
+  padding: 0.4cqw 1.2cqw;
+  display: flex;
+  gap: 0.6cqw;
+  align-items: center;
+}
+
+.cert-sports-champion .sports-meta-label {
+  font-size: 0.75cqw;
+  font-weight: 700;
+  color: #D35400;
+}
+
+.cert-sports-champion .sports-meta-val {
+  font-size: 0.85cqw;
+  font-weight: 700;
+  color: #2C3E50;
+}
+
+.cert-sports-champion .sports-sign-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  position: relative;
+  z-index: 2;
+}
+
+.cert-sports-champion .sports-sign-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 14cqw;
+}
+
+.cert-sports-champion .sports-sig-img {
+  max-height: 3cqw;
+  object-fit: contain;
+}
+
+.cert-sports-champion .sports-sign-title {
+  font-size: 0.75cqw;
+  font-weight: 700;
+  color: #7F8C8D;
+}
+
+.cert-sports-champion .sports-sign-name {
+  font-size: 1cqw;
+  font-weight: 700;
+  color: #2C3E50;
+}
+
+/* ==========================================================================
+   ISLAMIC HERITAGE TEMPLATE (.cert-islamic-heritage)
+   ========================================================================== */
+.cert-islamic-heritage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #FAF8F5;
+  border: 1.5cqw solid #1B4332;
+  box-sizing: border-box;
+  padding: 2cqw 3cqw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.cert-islamic-heritage .islamic-art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cert-islamic-heritage .islamic-border-frame {
+  position: absolute;
+  inset: 0.8cqw;
+  border: 1px solid rgba(212, 165, 116, 0.6);
+  border-radius: 4px;
+}
+
+.cert-islamic-heritage .islamic-star-corner {
+  position: absolute;
+  width: 2.2cqw;
+  height: 2.2cqw;
+  background: #D4A574;
+  transform: rotate(45deg);
+}
+
+.cert-islamic-heritage .islamic-star-top-start { top: 0.4cqw; left: 0.4cqw; }
+.cert-islamic-heritage .islamic-star-top-end { top: 0.4cqw; right: 0.4cqw; }
+.cert-islamic-heritage .islamic-star-bottom-start { bottom: 0.4cqw; left: 0.4cqw; }
+.cert-islamic-heritage .islamic-star-bottom-end { bottom: 0.4cqw; right: 0.4cqw; }
+
+.cert-islamic-heritage .islamic-header {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.cert-islamic-heritage .islamic-header-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3cqw;
+}
+
+.cert-islamic-heritage .cert-logo-islamic-heritage {
+  width: 4cqw;
+  height: 4cqw;
+  object-fit: contain;
+}
+
+.cert-islamic-heritage .islamic-school {
+  font-family: 'Amiri', serif;
+  font-size: 1.2cqw;
+  font-weight: 700;
+  color: #1B4332;
+}
+
+.cert-islamic-heritage .islamic-title-block {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  margin-top: 0.3cqw;
+}
+
+.cert-islamic-heritage .islamic-bismillah {
+  font-family: 'Amiri', serif;
+  font-size: 1.1cqw;
+  color: #D4A574;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.3cqw;
+}
+
+.cert-islamic-heritage .islamic-title {
+  font-family: 'Amiri', serif;
+  font-size: 2.9cqw;
+  font-weight: 700;
+  color: #1B4332;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.cert-islamic-heritage .islamic-recipient-zone {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  margin: 0.4cqw 0;
+}
+
+.cert-islamic-heritage .islamic-award-intro {
+  font-size: 0.9cqw;
+  color: #666;
+  margin-bottom: 0.4cqw;
+}
+
+.cert-islamic-heritage .islamic-message {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1.1cqw;
+  color: #2C3E2D;
+  max-width: 82%;
+  margin: 0.8cqw auto 0;
+  line-height: 1.6;
+}
+
+.cert-islamic-heritage .islamic-meta-bar {
+  display: flex;
+  justify-content: center;
+  gap: 2.5cqw;
+  position: relative;
+  z-index: 2;
+}
+
+.cert-islamic-heritage .islamic-meta-item {
+  display: flex;
+  gap: 0.5cqw;
+  font-size: 0.85cqw;
+  border-bottom: 1.5px solid #D4A574;
+  padding-bottom: 0.2cqw;
+}
+
+.cert-islamic-heritage .islamic-meta-label {
+  color: #1B4332;
+  font-weight: 700;
+}
+
+.cert-islamic-heritage .islamic-meta-val {
+  color: #2C3E2D;
+  font-weight: 600;
+}
+
+.cert-islamic-heritage .islamic-sign-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  position: relative;
+  z-index: 2;
+}
+
+.cert-islamic-heritage .islamic-sign-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 14cqw;
+}
+
+.cert-islamic-heritage .islamic-sig-img {
+  max-height: 3cqw;
+  object-fit: contain;
+}
+
+.cert-islamic-heritage .islamic-sign-title {
+  font-size: 0.75cqw;
+  font-weight: 700;
+  color: #1B4332;
+}
+
+.cert-islamic-heritage .islamic-sign-name {
+  font-size: 0.95cqw;
+  font-weight: 700;
+  color: #2C3E2D;
+}
+
+/* ==========================================================================
+   GRADUATION HONOR TEMPLATE (.cert-graduation-honor)
+   ========================================================================== */
+.cert-graduation-honor {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #FAFAFA;
+  border: 1.4cqw solid #0F1B2D;
+  box-sizing: border-box;
+  padding: 2cqw 3cqw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.cert-graduation-honor .grad-art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cert-graduation-honor .grad-gold-border {
+  position: absolute;
+  inset: 0.6cqw;
+  border: 2px solid #C9A35F;
+}
+
+.cert-graduation-honor .grad-cap-emblem {
+  position: absolute;
+  top: 1.5cqw;
+  left: 2cqw;
+  width: 4.5cqw;
+  height: 4.5cqw;
+}
+
+.cert-graduation-honor .grad-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.cert-graduation-honor .cert-logo-graduation-honor {
+  width: 4.5cqw;
+  height: 4.5cqw;
+  object-fit: contain;
+}
+
+.cert-graduation-honor .grad-school-lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.cert-graduation-honor .grad-class-year {
+  font-size: 0.7cqw;
+  font-weight: 800;
+  color: #C9A35F;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cert-graduation-honor .grad-school {
+  font-size: 1.1cqw;
+  font-weight: 700;
+  color: #0F1B2D;
+  margin-top: 0.2cqw;
+}
+
+.cert-graduation-honor .grad-title-block {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  margin-top: 0.4cqw;
+}
+
+.cert-graduation-honor .grad-title {
+  font-family: 'Amiri', serif;
+  font-size: 2.8cqw;
+  font-weight: 800;
+  color: #0F1B2D;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.cert-graduation-honor .grad-ribbon-divider {
+  width: 12cqw;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #C9A35F, transparent);
+  margin: 0.5cqw auto 0;
+}
+
+.cert-graduation-honor .grad-recipient-zone {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  margin: 0.5cqw 0;
+}
+
+.cert-graduation-honor .grad-present-to {
+  font-size: 0.85cqw;
+  font-weight: 700;
+  color: #C9A35F;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4cqw;
+}
+
+.cert-graduation-honor .grad-message {
+  font-size: 1.05cqw;
+  color: #333;
+  max-width: 80%;
+  margin: 0.8cqw auto 0;
+  line-height: 1.5;
+}
+
+.cert-graduation-honor .grad-meta-bar {
+  display: flex;
+  justify-content: center;
+  gap: 2cqw;
+  position: relative;
+  z-index: 2;
+}
+
+.cert-graduation-honor .grad-meta-cell {
+  border: 1px solid #C9A35F;
+  border-radius: 4px;
+  padding: 0.4cqw 1cqw;
+  display: flex;
+  gap: 0.5cqw;
+  align-items: center;
+  background: #FFF;
+}
+
+.cert-graduation-honor .grad-meta-label {
+  font-size: 0.75cqw;
+  font-weight: 700;
+  color: #0F1B2D;
+}
+
+.cert-graduation-honor .grad-meta-val {
+  font-size: 0.85cqw;
+  font-weight: 700;
+  color: #C9A35F;
+}
+
+.cert-graduation-honor .grad-sign-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  position: relative;
+  z-index: 2;
+}
+
+.cert-graduation-honor .grad-sign-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 14cqw;
+}
+
+.cert-graduation-honor .grad-sig-img {
+  max-height: 3cqw;
+  object-fit: contain;
+}
+
+.cert-graduation-honor .grad-sign-title {
+  font-size: 0.75cqw;
+  font-weight: 700;
+  color: #666;
+}
+
+.cert-graduation-honor .grad-sign-name {
+  font-size: 0.95cqw;
+  font-weight: 700;
+  color: #0F1B2D;
+}
+
+/* ==========================================================================
+   CREATIVE ARTS TEMPLATE (.cert-creative-arts)
+   ========================================================================== */
+.cert-creative-arts {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #FFFDF9;
+  border: 1.2cqw solid #6C3483;
+  box-sizing: border-box;
+  padding: 2cqw 3cqw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.cert-creative-arts .arts-art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cert-creative-arts .arts-palette-icon {
+  position: absolute;
+  top: 1.5cqw;
+  right: 2cqw;
+  width: 4.8cqw;
+  height: 4.8cqw;
+}
+
+.cert-creative-arts .arts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.cert-creative-arts .cert-logo-creative-arts {
+  width: 4.5cqw;
+  height: 4.5cqw;
+  object-fit: contain;
+}
+
+.cert-creative-arts .arts-school-lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.cert-creative-arts .arts-badge-label {
+  background: #FF4757;
+  color: #FFF;
+  font-size: 0.7cqw;
+  font-weight: 800;
+  padding: 0.2cqw 0.8cqw;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.cert-creative-arts .arts-school {
+  font-size: 1.1cqw;
+  font-weight: 700;
+  color: #6C3483;
+  margin-top: 0.3cqw;
+}
+
+.cert-creative-arts .arts-title-block {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  margin-top: 0.4cqw;
+}
+
+.cert-creative-arts .arts-title {
+  font-family: 'Cairo', sans-serif;
+  font-size: 2.8cqw;
+  font-weight: 800;
+  color: #6C3483;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.cert-creative-arts .arts-subtitle {
+  font-size: 0.85cqw;
+  font-weight: 700;
+  color: #FF4757;
+  letter-spacing: 0.05em;
+  margin-top: 0.3cqw;
+}
+
+.cert-creative-arts .arts-recipient-zone {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  margin: 0.5cqw 0;
+}
+
+.cert-creative-arts .arts-message {
+  font-size: 1.05cqw;
+  color: #444;
+  max-width: 80%;
+  margin: 0.8cqw auto 0;
+  line-height: 1.5;
+}
+
+.cert-creative-arts .arts-meta-bar {
+  display: flex;
+  justify-content: center;
+  gap: 2cqw;
+  position: relative;
+  z-index: 2;
+}
+
+.cert-creative-arts .arts-meta-card {
+  background: rgba(108, 52, 131, 0.08);
+  border-radius: 8px;
+  padding: 0.4cqw 1.2cqw;
+  display: flex;
+  gap: 0.5cqw;
+  align-items: center;
+}
+
+.cert-creative-arts .arts-meta-label {
+  font-size: 0.75cqw;
+  font-weight: 700;
+  color: #6C3483;
+}
+
+.cert-creative-arts .arts-meta-val {
+  font-size: 0.85cqw;
+  font-weight: 700;
+  color: #FF4757;
+}
+
+.cert-creative-arts .arts-sign-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  position: relative;
+  z-index: 2;
+}
+
+.cert-creative-arts .arts-sign-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 14cqw;
+}
+
+.cert-creative-arts .arts-sig-img {
+  max-height: 3cqw;
+  object-fit: contain;
+}
+
+.cert-creative-arts .arts-sign-title {
+  font-size: 0.75cqw;
+  font-weight: 700;
+  color: #6C3483;
+}
+
+.cert-creative-arts .arts-sign-name {
+  font-size: 0.95cqw;
+  font-weight: 700;
+  color: #333;
+}
