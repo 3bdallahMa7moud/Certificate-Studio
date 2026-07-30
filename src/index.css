@@ -42,7 +42,10 @@
     -webkit-font-smoothing: antialiased;
     transition: background 400ms ease;
     min-width: 0;
-    overflow: hidden;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .font-display-ar { font-family: 'El Messiri', serif; }
@@ -1407,24 +1410,27 @@
       max-width: none;
       padding: 12px max(12px, env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
       gap: 16px;
-      height: calc(100dvh - var(--topbar-height));
-      grid-template-rows: auto minmax(0, 1fr);
-      overflow: hidden;
+      height: auto;
+      min-height: auto;
+      display: flex;
+      flex-direction: column;
+      overflow: visible;
     }
 
     .preview-pane {
       order: 1;
       display: flex;
       flex-direction: column;
-      min-height: 0;
-      overflow: hidden;
+      height: auto;
+      min-height: auto;
+      overflow: visible;
     }
 
     .settings-pane {
       order: 2;
-      height: 100%;
-      min-height: 0;
-      overflow: hidden;
+      height: auto;
+      min-height: auto;
+      overflow: visible;
     }
 
     .preview-meta {
@@ -1450,15 +1456,17 @@
     }
 
     .preview-pane .cert {
-      width: min(100%, 72dvh);
+      width: 100%;
+      max-width: 100%;
+      height: auto;
       margin-inline: auto;
     }
 
     .settings-card {
       border-radius: 14px;
-      overflow: hidden;
-      height: 100%;
-      min-height: 0;
+      overflow: visible;
+      height: auto;
+      min-height: auto;
     }
 
     .tabs {
