@@ -4,6 +4,7 @@
  * html2canvas and fflate are lazy-imported to keep the initial bundle unaffected.
  */
 import { downloadBlob } from './imageUtils.js';
+import { measureCertificateNames } from '../certificate-templates/useMeasuredNameFit.js';
 
 /* ─────────────────────────────────────────────────────────────────────────
    Readiness
@@ -34,8 +35,37 @@ export async function waitForPrintReady(containerEl) {
     }),
   );
 
+  const brokenImage = imgs.find(img => (
+    Boolean(img.currentSrc || img.getAttribute?.('src'))
+    && img.complete
+    && img.naturalWidth === 0
+  ));
+  if (brokenImage) throw new Error('A certificate image could not be decoded');
+
   // 3. Settle delay so the paint queue can flush
   await new Promise(r => setTimeout(r, 80));
+}
+
+/**
+ * The measured name fitter annotates text after the selected fonts load.
+ * Refuse output when the readable minimum was reached and the name still
+ * cannot satisfy the certificate's one/two-line contract.
+ */
+export function assertCertificateLayoutReady(containerEl) {
+  if (!containerEl?.querySelectorAll) return true;
+  const unresolved = [...containerEl.querySelectorAll('[data-name-fit-status="unresolved"]')];
+  if (unresolved.length) {
+    throw new Error('اسم الطالب لا يلائم المساحة الآمنة في القالب حتى بعد التصغير. اختصر الاسم قبل الإخراج.');
+  }
+  return true;
+}
+
+export function measureCertificateLayouts(containerEl) {
+  if (!containerEl?.querySelectorAll) return;
+  const frames = containerEl.matches?.('[data-certificate-frame="true"]')
+    ? [containerEl]
+    : [...containerEl.querySelectorAll('[data-certificate-frame="true"]')];
+  frames.forEach(measureCertificateNames);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -97,6 +127,65 @@ function canvasToPngBlob(canvas) {
   return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
 }
 
+function safeFilePart(value, fallback = 'student') {
+  const sanitized = String(value || '')
+    .trim()
+    .replace(/[^\u0600-\u06FFa-zA-Z0-9\s_-]/g, '')
+    .replace(/\s+/g, '-')
+    .slice(0, 48);
+  return sanitized || fallback;
+}
+
+/**
+ * Keep ordinary batches in one archive. Very large batches are deliberately
+ * split into numbered archives of at most 100 certificates so the browser
+ * never retains hundreds of decoded canvases at the same time.
+ */
+export function buildBatchZipParts(students = []) {
+  if (!Array.isArray(students) || students.length === 0) return [];
+  if (students.length <= 200) return [students.slice()];
+
+  const parts = [];
+  for (let index = 0; index < students.length; index += 100) {
+    parts.push(students.slice(index, index + 100));
+  }
+  return parts;
+}
+
+function numberedZipFilename(filename, partIndex, partCount) {
+  if (partCount <= 1) return filename;
+  const suffix = `-part-${String(partIndex + 1).padStart(2, '0')}-of-${String(partCount).padStart(2, '0')}`;
+  return filename.toLowerCase().endsWith('.zip')
+    ? `${filename.slice(0, -4)}${suffix}.zip`
+    : `${filename}${suffix}.zip`;
+}
+
+function applyExportDimensions(printOnlyEl, certEl, paper) {
+  const certW = Number(paper?.width) || 1400;
+  const ratio = Number(paper?.ratioNum) || (297 / 210);
+  const certH = Math.round(certW / ratio);
+  const page = certEl?.closest?.('.print-page');
+
+  if (page) {
+    page.style.setProperty('width', `${certW}px`, 'important');
+    page.style.setProperty('height', `${certH}px`, 'important');
+    page.style.setProperty('overflow', 'hidden', 'important');
+    page.style.setProperty('break-after', 'auto', 'important');
+    page.style.setProperty('page-break-after', 'auto', 'important');
+  }
+  if (certEl) {
+    certEl.style.setProperty('width', `${certW}px`, 'important');
+    certEl.style.setProperty('height', `${certH}px`, 'important');
+    certEl.style.setProperty('aspect-ratio', 'auto', 'important');
+    certEl.style.setProperty('overflow', 'hidden', 'important');
+    certEl.style.setProperty('box-shadow', 'none', 'important');
+    certEl.style.setProperty('border-radius', '0', 'important');
+  }
+
+  printOnlyEl.style.setProperty('width', `${certW}px`, 'important');
+  return { certW, certH };
+}
+
 /* ─────────────────────────────────────────────────────────────────────────
    Single PNG export
    ───────────────────────────────────────────────────────────────────── */
@@ -110,14 +199,109 @@ export async function exportCurrentPng(certEl, filename) {
   if (!certEl) throw new Error('No certificate element provided');
 
   await waitForPrintReady(certEl.closest?.('.cert-wrap') ?? certEl.parentElement);
+  measureCertificateLayouts(certEl);
+  assertCertificateLayoutReady(certEl);
 
-  const canvas = await htmlToCanvas(certEl, 2);
+  const canvas = await htmlToCanvas(certEl, 3);
   if (!canvas) throw new Error('Canvas capture failed — html2canvas returned null');
 
   const blob = await canvasToPngBlob(canvas);
   if (!blob) throw new Error('toBlob returned null');
 
   downloadBlob(blob, filename);
+  return { filename, bytes: blob.size };
+}
+
+/**
+ * Export a batch by rendering exactly one hidden certificate at a time.
+ * `renderCertificate` must commit the requested student to React and resolve
+ * with the resulting `.cert` element. This keeps DOM and canvas usage bounded.
+ */
+export async function exportBatchZipSequential({
+  students,
+  printOnlyEl,
+  paper,
+  filename,
+  renderCertificate,
+  onProgress,
+}) {
+  if (!Array.isArray(students) || students.length === 0) {
+    throw new Error('لا يوجد طلاب في القائمة');
+  }
+  if (!printOnlyEl || typeof renderCertificate !== 'function') {
+    throw new Error('حاوية التصدير المتتابع غير متاحة');
+  }
+
+  const parts = buildBatchZipParts(students);
+  const savedHostStyle = printOnlyEl.getAttribute('style');
+  const downloadedFiles = [];
+  let completed = 0;
+
+  try {
+    printOnlyEl.style.setProperty('display', 'block', 'important');
+    printOnlyEl.style.setProperty('position', 'fixed', 'important');
+    printOnlyEl.style.setProperty('inset', '0 auto auto -100000px', 'important');
+    printOnlyEl.style.setProperty('z-index', '-1', 'important');
+    printOnlyEl.style.setProperty('pointer-events', 'none', 'important');
+    printOnlyEl.style.setProperty('overflow', 'hidden', 'important');
+
+    for (let partIndex = 0; partIndex < parts.length; partIndex += 1) {
+      const files = {};
+      const part = parts[partIndex];
+
+      for (let localIndex = 0; localIndex < part.length; localIndex += 1) {
+        const student = part[localIndex];
+        const globalIndex = completed;
+        const certEl = await renderCertificate(student, globalIndex);
+        if (!certEl) {
+          throw new Error(`تعذّر تجهيز الشهادة رقم ${globalIndex + 1}`);
+        }
+
+        applyExportDimensions(printOnlyEl, certEl, paper);
+        await waitForPrintReady(certEl);
+        measureCertificateLayouts(certEl);
+        assertCertificateLayoutReady(certEl);
+
+        const canvas = await htmlToCanvas(certEl, 2);
+        if (!canvas) throw new Error(`فشل التقاط الشهادة رقم ${globalIndex + 1}`);
+
+        const blob = await canvasToPngBlob(canvas);
+        // Release the large backing store before advancing to the next student.
+        canvas.width = 1;
+        canvas.height = 1;
+        if (!blob) throw new Error(`فشل إنشاء صورة الشهادة رقم ${globalIndex + 1}`);
+
+        const studentName = student.studentNameAr || student.studentNameEn || `student-${globalIndex + 1}`;
+        const entryName = `${String(globalIndex + 1).padStart(3, '0')}-${safeFilePart(studentName)}.png`;
+        files[entryName] = new Uint8Array(await blob.arrayBuffer());
+
+        completed += 1;
+        onProgress?.(completed, students.length, {
+          part: partIndex + 1,
+          partCount: parts.length,
+        });
+      }
+
+      const { zipSync } = await import('fflate');
+      const zipped = zipSync(files, { level: 0 });
+      const partFilename = numberedZipFilename(filename, partIndex, parts.length);
+      downloadBlob(new Blob([zipped], { type: 'application/zip' }), partFilename);
+      downloadedFiles.push(partFilename);
+
+      // Yield so the download and garbage collection can progress before a
+      // subsequent archive is assembled.
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+
+    return {
+      count: completed,
+      zipCount: downloadedFiles.length,
+      filenames: downloadedFiles,
+    };
+  } finally {
+    if (savedHostStyle == null) printOnlyEl.removeAttribute('style');
+    else printOnlyEl.setAttribute('style', savedHostStyle);
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -181,6 +365,8 @@ export async function exportBatchZip(printOnlyEl, paper, filename, onProgress) {
 
   // ── 3. Wait for fonts + images to be fully ready ───────────────────
   await waitForPrintReady(printOnlyEl);
+  measureCertificateLayouts(printOnlyEl);
+  assertCertificateLayoutReady(printOnlyEl);
   // Extra layout-settle after becoming visible
   await new Promise(r => setTimeout(r, 80));
 

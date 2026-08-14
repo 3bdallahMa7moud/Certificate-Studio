@@ -1,6 +1,7 @@
 import React from 'react';
-import { getBehavior, getSubject } from '../templateUtils.js';
+import { getSubject } from '../templateUtils.js';
 import {
+  displayAcademicYear,
   displayDate,
   displayTerm,
   primaryDisplayName,
@@ -12,6 +13,7 @@ import {
   textFlowClass,
 } from '../templateUtils.js';
 import {
+  AchievementText,
   StudentName,
   TemplateLogo,
   mergeStaticProps,
@@ -26,7 +28,6 @@ export default function MinimalTemplate({ state, render }) {
   const templateText = (elementId, locale, fallback) =>
     render?.text?.(elementId, locale, fallback) ?? fallback;
   const subject = getSubject(state.subject);
-  const behavior = getBehavior(state.behavior);
   const messageClass = textFlowClass(state.customMessage);
   const termText = displayTerm(state);
   const termClass = termFlowClass(state);
@@ -124,7 +125,13 @@ export default function MinimalTemplate({ state, render }) {
                 {subject.ar}
               </span>
               {' ولـ '}
-              <span className="accent">{behavior.ar}</span>
+              <AchievementText
+                state={state}
+                element={element}
+                elementId="minimal-behavior"
+                className="accent"
+                partClassName="certificate-achievement-part"
+              />
             </>
           ) : (
             <>
@@ -144,7 +151,13 @@ export default function MinimalTemplate({ state, render }) {
                 {subject.en}
               </span>
               {' and '}
-              <span className="accent">{behavior.en}</span>
+              <AchievementText
+                state={state}
+                element={element}
+                elementId="minimal-behavior"
+                className="accent"
+                partClassName="certificate-achievement-part"
+              />
             </>
           )}
         </div>
@@ -253,7 +266,7 @@ export default function MinimalTemplate({ state, render }) {
                 inline: true,
               })}
             >
-              {state.academicYear}
+              {displayAcademicYear(state)}
             </span>
             {' · '}
             <span

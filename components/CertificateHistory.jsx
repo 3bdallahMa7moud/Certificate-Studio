@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { lazy, Suspense, useMemo, useState } from 'react';
 import Icon from './Icon.jsx';
 import { CERTIFICATE_TYPES } from '../src/context/certificateTypes.js';
 import { TEMPLATE_REGISTRY } from '../src/certificate-templates/registry.js';
 import { GRADE_LEVELS } from '../src/context/data.js';
-import HistoryPreviewModal from './HistoryPreviewModal.jsx';
-import BackupRestoreModal from './BackupRestoreModal.jsx';
+
+const HistoryPreviewModal = lazy(() => import('./HistoryPreviewModal.jsx'));
+const BackupRestoreModal = lazy(() => import('./BackupRestoreModal.jsx'));
 
 export default function CertificateHistory({
   history,
@@ -450,33 +451,40 @@ export default function CertificateHistory({
 
       {/* History Preview Modal */}
       {selectedRecordForPreview && (
-        <HistoryPreviewModal
-          record={selectedRecordForPreview}
-          onClose={() => setSelectedRecordForPreview(null)}
-          onEditCopy={record => {
-            setSelectedRecordForPreview(null);
-            handleOpenEdit(record);
-          }}
-          onDuplicate={handleDuplicate}
-          onReprint={record => {
-            setSelectedRecordForPreview(null);
-            onReprintRecord?.(record);
-          }}
-          showToast={showToast}
-        />
+        <Suspense fallback={null}>
+          <HistoryPreviewModal
+            record={selectedRecordForPreview}
+            onClose={() => setSelectedRecordForPreview(null)}
+            onEditCopy={record => {
+              setSelectedRecordForPreview(null);
+              handleOpenEdit(record);
+            }}
+            onDuplicate={handleDuplicate}
+            onReprint={record => {
+              setSelectedRecordForPreview(null);
+              onReprintRecord?.(record);
+            }}
+            onExportSuccess={record => history.markRecordAsIssued(record)}
+            showToast={showToast}
+          />
+        </Suspense>
       )}
 
       {/* Backup and Restore Modal */}
-      <BackupRestoreModal
-        isOpen={isBackupModalOpen}
-        onClose={() => setIsBackupModalOpen(false)}
-        state={state}
-        onRestoreSuccess={({ nextState }) => {
-          if (nextState) onRestoreState?.(nextState);
-          history.refreshRecords();
-        }}
-        showToast={showToast}
-      />
+      {isBackupModalOpen && (
+        <Suspense fallback={null}>
+          <BackupRestoreModal
+            isOpen
+            onClose={() => setIsBackupModalOpen(false)}
+            state={state}
+            onRestoreSuccess={({ nextState }) => {
+              if (nextState) onRestoreState?.(nextState);
+              history.refreshRecords();
+            }}
+            showToast={showToast}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Icon from './Icon.jsx';
+import Dialog from './Dialog.jsx';
 import { BEHAVIORS, GRADE_LEVELS, SUBJECTS } from '../src/context/data.js';
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -7,6 +8,15 @@ import { BEHAVIORS, GRADE_LEVELS, SUBJECTS } from '../src/context/data.js';
    ───────────────────────────────────────────────────────────────────── */
 function isMissingName(student) {
   return !student.studentNameAr?.trim() && !student.studentNameEn?.trim();
+}
+
+function achievementPatchForBehavior(behaviorId) {
+  const behavior = BEHAVIORS.find(item => item.id === behaviorId) || BEHAVIORS[0];
+  return {
+    behavior: behavior.id,
+    achievementAr: behavior.ar,
+    achievementEn: behavior.en,
+  };
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -25,35 +35,28 @@ function StatPill({ label, count, variant }) {
    Confirmation modal for bulk delete
    ───────────────────────────────────────────────────────────────────── */
 function ConfirmModal({ count, onConfirm, onCancel }) {
-  const handleKeyDown = (e) => {
-    if (e.key === 'Escape') onCancel();
-  };
-
   return (
-    <div
-      className="sm-confirm-overlay"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="confirm-modal-title"
-      onKeyDown={handleKeyDown}
-      tabIndex={-1}
+    <Dialog
+      overlayClassName="sm-confirm-overlay"
+      className="sm-confirm-modal"
+      labelledBy="confirm-modal-title"
+      describedBy="confirm-modal-description"
+      onClose={onCancel}
     >
-      <div className="sm-confirm-modal">
         <div className="sm-confirm-icon">
           <Icon name="Trash2" size={32} />
         </div>
         <p className="sm-confirm-title" id="confirm-modal-title">تأكيد الحذف</p>
-        <p className="sm-confirm-body">
+        <p className="sm-confirm-body" id="confirm-modal-description">
           سيتم حذف <strong>{count}</strong> طالب من القائمة. هذا الإجراء لا يمكن التراجع عنه.
         </p>
         <div className="sm-confirm-actions">
-          <button className="sm-confirm-cancel" onClick={onCancel} autoFocus>إلغاء</button>
-          <button className="sm-confirm-delete" onClick={onConfirm}>
+          <button type="button" className="sm-confirm-cancel" onClick={onCancel} autoFocus>إلغاء</button>
+          <button type="button" className="sm-confirm-delete" onClick={onConfirm}>
             <Icon name="Trash2" size={14} /> حذف {count} سجل
           </button>
         </div>
-      </div>
-    </div>
+    </Dialog>
   );
 }
 
@@ -70,7 +73,7 @@ function BulkEditPanel({ count, onApply, onClose }) {
     const patch = {};
     if (grade)    patch.grade    = grade;
     if (subject)  patch.subject  = subject;
-    if (behavior) patch.behavior = behavior;
+    if (behavior) Object.assign(patch, achievementPatchForBehavior(behavior));
     if (gender !== undefined && gender !== '') patch.gender = gender;
     onApply(patch);
   };
@@ -161,7 +164,7 @@ export default function StudentManager({
     filterSubject, setFilterSubject,
     filterGrade, setFilterGrade,
     sortKey, sortDir, toggleSort,
-    selectedSerials,
+    selectedRowIds,
     toggleSelect, selectAllVisible, clearSelection,
     isAllVisibleSelected,
     visibleStudents,
@@ -172,16 +175,16 @@ export default function StudentManager({
   const [showConfirm, setShowConfirm]     = useState(false);
   const [showBulkEdit, setShowBulkEdit]   = useState(false);
 
-  const selectedCount = selectedSerials.size;
+  const selectedCount = selectedRowIds.size;
 
   const handleBulkDelete = () => {
-    bulkDelete([...selectedSerials]);
+    bulkDelete([...selectedRowIds]);
     clearSelection();
     setShowConfirm(false);
   };
 
   const handleBulkApply = (patch) => {
-    bulkEditFields([...selectedSerials], patch);
+    bulkEditFields([...selectedRowIds], patch);
     setShowBulkEdit(false);
   };
 
@@ -213,6 +216,7 @@ export default function StudentManager({
       <div className="sm-toolbar">
         <div className="sm-search-wrap">
           <Icon name="Search" size={14} className="sm-search-icon" />
+          <label className="sr-only" htmlFor="sm-search">البحث في قائمة الطلاب</label>
           <input
             id="sm-search"
             className="sm-search"
@@ -223,12 +227,13 @@ export default function StudentManager({
             autoComplete="off"
           />
           {searchQuery && (
-            <button className="sm-search-clear" onClick={() => setSearchQuery('')} title="مسح البحث">
+            <button type="button" className="sm-search-clear" onClick={() => setSearchQuery('')} title="مسح البحث" aria-label="مسح البحث">
               <Icon name="X" size={12} />
             </button>
           )}
         </div>
 
+        <label className="sr-only" htmlFor="sm-filter-subject">تصفية الطلاب حسب المادة</label>
         <select
           id="sm-filter-subject"
           className="sm-filter-select"
@@ -240,6 +245,7 @@ export default function StudentManager({
           {SUBJECTS.map(s => <option key={s.id} value={s.id}>{s.ar}</option>)}
         </select>
 
+        <label className="sr-only" htmlFor="sm-filter-grade">تصفية الطلاب حسب الصف</label>
         <select
           id="sm-filter-grade"
           className="sm-filter-select"
@@ -338,7 +344,7 @@ export default function StudentManager({
                 const idx       = student._index;
                 const isDup     = duplicateSet.has(idx);
                 const isMissing = isMissingName(student);
-                const isSelected = selectedSerials.has(student.serial);
+                const isSelected = selectedRowIds.has(student.rowId);
 
                 const rowClass = [
                   isDup     ? 'duplicate'    : '',
@@ -347,13 +353,14 @@ export default function StudentManager({
                 ].filter(Boolean).join(' ');
 
                 return (
-                  <tr key={student.serial} className={rowClass}>
+                  <tr key={student.rowId} className={rowClass}>
                     <td data-label="" className="sm-td-check">
                       <input
                         type="checkbox"
                         className="sm-checkbox"
                         checked={isSelected}
-                        onChange={() => toggleSelect(student.serial)}
+                        onChange={() => toggleSelect(student.rowId)}
+                        aria-label={`تحديد ${student.studentNameAr || student.studentNameEn || `الطالب ${idx + 1}`}`}
                       />
                     </td>
 
@@ -372,6 +379,7 @@ export default function StudentManager({
                         value={student.studentNameAr}
                         onChange={e => updateStudent(idx, { studentNameAr: e.target.value })}
                         placeholder="الاسم بالعربية"
+                        aria-label={`اسم الطالب ${idx + 1} بالعربية`}
                       />
                     </td>
 
@@ -381,6 +389,7 @@ export default function StudentManager({
                         value={student.studentNameEn}
                         onChange={e => updateStudent(idx, { studentNameEn: e.target.value })}
                         placeholder="Name in English"
+                        aria-label={`اسم الطالب ${idx + 1} بالإنجليزية`}
                       />
                     </td>
 
@@ -389,6 +398,7 @@ export default function StudentManager({
                         className="table-input small"
                         value={student.gender || ''}
                         onChange={e => updateStudent(idx, { gender: e.target.value })}
+                        aria-label={`جنس الطالب ${idx + 1}`}
                       >
                         <option value="">محايد</option>
                         <option value="male">طالب</option>
@@ -401,6 +411,7 @@ export default function StudentManager({
                         className="table-input en small"
                         value={student.grade}
                         onChange={e => updateStudent(idx, { grade: e.target.value })}
+                        aria-label={`صف الطالب ${idx + 1}`}
                       >
                         {GRADE_LEVELS.map(g => <option key={g} value={g}>{g}</option>)}
                       </select>
@@ -411,6 +422,7 @@ export default function StudentManager({
                         className="table-input"
                         value={student.subject}
                         onChange={e => updateStudent(idx, { subject: e.target.value })}
+                        aria-label={`مادة الطالب ${idx + 1}`}
                       >
                         {SUBJECTS.map(s => <option key={s.id} value={s.id}>{s.ar}</option>)}
                       </select>
@@ -420,10 +432,25 @@ export default function StudentManager({
                       <select
                         className="table-input"
                         value={student.behavior}
-                        onChange={e => updateStudent(idx, { behavior: e.target.value })}
+                        onChange={e => updateStudent(idx, achievementPatchForBehavior(e.target.value))}
+                        aria-label={`نوع تميز الطالب ${idx + 1}`}
                       >
                         {BEHAVIORS.map(b => <option key={b.id} value={b.id}>{b.ar}</option>)}
                       </select>
+                      <input
+                        className="table-input ar table-achievement-input"
+                        value={student.achievementAr || ''}
+                        onChange={e => updateStudent(idx, { achievementAr: e.target.value })}
+                        dir="rtl"
+                        aria-label={`نص تميّز الطالب ${idx + 1} بالعربية`}
+                      />
+                      <input
+                        className="table-input en table-achievement-input"
+                        value={student.achievementEn || ''}
+                        onChange={e => updateStudent(idx, { achievementEn: e.target.value })}
+                        dir="ltr"
+                        aria-label={`Achievement text for student ${idx + 1}`}
+                      />
                     </td>
 
                     <td data-label="إجراءات">

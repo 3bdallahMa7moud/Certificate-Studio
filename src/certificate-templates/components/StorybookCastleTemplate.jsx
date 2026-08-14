@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  displayAcademicYear,
   displayDate,
   getSubject,
   primaryDisplayName,
@@ -11,11 +12,15 @@ import {
   textFlowClass,
 } from '../templateUtils.js';
 import {
+  AchievementText,
   StudentName,
   TemplateLogo,
   mergeStaticProps,
+  CertificateMessage,
 } from './TemplatePrimitives.jsx';
+import '../styles/StorybookCastleTemplate.css';
 
+const PREFIX = 'storybook-castle';
 const TITLE_AR = 'شهادة تقدير وتميز';
 const TITLE_EN = 'Certificate of Excellence';
 
@@ -32,14 +37,14 @@ export default function StorybookCastleTemplate({ state, render }) {
   const showAr = shouldShowAr(state);
   const showEn = shouldShowEn(state);
   const primaryLocale = showEn && !showAr ? 'en' : 'ar';
-  const messageClass = textFlowClass(state.customMessage);
+  const languageMode = showAr && showEn ? 'bilingual' : primaryLocale;
   const titleAr = templateText('storybook-castle-title', 'ar', TITLE_AR);
   const titleEn = templateText('storybook-castle-title-en', 'en', TITLE_EN);
   const teacherSecondaryName = secondaryEnglishName(state, state.teacherNameEn);
   const principalSecondaryName = secondaryEnglishName(state, state.principalNameEn);
 
   return (
-    <div className="cert-storybook-castle">
+    <div className={`cert-storybook-castle storybook-language-${languageMode}`}>
       <div className="storybook-decoration" aria-hidden="true">
         <span className="storybook-ribbon storybook-ribbon-top" />
         <span className="storybook-ribbon storybook-ribbon-bottom" />
@@ -121,7 +126,7 @@ export default function StorybookCastleTemplate({ state, render }) {
               { className: 'storybook-year-value' },
             )}
           >
-            {state.academicYear}
+            {displayAcademicYear(state)}
           </span>
         </div>
       </header>
@@ -165,14 +170,20 @@ export default function StorybookCastleTemplate({ state, render }) {
           )}
         </div>
 
+        <div className="storybook-presented-to">
+          {showAr && <span dir="rtl">تُمنح هذه الشهادة بكل فخر إلى</span>}
+          {showAr && showEn && <i aria-hidden="true" />}
+          {showEn && <span dir="ltr">This certificate is proudly presented to</span>}
+        </div>
+
         <div className="storybook-name-chapter">
           <span className="storybook-chapter-line" aria-hidden="true" />
           <StudentName
             state={state}
-            size={7.1}
-            fitWidth={69}
-            secondarySize={3}
-            secondaryFitWidth={65}
+            size={3.45}
+            fitWidth={50}
+            secondarySize={1.35}
+            secondaryFitWidth={50}
             primaryProps={element('storybook-castle-student-name', {
               contentKey: 'studentNameAr',
               locale: 'ar',
@@ -184,6 +195,8 @@ export default function StorybookCastleTemplate({ state, render }) {
               occurrenceId: 'storybook-castle-student-name-en',
             }, { className: 'storybook-student-name storybook-student-name-en' })}
           />
+          <span className="storybook-name-spark" aria-hidden="true" />
+          <span className="storybook-name-spark storybook-name-spark-right" aria-hidden="true" />
           <span className="storybook-chapter-line" aria-hidden="true" />
         </div>
 
@@ -235,22 +248,30 @@ export default function StorybookCastleTemplate({ state, render }) {
           >
             {state.grade || '—'}
           </div>
+          <div className="storybook-achievement-value">
+            <AchievementText
+              state={state}
+              element={element}
+              elementId="storybook-castle-achievement"
+              partClassName="certificate-achievement-part"
+            />
+          </div>
         </div>
 
         <div
           {...element(
-            'storybook-castle-message',
+            `${PREFIX}-message`,
             {
               contentKey: 'customMessage',
-              occurrenceId: 'storybook-castle-message',
+              occurrenceId: `${PREFIX}-message`,
             },
             {
-              className: `storybook-message ${messageClass}`,
-              dir: textDirection(state.customMessage),
+              className: `storybook-message ${textFlowClass(state.customMessageAr || state.customMessageEn || '')}`,
+              dir: textDirection(state.customMessageAr || state.customMessageEn || ''),
             },
           )}
         >
-          {state.customMessage}
+          <CertificateMessage state={state} fallbackAr="لتميزه/ا في القراءة والاطلاع، وبناء قصة نجاح ملهمة." fallbackEn="For excellence in reading, learning, and writing an inspiring success story." />
         </div>
       </main>
 

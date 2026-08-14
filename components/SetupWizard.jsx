@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Icon from './Icon.jsx';
 import { BoundInput, Field, UploadField } from './FormControls.jsx';
 import TemplateGallery from './TemplateGallery.jsx';
+import Dialog from './Dialog.jsx';
 import { FONT_STYLES, LANGUAGE_MODES, THEMES } from '../src/context/data.js';
 import { resolveTemplateId } from '../src/certificate-templates/templateUtils.js';
 
@@ -12,7 +13,7 @@ export default function SetupWizard({ state, updateState, onFinish, onDismiss, h
   const validateStep = (currentStep) => {
     const errs = {};
     if (currentStep === 1) {
-      if (!state.schoolNameAr?.trim()) errs.schoolNameAr = 'يرجى إدخال اسم المدرسة بالعربية';
+      // no validation needed for school name as it is fixed
     } else if (currentStep === 2) {
       if (!state.teacherNameAr?.trim()) errs.teacherNameAr = 'يرجى إدخال اسم المعلم/ة بالعربية';
     } else if (currentStep === 3) {
@@ -48,13 +49,14 @@ export default function SetupWizard({ state, updateState, onFinish, onDismiss, h
   ];
 
   return (
-    <div
-      className="modal-overlay setup-wizard-overlay"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="setup-wizard-title"
+    <Dialog
+      open
+      onClose={onDismiss}
+      closeOnBackdrop={Boolean(onDismiss)}
+      labelledBy="setup-wizard-title"
+      overlayClassName="modal-overlay setup-wizard-overlay"
+      className="setup-wizard-card"
     >
-      <div className="setup-wizard-card">
         <div className="setup-wizard-header">
           <div className="setup-wizard-title-wrap">
             <Icon name="WandSparkles" size={24} className="setup-icon" />
@@ -84,23 +86,12 @@ export default function SetupWizard({ state, updateState, onFinish, onDismiss, h
           {step === 1 && (
             <div className="setup-step">
               <p className="step-desc">يرجى إدخال البيانات الأساسية للمدرسة ليتم اعتمادها تلقائيًا في كل الشهادات.</p>
-              <BoundInput
-                label="اسم المدرسة بالعربية *"
-                value={state.schoolNameAr}
-                onChange={schoolNameAr => {
-                  updateState({ schoolNameAr });
-                  if (errors.schoolNameAr) setErrors(e => ({ ...e, schoolNameAr: null }));
-                }}
-                ar
-              />
-              {errors.schoolNameAr && <p className="field-error-msg">{errors.schoolNameAr}</p>}
-
-              <BoundInput
-                label="School Name in English (اختياري)"
-                value={state.schoolNameEn}
-                onChange={schoolNameEn => updateState({ schoolNameEn })}
-                en
-              />
+              <div className="field">
+                <label className="field-label">اسم المدرسة</label>
+                <div className="field-input ar" style={{ background: '#f5f5f5', color: '#888', cursor: 'not-allowed' }}>
+                  {state.schoolNameAr || 'أم الفضل بنت الحارث ح ٢'}
+                </div>
+              </div>
 
               <BoundInput
                 label="العام الدراسي"
@@ -131,7 +122,7 @@ export default function SetupWizard({ state, updateState, onFinish, onDismiss, h
                 }}
                 ar
               />
-              {errors.teacherNameAr && <p className="field-error-msg">{errors.teacherNameAr}</p>}
+              {errors.teacherNameAr && <p className="field-error-msg" role="alert">{errors.teacherNameAr}</p>}
 
               <BoundInput
                 label="Teacher Name in English (اختياري)"
@@ -169,7 +160,7 @@ export default function SetupWizard({ state, updateState, onFinish, onDismiss, h
                 }}
                 ar
               />
-              {errors.principalNameAr && <p className="field-error-msg">{errors.principalNameAr}</p>}
+              {errors.principalNameAr && <p className="field-error-msg" role="alert">{errors.principalNameAr}</p>}
 
               <BoundInput
                 label="Principal Name in English (اختياري)"
@@ -293,7 +284,6 @@ export default function SetupWizard({ state, updateState, onFinish, onDismiss, h
             </button>
           )}
         </div>
-      </div>
-    </div>
+    </Dialog>
   );
 }

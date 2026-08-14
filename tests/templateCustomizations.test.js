@@ -111,7 +111,7 @@ test('sanitizer recovers valid sibling fields and drops unsafe or unknown data',
       },
     },
   );
-  assert.equal('editorial-behavior' in sanitized.editorial.elements, false);
+  assert.equal('editorial-behavior' in sanitized.editorial.elements, true);
   assert.equal('unknown' in sanitized.editorial.elements, false);
   assert.equal(
     JSON.stringify(sanitized).includes('unsafe'),

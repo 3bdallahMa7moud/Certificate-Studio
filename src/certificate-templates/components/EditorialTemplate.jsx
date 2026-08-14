@@ -2,8 +2,8 @@ import React from 'react';
 import { getBehavior, getSubject } from '../templateUtils.js';
 import {
   displayDate,
+  displayAcademicYear,
   displayTerm,
-  localizedPair,
   primaryDisplayName,
   roleLabel,
   secondaryEnglishName,
@@ -17,6 +17,7 @@ import {
   titleFlowClass,
 } from '../templateUtils.js';
 import {
+  AchievementText,
   StudentName,
   mergeStaticProps,
 } from './TemplatePrimitives.jsx';
@@ -98,7 +99,7 @@ export default function EditorialTemplate({ state, render }) {
               { className: 'est' },
             )}
           >
-            {state.academicYear}
+            {displayAcademicYear(state)}
           </div>
         </div>
 
@@ -352,8 +353,14 @@ export default function EditorialTemplate({ state, render }) {
         <div className="right-mid">
           <div className="row">
             <div className="lab">Achievement</div>
-            <div className="val val-ar">{localizedPair(state, behavior.ar, behavior.en)}</div>
-            {shouldShowAr(state) && shouldShowEn(state) && <div className="val">{behavior.en}</div>}
+            <div className="val val-ar">
+              <AchievementText
+                state={state}
+                element={element}
+                elementId="editorial-behavior"
+                partClassName="certificate-achievement-part"
+              />
+            </div>
           </div>
           <div className="row">
             <div className="lab">Class</div>
@@ -386,7 +393,7 @@ export default function EditorialTemplate({ state, render }) {
                 },
               )}
             >
-              {state.academicYear}
+              {displayAcademicYear(state)}
             </div>
           </div>
           <div className="row">

@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { getTemplateDefaults } from '../../src/certificate-templates/templateDefaults.js';
+import DirectEditOverlay from './DirectEditOverlay.jsx';
 import EditableElementFrame from './EditableElementFrame.jsx';
 
 const useClientLayoutEffect = typeof window === 'undefined'
@@ -96,9 +97,54 @@ export default function CertificateEditorOverlay({ state, editor }) {
   return (
     <div
       className="certificate-editor-overlay"
-      data-selection-mode="navigator"
+      data-selection-mode="canvas"
       aria-hidden={false}
     >
+      {targets.map(target => {
+        const isSelected = selectedTarget?.key === target.key;
+        return (
+          <button
+            key={target.key}
+            type="button"
+            className={`certificate-editor-hit-target${isSelected ? ' is-selected' : ''}`}
+            style={{
+              left: target.rect.x,
+              top: target.rect.y,
+              width: target.rect.width,
+              height: target.rect.height,
+            }}
+            aria-label={`تحديد ${target.label}`}
+            aria-pressed={isSelected}
+            onFocus={() => {
+              if (!isSelected) editor?.select?.(target);
+            }}
+            onPointerDown={event => {
+              event.stopPropagation();
+              if (!isSelected) editor?.select?.(target);
+            }}
+            onClick={event => {
+              event.stopPropagation();
+              if (!isSelected) editor?.select?.(target);
+            }}
+            onDoubleClick={event => {
+              event.stopPropagation();
+              if (target.directEditable) editor?.beginDirectEdit?.(target);
+            }}
+            onKeyDown={event => {
+              if (event.key.startsWith('Arrow')) {
+                event.preventDefault();
+                if (!isSelected) editor?.select?.(target);
+                editor?.nudgeSelected?.(event.key, event.shiftKey, target.rect);
+                return;
+              }
+              if (event.key === 'Enter' && target.directEditable) {
+                event.preventDefault();
+                editor?.beginDirectEdit?.(target);
+              }
+            }}
+          />
+        );
+      })}
       {selectedTarget && !editor?.directEdit && (
         <EditableElementFrame
           rect={editor?.frameRect || selectedTarget.rect}
@@ -118,6 +164,18 @@ export default function CertificateEditorOverlay({ state, editor }) {
           onDragStop={next => editor.commitGeometry?.(selectedTarget.rect, next)}
           onResize={next => editor.previewGeometry?.(selectedTarget.rect, next)}
           onResizeStop={next => editor.commitGeometry?.(selectedTarget.rect, next)}
+          onDirectEdit={selectedTarget.directEditable
+            ? () => editor.beginDirectEdit?.(selectedTarget)
+            : undefined}
+        />
+      )}
+      {selectedTarget && editor?.directEdit && (
+        <DirectEditOverlay
+          rect={editor?.frameRect || selectedTarget.rect}
+          edit={editor.directEdit}
+          onChange={editor.updateDirectEdit}
+          onCommit={editor.commitDirectEdit}
+          onCancel={editor.cancelDirectEdit}
         />
       )}
     </div>

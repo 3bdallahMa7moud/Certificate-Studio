@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  displayAcademicYear,
   displayDate,
   getSubject,
   primaryDisplayName,
@@ -12,10 +13,13 @@ import {
   titleFlowClass,
 } from '../templateUtils.js';
 import {
+  AchievementText,
   StudentName,
   TemplateLogo,
   mergeStaticProps,
+  CertificateMessage,
 } from './TemplatePrimitives.jsx';
+import '../styles/JungleFriendsTemplate.css';
 
 const PREFIX = 'jungle-friends';
 
@@ -51,6 +55,11 @@ export default function JungleFriendsTemplate({ state, render }) {
   return (
     <div className="cert-jungle-friends">
       <aside className="jungle-scene" aria-hidden="true">
+        <div className="jungle-art" aria-hidden="true">
+          <div className="jungle-leaf jungle-leaf-1" />
+          <div className="jungle-leaf jungle-leaf-2" />
+          <div className="jungle-leaf jungle-leaf-3" />
+        </div>
         <div className="jungle-canopy">
           <span className="jungle-leaf jungle-leaf-one" />
           <span className="jungle-leaf jungle-leaf-two" />
@@ -198,12 +207,12 @@ export default function JungleFriendsTemplate({ state, render }) {
                 occurrenceId: `${PREFIX}-message`,
               },
               {
-                className: `jungle-message ${textFlowClass(state.customMessage)}`,
-                dir: textDirection(state.customMessage),
+                className: `jungle-message ${textFlowClass(state.customMessageAr || state.customMessageEn || '')}`,
+                dir: textDirection(state.customMessageAr || state.customMessageEn || ''),
               },
             )}
           >
-            {state.customMessage}
+            <CertificateMessage state={state} fallbackAr="تقديراً للجهد الرائع والمشاركة الفعالة التي أظهرت روح الفريق." fallbackEn="In recognition of outstanding effort and active participation showing team spirit." />
           </div>
 
           <div className="jungle-facts">
@@ -264,6 +273,22 @@ export default function JungleFriendsTemplate({ state, render }) {
               </div>
             </div>
 
+            <div className="jungle-fact jungle-achievement-fact">
+              <span className="jungle-fact-leaf" aria-hidden="true" />
+              <div className="jungle-fact-copy">
+                <span className="jungle-fact-label">
+                  {roleLabel(state, 'الإنجاز', 'Achievement')}
+                </span>
+                <AchievementText
+                  state={state}
+                  element={element}
+                  elementId={`${PREFIX}-achievement`}
+                  className="jungle-fact-value"
+                  partClassName="certificate-achievement-part"
+                />
+              </div>
+            </div>
+
             <div className="jungle-fact jungle-year-fact">
               <span className="jungle-fact-leaf" aria-hidden="true" />
               <div className="jungle-fact-copy">
@@ -280,7 +305,7 @@ export default function JungleFriendsTemplate({ state, render }) {
                     { className: 'jungle-fact-value' },
                   )}
                 >
-                  {state.academicYear || '—'}
+                  {displayAcademicYear(state)}
                 </span>
               </div>
             </div>

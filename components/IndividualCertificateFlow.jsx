@@ -9,10 +9,12 @@ import {
   getGenderAwareMessage,
 } from '../src/context/certificateTypes.js';
 import {
+  BEHAVIORS,
   GRADE_LEVELS,
   LANGUAGE_MODES,
   SUBJECTS,
   genSerial,
+  getCurrentAcademicYear,
 } from '../src/context/data.js';
 import { dateInputValue } from '../src/context/helpers.js';
 import { validateCertificateState } from '../src/services/certificateValidator.js';
@@ -51,22 +53,34 @@ export default function IndividualCertificateFlow({
         grade: student.grade || state.grade,
         subject: student.subject || state.subject,
         behavior: student.behavior || state.behavior,
-        customMessage: student.customMessage || state.customMessage,
+        achievementAr: student.achievementAr || state.achievementAr,
+        achievementEn: student.achievementEn || state.achievementEn,
+        customMessageAr: student.customMessageAr || student.customMessage || state.customMessageAr || state.customMessage,
+        customMessageEn: student.customMessageEn || state.customMessageEn,
         serial: student.serial || genSerial(),
       });
-      setUserHasCustomizedMessage(Boolean(student.customMessage));
+      setUserHasCustomizedMessage(Boolean(student.customMessageAr || student.customMessage));
     }
+  };
+
+  const handleAchievementPresetSelect = (behaviorId) => {
+    const behavior = BEHAVIORS.find(item => item.id === behaviorId) || BEHAVIORS[0];
+    updateState({
+      behavior: behavior.id,
+      achievementAr: behavior.ar,
+      achievementEn: behavior.en,
+    });
   };
 
   const handleTypeSelect = (typeId) => {
     const certType = getCertificateType(typeId);
     const suggestedMsg = getGenderAwareMessage(typeId, messageStyle, state.gender);
 
-    if (userHasCustomizedMessage && state.customMessage) {
+    if (userHasCustomizedMessage && (state.customMessageAr || state.customMessage)) {
       if (window.confirm('لقد قمتِ بتعديل نص الشهادة سابقاً. هل ترغبين في استبدال النص بالنص المقترح لهذا النوع؟')) {
         updateState({
           certificateType: typeId,
-          customMessage: suggestedMsg,
+          customMessageAr: suggestedMsg,
         });
         setUserHasCustomizedMessage(false);
       } else {
@@ -75,7 +89,7 @@ export default function IndividualCertificateFlow({
     } else {
       updateState({
         certificateType: typeId,
-        customMessage: suggestedMsg,
+        customMessageAr: suggestedMsg,
       });
     }
   };
@@ -83,7 +97,7 @@ export default function IndividualCertificateFlow({
   const handleStyleSelect = (styleId) => {
     setMessageStyle(styleId);
     const suggestedMsg = getGenderAwareMessage(state.certificateType || 'academic_excellence', styleId, state.gender);
-    updateState({ customMessage: suggestedMsg });
+    updateState({ customMessageAr: suggestedMsg });
     setUserHasCustomizedMessage(false);
   };
 
@@ -95,7 +109,7 @@ export default function IndividualCertificateFlow({
         messageStyle,
         genderValue,
       );
-      updateState({ customMessage: suggestedMsg });
+      updateState({ customMessageAr: suggestedMsg });
     }
   };
 
@@ -163,7 +177,11 @@ export default function IndividualCertificateFlow({
 
       {/* Validation alert banner */}
       {validationResult && (
-        <div className={`validation-alert ${validationResult.isValid ? 'alert-warning' : 'alert-error'}`}>
+        <div
+          className={`validation-alert ${validationResult.isValid ? 'alert-warning' : 'alert-error'}`}
+          role={validationResult.errors.length ? 'alert' : 'status'}
+          aria-live={validationResult.errors.length ? 'assertive' : 'polite'}
+        >
           {validationResult.errors.length > 0 && (
             <div className="val-errors-wrap">
               <strong><Icon name="AlertTriangle" size={16} /> تعذّر التصدير بسبب الأخطاء التالية:</strong>
@@ -293,18 +311,42 @@ export default function IndividualCertificateFlow({
             </select>
           </Field>
 
+          <Field label="نوع التميّز">
+            <select
+              className="field-input"
+              value={state.behavior}
+              onChange={e => handleAchievementPresetSelect(e.target.value)}
+            >
+              {BEHAVIORS.map(item => <option key={item.id} value={item.id}>{item.ar}</option>)}
+            </select>
+          </Field>
+
+          <BoundInput
+            label="نص التميّز بالعربية"
+            value={state.achievementAr || ''}
+            onChange={achievementAr => updateState({ achievementAr })}
+            ar
+          />
+
+          <BoundInput
+            label="Achievement in English"
+            value={state.achievementEn || ''}
+            onChange={achievementEn => updateState({ achievementEn })}
+            en
+          />
+
           <Field label="تاريخ الإصدار والعام الدراسي">
             <div className="grid-2">
               <input
                 type="date"
                 className="field-input en"
                 value={dateInputValue(state.date)}
-                onChange={e => updateState({ date: new Date(e.target.value + 'T12:00:00').toISOString() })}
+                onChange={e => updateState({ date: e.target.value ? new Date(e.target.value + 'T12:00:00').toISOString() : '' })}
               />
               <input
                 type="text"
                 className="field-input en"
-                placeholder="2025 / 2026"
+                placeholder={getCurrentAcademicYear()}
                 value={state.academicYear}
                 onChange={e => updateState({ academicYear: e.target.value })}
               />
@@ -330,15 +372,29 @@ export default function IndividualCertificateFlow({
             </div>
           </div>
 
-          <Field label="نص الشهادة (قابل للتعديل المباشر) *">
+          <Field label="نص الشهادة العربي (قابل للتعديل المباشر) *">
             <textarea
               className="field-textarea ar"
-              rows={4}
-              value={state.customMessage}
+              rows={3}
+              value={state.customMessageAr ?? state.customMessage ?? ''}
               onChange={e => {
-                updateState({ customMessage: e.target.value });
+                updateState({ customMessageAr: e.target.value });
                 setUserHasCustomizedMessage(true);
               }}
+              dir="rtl"
+            />
+          </Field>
+
+          <Field label="نص الشهادة الإنجليزي (اختياري)">
+            <textarea
+              className="field-textarea en"
+              rows={3}
+              value={state.customMessageEn || ''}
+              onChange={e => {
+                updateState({ customMessageEn: e.target.value });
+                setUserHasCustomizedMessage(true);
+              }}
+              dir="ltr"
             />
           </Field>
         </Section>

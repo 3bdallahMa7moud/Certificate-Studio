@@ -19,18 +19,18 @@ export default function TeacherSettings({
     <div className="teacher-settings-container">
       <div className="settings-page-header">
         <div>
-          <h2 className="settings-page-title">
+          <h1 className="settings-page-title">
             <Icon name="Sliders" size={24} /> إعدادات المعلمة والمدرسة
-          </h2>
+          </h1>
           <p className="settings-page-subtitle">
             احفظي معلومات المدرسة والكادر مرة واحدة ليتم استخدامها تلقائياً في كل الشهادات بدون تكرار.
           </p>
         </div>
         <div className="settings-header-actions">
-          <button className="btn btn-ghost" onClick={onOpenSetup}>
+          <button type="button" className="btn btn-ghost" onClick={onOpenSetup}>
             <Icon name="WandSparkles" /> إعادة تشغيل معالج الإعداد
           </button>
-          <button className="btn btn-ghost danger-ghost" onClick={resetSettings}>
+          <button type="button" className="btn btn-ghost danger-ghost" onClick={resetSettings}>
             <Icon name="RotateCcw" /> إعادة الضبط الافتراضي
           </button>
         </div>
@@ -39,18 +39,12 @@ export default function TeacherSettings({
       <div className="settings-sections-grid">
         {/* School Information Section */}
         <Section title="بيانات المدرسة والهوية" sub="SCHOOL IDENTITY">
-          <BoundInput
-            label="اسم المدرسة بالعربية *"
-            value={state.schoolNameAr}
-            onChange={schoolNameAr => updateState({ schoolNameAr })}
-            ar
-          />
-          <BoundInput
-            label="School Name in English (اختياري)"
-            value={state.schoolNameEn}
-            onChange={schoolNameEn => updateState({ schoolNameEn })}
-            en
-          />
+          <div className="field">
+            <label className="field-label">اسم المدرسة</label>
+            <div className="field-input ar" style={{ background: '#f5f5f5', color: '#888', cursor: 'not-allowed' }}>
+              {state.schoolNameAr || 'أم الفضل بنت الحارث ح ٢'}
+            </div>
+          </div>
           <BoundInput
             label="العام الدراسي"
             value={state.academicYear}
@@ -160,8 +154,10 @@ export default function TeacherSettings({
               {THEMES.map(item => (
                 <button
                   key={item.id}
+                  type="button"
                   className={`theme-tile ${state.theme === item.id && !state.customPrimary && !state.customAccent ? 'selected' : ''}`}
                   onClick={() => updateState({ theme: item.id, customPrimary: '', customAccent: '' })}
+                  aria-pressed={state.theme === item.id && !state.customPrimary && !state.customAccent}
                 >
                   <div className="theme-dots">
                     <span className="theme-dot" style={{ background: item.primary }} />

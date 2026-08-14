@@ -9,9 +9,18 @@ body {
 }
 
 .qa-title {
-  margin-bottom: 18px;
+  margin-bottom: 4px;
   font-family: 'Tajawal', sans-serif;
   color: #1a1f36;
+}
+
+.qa-summary {
+  margin: 0 0 18px;
+  color: rgba(0, 0, 0, 0.62);
+  font-family: 'Outfit', 'Tajawal', sans-serif;
+  font-size: 13px;
+  direction: ltr;
+  text-align: left;
 }
 
 .qa-grid {
@@ -29,8 +38,9 @@ body {
 
 .qa-caption {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px 12px;
   margin-bottom: 8px;
   font-family: 'Outfit', 'Tajawal', sans-serif;
   font-size: 12px;
@@ -38,6 +48,24 @@ body {
   direction: ltr;
 }
 
+.qa-caption strong {
+  margin-right: auto;
+}
+
+.qa-caption span {
+  white-space: nowrap;
+}
+
 .qa-card .cert {
   box-shadow: 0 14px 34px -24px rgba(0, 0, 0, 0.45);
+}
+
+@media (max-width: 900px) {
+  .qa-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .qa-page {
+    padding: 12px;
+  }
 }

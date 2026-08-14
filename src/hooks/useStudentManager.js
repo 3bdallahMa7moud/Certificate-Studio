@@ -4,7 +4,7 @@
  * search, filter by subject/grade, sort, multi-select, derived stats.
  * All mutations to batchStudents still flow through updateState/setState.
  */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { duplicateIndexes, normalizeText } from '../context/helpers.js';
 
 /** @param {object[]} students - batchStudents array */
@@ -14,7 +14,15 @@ export function useStudentManager(students) {
   const [filterGrade, setFilterGrade]     = useState('');
   const [sortKey, setSortKey]             = useState('index');   // 'index'|'name'|'grade'|'subject'|'behavior'
   const [sortDir, setSortDir]             = useState('asc');
-  const [selectedSerials, setSelectedSerials] = useState(new Set());
+  const [selectedRowIds, setSelectedRowIds] = useState(new Set());
+
+  useEffect(() => {
+    const available = new Set(students.map(student => student.rowId).filter(Boolean));
+    setSelectedRowIds(previous => {
+      const next = new Set([...previous].filter(rowId => available.has(rowId)));
+      return next.size === previous.size ? previous : next;
+    });
+  }, [students]);
 
   // ── Duplicate map (by normalised name) ──────────────────────────────
   const duplicateSet = useMemo(() => duplicateIndexes(students), [students]);
@@ -82,28 +90,28 @@ export function useStudentManager(students) {
   };
 
   // ── Selection helpers ────────────────────────────────────────────────
-  const toggleSelect = (serial) => {
-    setSelectedSerials(prev => {
+  const toggleSelect = (rowId) => {
+    setSelectedRowIds(prev => {
       const next = new Set(prev);
-      if (next.has(serial)) next.delete(serial);
-      else next.add(serial);
+      if (next.has(rowId)) next.delete(rowId);
+      else next.add(rowId);
       return next;
     });
   };
 
   const selectAllVisible = () => {
-    setSelectedSerials(prev => {
+    setSelectedRowIds(prev => {
       const next = new Set(prev);
-      visibleStudents.forEach(s => next.add(s.serial));
+      visibleStudents.forEach(s => next.add(s.rowId));
       return next;
     });
   };
 
-  const clearSelection = () => setSelectedSerials(new Set());
+  const clearSelection = () => setSelectedRowIds(new Set());
 
   const isAllVisibleSelected =
     visibleStudents.length > 0 &&
-    visibleStudents.every(s => selectedSerials.has(s.serial));
+    visibleStudents.every(s => selectedRowIds.has(s.rowId));
 
   // ── Reset filters (useful after import) ─────────────────────────────
   const resetFilters = () => {
@@ -122,7 +130,10 @@ export function useStudentManager(students) {
     filterGrade, setFilterGrade,
     sortKey, sortDir, toggleSort,
     // selection
-    selectedSerials, setSelectedSerials,
+    selectedRowIds, setSelectedRowIds,
+    // Transitional aliases for callers that have not migrated their prop names.
+    selectedSerials: selectedRowIds,
+    setSelectedSerials: setSelectedRowIds,
     toggleSelect,
     selectAllVisible,
     clearSelection,

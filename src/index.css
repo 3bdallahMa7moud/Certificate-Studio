@@ -1,4 +1,4 @@
-@import './certificate-templates/childTemplates.css';
+@import './fonts.css';
 
 /* =========================================
      RESET & TOKENS
@@ -12,28 +12,19 @@
 
   :root {
     --topbar-height: 72px;
-    --shell-bg: #EFEAE2;
+    --shell-bg: #F5F1EA;
     --card-bg: #FFFFFF;
     --hairline: rgba(0, 0, 0, 0.08);
     --hairline-strong: rgba(0, 0, 0, 0.15);
-    --muted: rgba(0, 0, 0, 0.45);
-    --muted-soft: rgba(0, 0, 0, 0.6);
+    --muted: #687181;
+    --muted-soft: #505A6A;
 
     /* Theme — replaced via [data-theme] */
-    --primary: #0F1B2D;
+    --primary: #142033;
     --accent: #C9A35F;
     --soft: #FAF7F2;
-    --text: #1A1F36;
+    --text: #142033;
   }
-
-  body[data-theme="midnight"] { --primary:#0F1B2D; --accent:#C9A35F; --soft:#FAF7F2; --text:#1A1F36; }
-  body[data-theme="burgundy"] { --primary:#5B1A2A; --accent:#D4A574; --soft:#F7F0E6; --text:#2D0F18; }
-  body[data-theme="sage"]     { --primary:#2C3E2D; --accent:#B87333; --soft:#F0EDE3; --text:#1F2B20; }
-  body[data-theme="plum"]     { --primary:#3D1F47; --accent:#E8A598; --soft:#FBF5F2; --text:#2A1230; }
-  body[data-theme="ocean"]    { --primary:#0A3D62; --accent:#F9CA24; --soft:#F0F7FF; --text:#0A2540; }
-  body[data-theme="forest"]   { --primary:#1B4332; --accent:#95D5B2; --soft:#F0FAF4; --text:#1B2E22; }
-  body[data-theme="sunset"]   { --primary:#6C3483; --accent:#F39C12; --soft:#FDF6F0; --text:#3D1A4F; }
-  body[data-theme="classic"]  { --primary:#212121; --accent:#9E9E9E; --soft:#FAFAFA; --text:#212121; }
 
   body {
     font-family: 'Tajawal', 'Outfit', sans-serif;
@@ -166,13 +157,13 @@
     overflow: visible;
   }
   @media (min-width: 1024px) {
-    .layout { grid-template-columns: minmax(0, 1fr) 420px; align-items: start; }
+    .layout { grid-template-columns: minmax(0, 1fr) minmax(360px, 390px); align-items: start; }
   }
 
   /* =========================================
      PREVIEW PANE
      ========================================= */
-  .preview-pane { order: 2; min-height: 0; overflow: visible; }
+  .preview-pane { order: 2; min-height: 0; min-width: 0; overflow: visible; }
   @media (min-width: 1024px) {
     .preview-pane {
       order: 1;
@@ -225,7 +216,7 @@
      ========================================= */
   .cert {
     width: 100%;
-    aspect-ratio: 297 / 210;
+    aspect-ratio: auto;
     background: var(--soft);
     color: var(--text);
     container-type: inline-size;
@@ -240,15 +231,6 @@
     position: relative;
     display: flex;
     flex-direction: column;
-  }
-
-  /* Editorial landscape aspect ratio override */
-  body:not([data-paper="a4-portrait"]) .cert:has(.cert-editorial) {
-    aspect-ratio: 297 / 188;
-  }
-
-  body[data-paper] .cert {
-    aspect-ratio: var(--paper-ratio, 297 / 210);
   }
 
   .student-name-ar {
@@ -356,6 +338,15 @@
     color: var(--primary);
     width: 100%;
     max-width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .cert-editorial .student-name-ar bdi {
+    display: block;
+    width: 100%;
+    text-align: center;
   }
   .cert-editorial .student-name-en {
     font-family: 'Marcellus', serif;
@@ -364,6 +355,7 @@
     margin-top: 1cqw; letter-spacing: 0.05em;
     direction: ltr;
     text-align: center;
+    width: 100%;
   }
   .cert-editorial .message {
     font-family: 'Tajawal', sans-serif;
@@ -497,23 +489,23 @@
     font-size: 1.3cqw;
     text-align: left;
   }
-  body[data-language="en"] .cert-editorial .right {
+  .certificate-frame[data-language-mode="en"] .cert-editorial .right {
     direction: ltr;
     text-align: left;
   }
-  body[data-language="en"] .cert-editorial .right-top,
-  body[data-language="en"] .cert-editorial .right-mid {
+  .certificate-frame[data-language-mode="en"] .cert-editorial .right-top,
+  .certificate-frame[data-language-mode="en"] .cert-editorial .right-mid {
     align-items: flex-start;
     text-align: left;
   }
-  body[data-language="en"] .cert-editorial .right-mid .row {
+  .certificate-frame[data-language-mode="en"] .cert-editorial .right-mid .row {
     width: 100%;
     text-align: left;
   }
-  body[data-language="en"] .cert-editorial .right .label,
-  body[data-language="en"] .cert-editorial .right .school-en,
-  body[data-language="en"] .cert-editorial .right-mid .row .lab,
-  body[data-language="en"] .cert-editorial .right-mid .row .val {
+  .certificate-frame[data-language-mode="en"] .cert-editorial .right .label,
+  .certificate-frame[data-language-mode="en"] .cert-editorial .right .school-en,
+  .certificate-frame[data-language-mode="en"] .cert-editorial .right-mid .row .lab,
+  .certificate-frame[data-language-mode="en"] .cert-editorial .right-mid .row .val {
     direction: ltr;
     text-align: left;
   }
@@ -614,6 +606,15 @@
     color: var(--primary); line-height: 1.05;
     width: 100%;
     max-width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .cert-geometric .student-name-ar bdi {
+    display: block;
+    width: 100%;
+    text-align: center;
   }
   .cert-geometric .student-name-en {
     font-family: 'Marcellus', serif;
@@ -621,6 +622,7 @@
     color: var(--muted-soft); margin-top: 0.8cqw;
     direction: ltr;
     text-align: center;
+    width: 100%;
   }
   .cert-geometric .grade-tag {
     display: inline-block;
@@ -736,6 +738,15 @@
     letter-spacing: 0;
     width: 100%;
     max-width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .cert-minimal .student-name-ar bdi {
+    display: block;
+    width: 100%;
+    text-align: center;
   }
   .cert-minimal .hairline {
     width: 30%; height: 1px;
@@ -748,6 +759,7 @@
     color: var(--muted-soft); text-transform: uppercase;
     direction: ltr;
     text-align: center;
+    width: 100%;
   }
   .cert-minimal .achievement-line {
     margin-top: 3cqw;
@@ -829,9 +841,10 @@
   .tabs {
     display: flex;
     border-bottom: 1px solid var(--hairline);
+    flex-wrap: wrap;
   }
   .tab {
-    flex: 1;
+    flex: 1 1 auto;
     padding: 14px 16px;
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     font-size: 14px; font-weight: 600;
@@ -848,7 +861,6 @@
     flex: 1;
     min-height: 0;
     overflow-y: auto;
-    overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
   }
   .panel.active { display: block; animation: fadeUp 0.35s ease-out; }
@@ -1210,6 +1222,12 @@
     font-family: 'Outfit', sans-serif;
   }
   .table-input.small { min-width: 66px; }
+  .table-achievement-input {
+    display: block;
+    min-width: 150px;
+    margin-top: 6px;
+    font-size: 11px;
+  }
 
   .row-actions {
     display: flex;
@@ -1787,6 +1805,16 @@
      PRINT
      ========================================= */
   .print-only { display: none; }
+  .print-only.print-measure-active {
+    display: block;
+    position: fixed;
+    inset: 0 auto auto -100000px;
+    width: var(--print-measure-width, 297mm);
+    height: auto;
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
+  }
   @media print {
     * {
       -webkit-print-color-adjust: exact !important;
@@ -1794,8 +1822,20 @@
     }
     html, body { overflow: visible !important; }
     body { background: white !important; }
+    body > *:not(#root) { display: none !important; }
+    #root { display: block !important; }
+    #root > :not(.print-only) { display: none !important; }
     .no-print { display: none !important; }
     .print-only { display: block !important; }
+    .print-only.print-measure-active {
+      position: static !important;
+      inset: auto !important;
+      width: auto !important;
+      height: auto !important;
+      overflow: visible !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+    }
     .print-page {
       width: 100vw;
       height: 100vh;
@@ -1812,67 +1852,6 @@
       box-shadow: none;
       border-radius: 0;
     }
-  }
-
-  /* =========================================
-     PORTRAIT ORIENTATION STYLES
-     ========================================= */
-  body[data-paper="a4-portrait"] .cert-editorial {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-  }
-
-  body[data-paper="a4-portrait"] .cert-editorial .right {
-    order: -1;
-    padding: 3cqw 4cqw;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2cqw;
-  }
-
-  body[data-paper="a4-portrait"] .cert-editorial .right-mid {
-    display: flex;
-    flex-direction: row;
-    gap: 3cqw;
-  }
-
-  body[data-paper="a4-portrait"] .cert-editorial .right .school-ar {
-    font-size: 2.4cqw;
-  }
-
-  body[data-paper="a4-portrait"] .cert-editorial .left {
-    padding: 4cqw 5cqw 3.5cqw;
-  }
-
-  body[data-paper="a4-portrait"] .cert-editorial .student-name-ar {
-    font-size: 8.5cqw;
-  }
-
-  body[data-paper="a4-portrait"] .cert-geometric .content {
-    padding: 4cqw 5cqw;
-    gap: 2.5cqw;
-  }
-
-  body[data-paper="a4-portrait"] .cert-geometric .student-block {
-    margin: 3cqw 0;
-  }
-
-  body[data-paper="a4-portrait"] .cert-geometric .student-name-ar {
-    font-size: 8cqw;
-  }
-
-  body[data-paper="a4-portrait"] .cert-minimal {
-    padding: 5cqw 4cqw;
-  }
-
-  body[data-paper="a4-portrait"] .cert-minimal .center-block {
-    margin-top: 5cqw;
-    margin-bottom: 5cqw;
-  }
-
-  body[data-paper="a4-portrait"] .cert-minimal .student-name-ar {
-    font-size: 9cqw;
   }
 
   /* IMPORT WIZARD MODAL */
@@ -1924,10 +1903,22 @@
   .wiz-table th { background: var(--soft); font-weight: 600; color: var(--muted); padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--border,rgba(0,0,0,0.08)); white-space: nowrap; position: sticky; top: 0; }
   .wiz-table td { padding: 7px 10px; border-bottom: 1px solid var(--border,rgba(0,0,0,0.05)); color: var(--text); }
   .wiz-table tr:last-child td { border-bottom: 0; }
-  .wiz-table-row { cursor: pointer; transition: background 0.12s; }
+  .wiz-table-row { transition: background 0.12s; }
   .wiz-table-row:hover { background: var(--soft); }
   .wiz-table-row.header-selected td { font-weight: 600; color: var(--primary); }
   .wiz-row-num { width: 32px; text-align: center; color: var(--muted); font-size: 11px; }
+  .wiz-row-select {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+  .wiz-row-select:focus-visible {
+    outline: 3px solid rgba(20, 32, 51, 0.32);
+    outline-offset: 2px;
+  }
   .wiz-cell { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .wiz-mapping-grid { display: flex; flex-direction: column; gap: 6px; }
   .wiz-mapping-head { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 8px; padding: 6px 10px; font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
@@ -2074,10 +2065,6 @@
     /* Prevent a single certificate from splitting across pages */
     .print-only .cert { page-break-inside: avoid !important; break-inside: avoid !important; }
 
-    /* Ensure all content inside .cert is visible */
-    .print-only .cert,
-    .print-only .cert * { overflow: visible !important; }
-
     /* Hard-reset any box-shadows / rounded corners that add whitespace */
     .print-only .print-page,
     .print-only .cert { box-shadow: none !important; border-radius: 0 !important; }
@@ -2178,10 +2165,10 @@
     border-radius: 16px;
   }
   .cert-wrap {
-    width: 100%;
+    width: min(100%, calc((100vh - 210px) * 1.35));
     margin: 0 auto;
     transform-origin: top center;
-    transition: transform 200ms cubic-bezier(0.2, 0, 0, 1);
+    transition: width 200ms ease, transform 200ms cubic-bezier(0.2, 0, 0, 1);
   }
 
   /* ── Fullscreen Preview Modal ─────────────────────────────────── */
@@ -2223,6 +2210,7 @@
   }
   .fullscreen-cert {
     width: 100%; max-width: 960px;
+    max-width: min(960px, calc((92vh - 110px) * 1.25));
   }
 
   /* ── Accessible touch targets and focus states ───────────────── */
@@ -2251,12 +2239,12 @@
   select:focus-visible,
   textarea:focus-visible,
   [tabindex]:focus-visible {
-    outline: 2px solid var(--accent, #C9A35F) !important;
+    outline: 3px solid #1D64D5 !important;
     outline-offset: 2px !important;
   }
 
   .tab:focus-visible {
-    outline: 2px solid var(--accent, #C9A35F) !important;
+    outline: 3px solid #1D64D5 !important;
     outline-offset: -2px !important;
   }
 
@@ -2699,7 +2687,7 @@
   .certificate-editor-hit-target:focus-visible {
     border-color: rgba(28, 116, 255, 0.72);
     background: rgba(28, 116, 255, 0.06);
-    outline: 2px solid rgba(255, 255, 255, 0.9);
+    outline: 3px solid #1D64D5;
     outline-offset: 1px;
   }
 

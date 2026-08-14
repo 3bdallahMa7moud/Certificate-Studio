@@ -1,0 +1,226 @@
+.certificate-frame {
+  --certificate-aspect-ratio: 297 / 210;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: var(--certificate-aspect-ratio);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  container-type: inline-size;
+  isolation: isolate;
+  background: var(--surface, var(--soft, #fff));
+  color: var(--text, #182235);
+}
+
+.certificate-frame,
+.certificate-frame * {
+  box-sizing: border-box;
+}
+
+.certificate-frame > .certificate-theme-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--surface, var(--soft, #fff));
+  color: var(--text, #182235);
+}
+
+.certificate-frame[data-language-mode="en"] {
+  direction: ltr;
+  font-family: var(--certificate-font-en, 'Outfit', sans-serif);
+}
+
+.certificate-frame[data-language-mode="ar"],
+.certificate-frame[data-language-mode="both"] {
+  direction: rtl;
+  font-family: var(--certificate-font-ar, 'Tajawal', sans-serif);
+}
+
+.certificate-frame .certificate-locale-isolate,
+.certificate-frame bdi[lang] {
+  unicode-bidi: isolate;
+}
+
+.certificate-frame .certificate-locale-isolate[lang="ar"] {
+  direction: rtl;
+  font-family: var(--certificate-font-ar, 'Tajawal', sans-serif);
+}
+
+.certificate-frame .certificate-locale-isolate[lang="en"] {
+  direction: ltr;
+  font-family: var(--certificate-font-en, 'Outfit', sans-serif);
+}
+
+.certificate-frame bdi[lang="ar"] {
+  direction: rtl;
+}
+
+.certificate-frame bdi[lang="en"] {
+  direction: ltr;
+}
+
+.certificate-frame .certificate-message-parts {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35em;
+}
+
+.certificate-frame .certificate-message-part {
+  display: block;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.certificate-frame .certificate-message-part[lang="ar"] {
+  text-align: right;
+}
+
+.certificate-frame .certificate-message-part[lang="en"] {
+  text-align: left;
+  font-family: var(--certificate-font-en, 'Outfit', sans-serif);
+}
+
+.certificate-frame .cert-logo-template,
+.certificate-frame [class*="signature"],
+.certificate-frame [class*="sign-box"],
+.certificate-frame [class*="sig-block"] {
+  min-width: 0;
+}
+
+.certificate-frame img.cert-logo,
+.certificate-frame img.cert-sig,
+.certificate-frame img[class*="signature-image"],
+.certificate-frame img[class*="sig-img"] {
+  object-fit: contain;
+  object-position: center;
+}
+
+.certificate-frame .cert-sig-teacher {
+  transform: scale(var(--teacher-sig-scale, 1));
+  transform-origin: center bottom;
+}
+
+.certificate-frame .cert-sig-principal {
+  transform: scale(var(--principal-sig-scale, 1));
+  transform-origin: center bottom;
+}
+
+/* Student names have one layout contract in every render mode. */
+.certificate-frame :where(.student-name-ar, .student-name-en) {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-inline: auto;
+  overflow: hidden;
+  line-height: 1.16;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.certificate-frame .single-line-name {
+  max-height: 1.2em;
+  white-space: nowrap;
+}
+
+.certificate-frame .multi-line-name {
+  display: -webkit-box;
+  max-height: 2.4em;
+  overflow: hidden;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.certificate-frame--thumbnail {
+  pointer-events: none;
+  user-select: none;
+}
+
+.certificate-frame .cert-logo-template > img.cert-logo {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.certificate-frame--thumbnail,
+.certificate-frame--print,
+.certificate-frame--export,
+.certificate-frame--thumbnail *,
+.certificate-frame--print *,
+.certificate-frame--export * {
+  animation: none;
+  transition: none;
+}
+
+/* Real CertificateFrame thumbnails used by TemplateGallery. */
+.template-gallery-thumb.template-gallery-thumb--live {
+  min-height: 0;
+  aspect-ratio: 297 / 210;
+  padding: 0;
+  background: #e7e9ee;
+}
+
+.template-gallery-frame-stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  overflow: hidden;
+  place-items: stretch;
+  background: #e7e9ee;
+  pointer-events: none;
+}
+
+.template-gallery-frame-stage > .certificate-frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Shared visually-hidden utility used by labels and live announcements. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
+}
+
+body .cert:has(> .certificate-frame[data-paper-size="a4-landscape"]) {
+  aspect-ratio: 297 / 210 !important;
+  overflow: hidden;
+}
+
+body .cert:has(> .certificate-frame[data-paper-size="letter-landscape"]) {
+  aspect-ratio: 279.4 / 215.9 !important;
+  overflow: hidden;
+}
+
+@media print {
+  .print-only .cert:has(> .certificate-frame[data-paper-size]),
+  .print-only .certificate-frame,
+  .print-only .certificate-frame > .certificate-theme-container {
+    overflow: hidden !important;
+  }
+
+  .certificate-frame,
+  .certificate-frame * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

@@ -1,6 +1,7 @@
 import React from 'react';
-import { getBehavior, getSubject } from '../templateUtils.js';
+import { getSubject } from '../templateUtils.js';
 import {
+  displayAcademicYear,
   displayDate,
   displayTerm,
   localizedPair,
@@ -14,6 +15,7 @@ import {
   textFlowClass,
 } from '../templateUtils.js';
 import {
+  AchievementText,
   StudentName,
   TemplateLogo,
   mergeStaticProps,
@@ -28,7 +30,6 @@ export default function GeometricTemplate({ state, render }) {
   const templateText = (elementId, locale, fallback) =>
     render?.text?.(elementId, locale, fallback) ?? fallback;
   const subject = getSubject(state.subject);
-  const behavior = getBehavior(state.behavior);
   const messageClass = textFlowClass(state.customMessage);
   const termText = displayTerm(state);
   const termClass = termFlowClass(state);
@@ -94,7 +95,12 @@ export default function GeometricTemplate({ state, render }) {
 
         <div className="pill">
           <span>
-            {localizedPair(state, behavior.ar, behavior.en)}
+            <AchievementText
+              state={state}
+              element={element}
+              elementId="geometric-behavior"
+              partClassName="certificate-achievement-part"
+            />
             {' · '}
             <span
               {...element(
@@ -295,7 +301,7 @@ export default function GeometricTemplate({ state, render }) {
                 inline: true,
               })}
             >
-              {state.academicYear}
+              {displayAcademicYear(state)}
             </span>
             {' · '}
             <span

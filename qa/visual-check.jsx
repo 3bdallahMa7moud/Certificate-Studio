@@ -4,73 +4,43 @@ import '../src/index.css';
 import '../src/App.css';
 import './visual-check.css';
 import Certificate from '../components/Certificate.jsx';
-import { getDefaultState } from '../src/context/data.js';
-import logo from '../src/assets/image.png';
+import {
+  buildQaScenarios,
+  createQaAssets,
+  markQaReady,
+} from './certificate-scenarios.js';
 
-const templates = ['editorial', 'geometric', 'minimal'];
-const languages = [
-  ['ar', 'Arabic only'],
-  ['en', 'English only'],
-  ['both', 'Arabic + English'],
-];
-const nameCases = [
-  {
-    id: 'short',
-    label: 'Short name',
-    studentNameAr: 'ليان علي',
-    studentNameEn: 'Lian Ali',
-  },
-  {
-    id: 'long',
-    label: 'Very long name',
-    studentNameAr: 'عبدالله محمود عادل موسى محمد عبدالعزيز الطويل',
-    studentNameEn: 'Abdallah Mahmoud Adel Mousa Mohamed Abdelaziz Altawil',
-  },
-];
-
-function makeState(template, languageMode, names) {
-  return {
-    ...getDefaultState(),
-    template,
-    languageMode,
-    logo,
-    subject: 'science',
-    behavior: 'creativity',
-    studentNameAr: names.studentNameAr,
-    studentNameEn: names.studentNameEn,
-    customMessage: languageMode === 'en'
-      ? 'In recognition of excellent progress, confident participation, and consistent effort.'
-      : 'بكل فخر واعتزاز، تمنح هذه الشهادة تقديراً للتميز والمشاركة الفعالة والجهد المستمر.',
-  };
-}
+const scenarios = buildQaScenarios(createQaAssets());
 
 function App() {
-  const scenarios = templates.flatMap(template =>
-    languages.flatMap(([languageMode, languageLabel]) =>
-      nameCases.map(names => ({
-        key: `${template}-${languageMode}-${names.id}`,
-        template,
-        languageMode,
-        languageLabel,
-        names,
-        state: makeState(template, languageMode, names),
-      }))
-    )
-  );
-
   return (
     <main className="qa-page">
       <h1 className="qa-title">Certificate Studio Visual QA</h1>
+      <p className="qa-summary">
+        {scenarios.length} scenarios · 12 templates · A4 + Letter · Arabic + English + bilingual
+      </p>
       <div className="qa-grid">
         {scenarios.map(scenario => (
-          <section className="qa-card" key={scenario.key}>
+          <section
+            className="qa-card"
+            key={scenario.key}
+            data-qa-scenario={scenario.key}
+            data-template-id={scenario.template.id}
+            data-paper-size={scenario.paper.id}
+            data-language-mode={scenario.language.id}
+            data-variant={scenario.variant.id}
+          >
             <div className="qa-caption">
-              <strong>{scenario.template}</strong>
-              <span>{scenario.languageLabel}</span>
+              <strong>{scenario.template.labelEn}</strong>
+              <span>{scenario.paper.label}</span>
+              <span>{scenario.language.label}</span>
               <span>{scenario.names.label}</span>
+              <span>{scenario.messages.label}</span>
+              <span>{scenario.variant.assets} assets</span>
+              <span>{scenario.variant.nameFontSize}% name</span>
             </div>
             <div className="cert">
-              <Certificate state={scenario.state} />
+              <Certificate state={scenario.state} mode="preview" />
             </div>
           </section>
         ))}
@@ -80,3 +50,4 @@ function App() {
 }
 
 createRoot(document.getElementById('root')).render(<App />);
+markQaReady(scenarios.length);

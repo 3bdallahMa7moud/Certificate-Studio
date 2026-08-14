@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  displayAcademicYear,
   displayDate,
   getSubject,
   primaryDisplayName,
@@ -12,10 +13,13 @@ import {
   titleFlowClass,
 } from '../templateUtils.js';
 import {
+  AchievementText,
   StudentName,
   TemplateLogo,
   mergeStaticProps,
+  CertificateMessage,
 } from './TemplatePrimitives.jsx';
+import '../styles/IslamicHeritageTemplate.css';
 
 const PREFIX = 'islamic-heritage';
 
@@ -50,24 +54,10 @@ export default function IslamicHeritageTemplate({ state, render }) {
 
   return (
     <div className="cert-islamic-heritage">
-      <div className="islamic-art" aria-hidden="true">
-        <div className="islamic-border-frame" />
-        <span className="islamic-star-corner islamic-star-top-start" />
-        <span className="islamic-star-corner islamic-star-top-end" />
-        <span className="islamic-star-corner islamic-star-bottom-start" />
-        <span className="islamic-star-corner islamic-star-bottom-end" />
-
-        <div className="islamic-arch-silhouette">
-          <svg viewBox="0 0 400 120" preserveAspectRatio="none" className="islamic-arch-svg">
-            <path
-              d="M0,0 L400,0 L400,30 C350,30 310,70 200,110 C90,70 50,30 0,30 Z"
-              fill="rgba(212, 165, 116, 0.15)"
-              stroke="rgba(212, 165, 116, 0.4)"
-              strokeWidth="2"
-            />
-          </svg>
-        </div>
-      </div>
+      <div className="islamic-corner islamic-corner-tl" aria-hidden="true" />
+      <div className="islamic-corner islamic-corner-tr" aria-hidden="true" />
+      <div className="islamic-corner islamic-corner-bl" aria-hidden="true" />
+      <div className="islamic-corner islamic-corner-br" aria-hidden="true" />
 
       <header className="islamic-header">
         <div className="islamic-header-center">
@@ -165,25 +155,29 @@ export default function IslamicHeritageTemplate({ state, render }) {
           })}
         />
 
-        <p
-          className={`islamic-message ${textFlowClass(state.customMessage)}`}
-          dir={textDirection(state.customMessage)}
-          {...element(`${PREFIX}-message`, {
-            contentKey: 'customMessage',
-            occurrenceId: `${PREFIX}-message`,
-          })}
+        <div
+          {...element(
+            `${PREFIX}-message`,
+            {
+              contentKey: 'customMessage',
+              occurrenceId: `${PREFIX}-message`,
+            },
+            {
+              className: `islamic-message ${textFlowClass(state.customMessageAr || state.customMessageEn || '')}`,
+              dir: textDirection(state.customMessageAr || state.customMessageEn || ''),
+            },
+          )}
         >
-          {state.customMessage || 'قد تميز/ت بالجهد المبارك، والسلوك القويم، وحسن الخُلق، مع أطيب الأومنيات بدوام التوفيق والنجاح.'}
-        </p>
+          <CertificateMessage state={state} fallbackAr="قد تميز/ت بالجهد المبارك، والسلوك القويم، وحسن الخُلق، مع أطيب الأمنيات بدوام التوفيق والنجاح." fallbackEn="Has distinguished themself with blessed effort, upright behavior, and good character, with our best wishes for continued success." />
+        </div>
       </main>
 
       <footer className="islamic-meta-bar">
         <div
-          className="islamic-meta-item"
           {...element(`${PREFIX}-grade`, {
             contentKey: 'grade',
             occurrenceId: `${PREFIX}-grade`,
-          })}
+          }, { className: 'islamic-meta-item' })}
         >
           <span className="islamic-meta-label">{showAr ? 'الصف' : 'Grade'}</span>
           <span className="islamic-meta-val">{state.grade}</span>
@@ -220,47 +214,54 @@ export default function IslamicHeritageTemplate({ state, render }) {
           </span>
         </div>
 
+        <div className="islamic-meta-item islamic-achievement-item">
+          <span className="islamic-meta-label">{showAr ? 'الإنجاز' : 'Achievement'}</span>
+          <AchievementText
+            state={state}
+            element={element}
+            elementId={`${PREFIX}-achievement`}
+            className="islamic-meta-val"
+            partClassName="certificate-achievement-part"
+          />
+        </div>
+
         <div
-          className="islamic-meta-item"
           {...element(`${PREFIX}-date`, {
             contentKey: 'date',
             occurrenceId: `${PREFIX}-date`,
-          })}
+          }, { className: 'islamic-meta-item' })}
         >
           <span className="islamic-meta-label">{showAr ? 'التاريخ' : 'Date'}</span>
           <span className="islamic-meta-val">{displayDate(state)}</span>
         </div>
 
         <div
-          className="islamic-meta-item"
           {...element(`${PREFIX}-academic-year`, {
             contentKey: 'academicYear',
             occurrenceId: `${PREFIX}-academic-year`,
-          })}
+          }, { className: 'islamic-meta-item' })}
         >
           <span className="islamic-meta-label">{showAr ? 'العام الدراسي' : 'Year'}</span>
-          <span className="islamic-meta-val">{state.academicYear || '—'}</span>
+          <span className="islamic-meta-val">{displayAcademicYear(state)}</span>
         </div>
       </footer>
 
       <div className="islamic-sign-row">
         <div
-          className="islamic-sign-box"
           {...element(`${PREFIX}-teacher-name`, {
             occurrenceId: teacherPrimaryId,
             preservePosition: true,
-          })}
+          }, { className: 'islamic-sign-box' })}
         >
           {state.teacherSig && (
             <img
               src={state.teacherSig}
               alt=""
-              className="islamic-sig-img"
               {...element(`${PREFIX}-teacher-signature`, {
                 contentKey: 'teacherSig',
                 occurrenceId: `${PREFIX}-teacher-signature`,
                 preservePosition: true,
-              })}
+              }, { className: 'islamic-sig-img cert-sig cert-sig-teacher' })}
             />
           )}
           <span className="islamic-sign-title">{roleLabel(state, 'معلم المادة', 'Teacher')}</span>
@@ -270,22 +271,20 @@ export default function IslamicHeritageTemplate({ state, render }) {
         </div>
 
         <div
-          className="islamic-sign-box"
           {...element(`${PREFIX}-principal-name`, {
             occurrenceId: principalPrimaryId,
             preservePosition: true,
-          })}
+          }, { className: 'islamic-sign-box' })}
         >
           {state.principalSig && (
             <img
               src={state.principalSig}
               alt=""
-              className="islamic-sig-img"
               {...element(`${PREFIX}-principal-signature`, {
                 contentKey: 'principalSig',
                 occurrenceId: `${PREFIX}-principal-signature`,
                 preservePosition: true,
-              })}
+              }, { className: 'islamic-sig-img cert-sig cert-sig-principal' })}
             />
           )}
           <span className="islamic-sign-title">{roleLabel(state, 'مدير المدرسة', 'Principal')}</span>

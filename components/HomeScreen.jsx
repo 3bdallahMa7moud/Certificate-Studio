@@ -2,6 +2,7 @@ import React from 'react';
 import Icon from './Icon.jsx';
 import { TEMPLATE_REGISTRY } from '../src/certificate-templates/registry.js';
 import { resolveTemplateId } from '../src/certificate-templates/templateUtils.js';
+import { getCurrentAcademicYear } from '../src/context/data.js';
 
 export default function HomeScreen({
   state,
@@ -23,7 +24,7 @@ export default function HomeScreen({
           <p className="home-sub">منصة إنشاء وتنظيم شهادات التقدير والتميز لطلابك بكل سهولة وسرعة.</p>
         </div>
         <div className="home-hero-action">
-          <button className="btn btn-ghost setup-reopen-btn" onClick={onReopenSetup}>
+          <button type="button" className="btn btn-ghost setup-reopen-btn" onClick={onReopenSetup}>
             <Icon name="Sliders" size={16} />
             <span>تعديل الإعدادات الأولى</span>
           </button>
@@ -32,7 +33,7 @@ export default function HomeScreen({
 
       {/* Summary Cards */}
       <div className="home-stats-grid">
-        <div className="home-stat-card" onClick={() => onNavigate('students')} role="button" tabIndex={0}>
+        <button type="button" className="home-stat-card home-stat-button" onClick={() => onNavigate('students')}>
           <div className="stat-icon-wrap students-icon">
             <Icon name="Users" size={24} />
           </div>
@@ -41,9 +42,9 @@ export default function HomeScreen({
             <span className="stat-label">إجمالي الطلاب المحفوظين</span>
             {selectedCount > 0 && <span className="stat-sub">محدد حالياً: {selectedCount} طالب</span>}
           </div>
-        </div>
+        </button>
 
-        <div className="home-stat-card" onClick={() => onNavigate('templates')} role="button" tabIndex={0}>
+        <button type="button" className="home-stat-card home-stat-button" onClick={() => onNavigate('templates')}>
           <div className="stat-icon-wrap template-icon">
             <Icon name="Layers" size={24} />
           </div>
@@ -51,19 +52,19 @@ export default function HomeScreen({
             <span className="stat-name">{currentTemplate.displayNameAr}</span>
             <span className="stat-label">القالب الافتراضي الحالي</span>
           </div>
-        </div>
+        </button>
 
         <div className="home-stat-card">
           <div className="stat-icon-wrap year-icon">
             <Icon name="Calendar" size={24} />
           </div>
           <div className="stat-info">
-            <span className="stat-num">{state.academicYear || '2025 / 2026'}</span>
+            <span className="stat-num">{state.academicYear || getCurrentAcademicYear()}</span>
             <span className="stat-label">العام الدراسي</span>
           </div>
         </div>
 
-        <div className="home-stat-card" onClick={() => onNavigate('settings')} role="button" tabIndex={0}>
+        <button type="button" className="home-stat-card home-stat-button" onClick={() => onNavigate('settings')}>
           <div className="stat-icon-wrap sig-icon">
             <Icon name="FileCheck" size={24} />
           </div>
@@ -73,13 +74,13 @@ export default function HomeScreen({
             </span>
             <span className="stat-label">توقيع المعلمة والمديرة</span>
           </div>
-        </div>
+        </button>
       </div>
 
       {/* Primary Actions Grid */}
       <h2 className="home-section-title">ماذا تريدين أن تفعلي اليوم؟</h2>
       <div className="home-actions-grid">
-        <button className="home-action-btn primary-action" onClick={() => onNavigate('single')}>
+        <button type="button" className="home-action-btn primary-action" onClick={() => onNavigate('single')}>
           <div className="action-btn-icon">
             <Icon name="Award" size={32} />
           </div>
@@ -90,7 +91,7 @@ export default function HomeScreen({
           <Icon name="ChevronLeft" size={20} className="action-arrow" />
         </button>
 
-        <button className="home-action-btn batch-action" onClick={() => onNavigate('batch')}>
+        <button type="button" className="home-action-btn batch-action" onClick={() => onNavigate('batch')}>
           <div className="action-btn-icon">
             <Icon name="FolderArchive" size={32} />
           </div>
@@ -101,7 +102,7 @@ export default function HomeScreen({
           <Icon name="ChevronLeft" size={20} className="action-arrow" />
         </button>
 
-        <button className="home-action-btn card-action" onClick={() => onNavigate('students')}>
+        <button type="button" className="home-action-btn card-action" onClick={() => onNavigate('students')}>
           <div className="action-btn-icon">
             <Icon name="UserCheck" size={28} />
           </div>
@@ -112,7 +113,7 @@ export default function HomeScreen({
           <Icon name="ChevronLeft" size={18} className="action-arrow" />
         </button>
 
-        <button className="home-action-btn card-action" onClick={() => onNavigate('templates')}>
+        <button type="button" className="home-action-btn card-action" onClick={() => onNavigate('templates')}>
           <div className="action-btn-icon">
             <Icon name="LayoutGrid" size={28} />
           </div>
@@ -123,7 +124,7 @@ export default function HomeScreen({
           <Icon name="ChevronLeft" size={18} className="action-arrow" />
         </button>
 
-        <button className="home-action-btn card-action" onClick={() => onNavigate('certificates')}>
+        <button type="button" className="home-action-btn card-action" onClick={() => onNavigate('certificates')}>
           <div className="action-btn-icon">
             <Icon name="FileText" size={28} />
           </div>
@@ -134,7 +135,7 @@ export default function HomeScreen({
           <Icon name="ChevronLeft" size={18} className="action-arrow" />
         </button>
 
-        <button className="home-action-btn card-action" onClick={() => onNavigate('settings')}>
+        <button type="button" className="home-action-btn card-action" onClick={() => onNavigate('settings')}>
           <div className="action-btn-icon">
             <Icon name="Sliders" size={28} />
           </div>

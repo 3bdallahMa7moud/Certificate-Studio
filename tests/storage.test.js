@@ -8,6 +8,7 @@ import {
 import {
   createLightweightState,
   getChangedImageAssets,
+  getMissingLegacyImageAssets,
   loadInitialStateSync,
   loadPresets,
   normalizeLoadedState,
@@ -42,6 +43,43 @@ test('normalizeLoadedState fills missing properties with default state values', 
 test('normalizeLoadedState resets invalid paperSize to default', () => {
   const merged = normalizeLoadedState({ paperSize: 'invalid-paper-size' });
   assert.equal(merged.paperSize, getDefaultState().paperSize);
+});
+
+test('normalizeLoadedState rejects external, transient, and SVG image sources', () => {
+  const unsafeSources = [
+    'https://example.invalid/tracker.png',
+    'http://example.invalid/logo.jpg',
+    '//example.invalid/logo.webp',
+    'blob:https://example.invalid/temporary-id',
+    'data:image/svg+xml;base64,PHN2Zy8+',
+    'data:image/png;base64,PHN2Zy8+',
+  ];
+
+  for (const unsafeSource of unsafeSources) {
+    const merged = normalizeLoadedState({
+      logo: unsafeSource,
+      teacherSig: unsafeSource,
+      principalSig: unsafeSource,
+    });
+    assert.equal(merged.logo, null, unsafeSource);
+    assert.equal(merged.teacherSig, null, unsafeSource);
+    assert.equal(merged.principalSig, null, unsafeSource);
+  }
+});
+
+test('normalizeLoadedState preserves local raster data and an intentionally empty date', () => {
+  const localPng = 'data:image/png;base64,iVBORw0KGgo=';
+  const merged = normalizeLoadedState({
+    date: '',
+    logo: localPng,
+    teacherSig: localPng,
+    principalSig: localPng,
+  });
+
+  assert.equal(merged.date, '');
+  assert.equal(merged.logo, localPng);
+  assert.equal(merged.teacherSig, localPng);
+  assert.equal(merged.principalSig, localPng);
 });
 
 test('default and legacy states receive fresh template customization buckets', () => {
@@ -156,6 +194,23 @@ test('image change detection returns only changed asset keys', () => {
   assert.deepEqual(getChangedImageAssets(state, previous), {
     teacherSig: 'data:image/png;base64,new',
     principalSig: null,
+  });
+});
+
+test('legacy image migration never replaces a newer IndexedDB asset', () => {
+  const legacyImages = {
+    logo: 'legacy-logo',
+    teacherSig: 'legacy-teacher',
+    principalSig: 'legacy-principal',
+  };
+  const indexedImages = {
+    logo: 'indexed-logo',
+    teacherSig: null,
+    principalSig: 'indexed-principal',
+  };
+
+  assert.deepEqual(getMissingLegacyImageAssets(legacyImages, indexedImages), {
+    teacherSig: 'legacy-teacher',
   });
 });
 

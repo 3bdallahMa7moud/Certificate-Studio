@@ -1,0 +1,183 @@
+/* Ocean Adventure - Professional Canva-like Design */
+.cert-ocean-adventure {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(180deg, #E0F7FA 0%, #B2EBF2 100%);
+  color: var(--text, #006064);
+  padding: 4cqw 5cqw;
+  border: 1cqw solid #FFFFFF;
+  box-shadow: inset 0 0 0 0.5cqw var(--primary, #0097A7), 0 10px 30px rgba(0,0,0,0.1);
+  border-radius: 3cqw;
+}
+
+.cert-ocean-adventure .ocean-art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Abstract Waves */
+.cert-ocean-adventure .ocean-wave {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 40%;
+  left: -50%;
+  animation: wave 15s infinite linear;
+}
+.cert-ocean-adventure .ocean-wave-1 {
+  bottom: -150%;
+}
+.cert-ocean-adventure .ocean-wave-2 {
+  bottom: -155%;
+  background: rgba(0, 151, 167, 0.1);
+  animation-duration: 20s;
+  animation-direction: reverse;
+}
+@keyframes wave {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.cert-ocean-adventure .ocean-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 0.8cqw 2cqw;
+  border-radius: 20px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.cert-ocean-adventure .ocean-school-copy {
+  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
+  font-size: 1.4cqw;
+  font-weight: 800;
+  color: var(--primary, #0097A7);
+  letter-spacing: 0.05em;
+}
+
+.cert-ocean-adventure .ocean-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: auto 0;
+  gap: 1.2cqw;
+}
+
+.cert-ocean-adventure .ocean-title-banner {
+  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
+  font-size: 3.5cqw;
+  font-weight: 900;
+  color: #006064;
+  text-shadow: 2px 2px 0px #FFF, 4px 4px 10px rgba(0, 151, 167, 0.2);
+  margin-bottom: 1cqw;
+}
+
+.cert-ocean-adventure .ocean-student-bay {
+  width: 100%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, transparent 70%);
+  padding: 1.5cqw 2cqw;
+  box-sizing: border-box;
+}
+.cert-ocean-adventure .ocean-student-bay .cert-student-name {
+  color: var(--accent, #FF7043);
+  text-shadow: 2px 2px 0px #FFF;
+}
+
+.cert-ocean-adventure .ocean-message {
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 1.4cqw;
+  line-height: 1.6;
+  color: #004D40;
+  max-width: 75%;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 1.5cqw 2.5cqw;
+  border-radius: 15px;
+  border: 1px solid rgba(255,255,255,0.8);
+  box-shadow: 0 4px 15px rgba(0, 151, 167, 0.1);
+  font-weight: 600;
+}
+
+.cert-ocean-adventure .ocean-chip-row {
+  display: flex;
+  gap: 1cqw;
+  justify-content: center;
+  margin-top: 1cqw;
+}
+
+.cert-ocean-adventure .ocean-chip {
+  background: #FFF;
+  border: 2px solid var(--accent, #FF7043);
+  border-radius: 30px;
+  padding: 0.6cqw 1.8cqw;
+  font-size: 1.1cqw;
+  box-shadow: 0 4px 10px rgba(255, 112, 67, 0.15);
+}
+
+.cert-ocean-adventure .ocean-chip-label {
+  color: var(--primary, #0097A7);
+  font-weight: 700;
+  margin-right: 0.5cqw;
+}
+
+.cert-ocean-adventure .ocean-chip-value {
+  color: #006064;
+  font-weight: 800;
+}
+
+.cert-ocean-adventure .ocean-footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.cert-ocean-adventure .ocean-signature-dock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 18cqw;
+  gap: 0.3cqw;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 1cqw;
+  border-radius: 15px;
+}
+
+.cert-ocean-adventure .ocean-sig-role {
+  font-size: 1cqw;
+  font-weight: 800;
+  color: var(--primary, #0097A7);
+  text-transform: uppercase;
+}
+
+.cert-ocean-adventure .ocean-sig-name {
+  font-family: var(--student-font-ar, 'El Messiri'), serif;
+  font-size: 1.4cqw;
+  font-weight: 700;
+  color: #006064;
+  border-top: 3px solid var(--accent, #FF7043);
+  padding-top: 0.5cqw;
+  width: 100%;
+  text-align: center;
+}

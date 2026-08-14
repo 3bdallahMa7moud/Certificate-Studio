@@ -980,6 +980,7 @@ export function useCertificateEditor({
     measurements,
     canUndo: historyCanUndo(history, templateId),
     canRedo: historyCanRedo(history, templateId),
+    isDirectEditing: Boolean(directEdit),
     isInteracting: Boolean(interactionDraft || directEdit || contentInteraction),
     select,
     selectById,

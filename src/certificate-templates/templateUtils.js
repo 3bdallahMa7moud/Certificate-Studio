@@ -1,4 +1,5 @@
 import { formatDateAr, formatDateEn, getBehavior, getSubject } from '../context/helpers.js';
+import { ACADEMIC_YEAR, displayAcademicYearValue } from '../context/data.js';
 import { getTemplateDefinition, TEMPLATE_IDS } from './registry.js';
 import { cloneTemplateDefaults, getTemplateDefaults } from './templateDefaults.js';
 
@@ -19,6 +20,30 @@ export function shouldShowEn(state) {
 
 export function localizedPair(state, ar, en) {
   return shouldShowAr(state) ? ar : en;
+}
+
+export function achievementPair(state) {
+  const behavior = getBehavior(state?.behavior);
+  return {
+    ar: String(state?.achievementAr || '').trim() || behavior.ar,
+    en: String(state?.achievementEn || '').trim() || behavior.en,
+  };
+}
+
+export function localizedAchievement(state) {
+  const pair = achievementPair(state);
+  return localizedPair(state, pair.ar, pair.en);
+}
+
+export function displayAcademicYear(state, locale = null) {
+  if (locale) return displayAcademicYearValue(state?.academicYear || ACADEMIC_YEAR, locale);
+  if (shouldShowEn(state) && !shouldShowAr(state)) {
+    return displayAcademicYearValue(state?.academicYear || ACADEMIC_YEAR, 'en');
+  }
+  if (shouldShowAr(state)) {
+    return displayAcademicYearValue(state?.academicYear || ACADEMIC_YEAR, 'ar');
+  }
+  return displayAcademicYearValue(state?.academicYear || ACADEMIC_YEAR, 'en');
 }
 
 export function displayTerm(state) {

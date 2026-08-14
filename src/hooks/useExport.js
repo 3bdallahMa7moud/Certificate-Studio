@@ -8,7 +8,9 @@
  * - doExportBatchZip : render all batch students off-screen, ZIP as PNG files
  */
 import { useRef, useState } from 'react';
-import { exportCurrentPng, exportBatchZip } from '../services/exportUtils.js';
+import { exportCurrentPng, exportBatchZipSequential } from '../services/exportUtils.js';
+import { outputCancelled, outputFailed, outputSuccess } from '../services/outputResult.js';
+import { validateOutputRequest } from '../services/certificateValidator.js';
 
 export function useExport(
   state,
@@ -25,16 +27,18 @@ export function useExport(
   const withGuard = async (initialLabel, fn) => {
     if (exportingRef.current) {
       showToast?.('جاري التصدير بالفعل، يرجى الانتظار');
-      return;
+      return outputCancelled('busy');
     }
     exportingRef.current = true;
     setIsExporting(true);
     setExportProgress({ current: 0, total: 1, label: initialLabel });
     try {
-      await fn();
+      const details = await fn();
+      return outputSuccess(details);
     } catch (err) {
       console.error('[useExport]', err);
       showToast?.(`تعذّر التصدير: ${err.message || 'خطأ غير معروف'}`);
+      return outputFailed(err);
     } finally {
       exportingRef.current = false;
       setIsExporting(false);
@@ -46,7 +50,10 @@ export function useExport(
    * Capture the currently-visible preview certificate as a PNG and download it.
    * Uses the live .cert-wrap .cert element — what you see is what you get.
    */
-  const doExportPng = () => withGuard('جاري تصدير الصورة…', async () => {
+  const doExportPng = (editorStatus = {}) => withGuard('جاري تصدير الصورة…', async () => {
+    const validation = validateOutputRequest({ state, mode: 'png', editorStatus });
+    if (!validation.isValid) throw new Error(validation.errors[0]);
+
     const previewEl = previewCertificateRef?.current;
     const certEl = staticCertificateRef?.current;
     const hostEl = staticExportHostRef?.current;
@@ -61,11 +68,13 @@ export function useExport(
     const filename = `certificate-${safeName}-${date}.png`;
 
     const savedWidth = hostEl.style.width;
-    hostEl.style.width = `${previewEl.offsetWidth}px`;
+    const exportWidth = Math.max(previewEl.offsetWidth || 0, paper?.width || 1400);
+    hostEl.style.width = `${exportWidth}px`;
     try {
       await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-      await exportCurrentPng(certEl, filename);
+      const details = await exportCurrentPng(certEl, filename);
       showToast?.('✓ تم تصدير صورة PNG بنجاح');
+      return { type: 'png', count: 1, ...details };
     } finally {
       hostEl.style.width = savedWidth;
     }
@@ -75,39 +84,44 @@ export function useExport(
    * Render all batch students into the print-only area, capture each as PNG,
    * then bundle them into a downloadable ZIP file.
    */
-  const doExportBatchZip = (students) => withGuard('جاري تجهيز الشهادات…', async () => {
-    if (!students?.length) throw new Error('لا يوجد طلاب في القائمة');
-
-    // Step 1: Render all student certificates into the print-only DOM area
-    // (same rendering that printBatch uses)
-    setPrintStudents(students);
-    try {
-
-    // Step 2: Give React time to commit the full batch to the DOM
-    // 300 ms is generous; even 200-student batches render in < 100 ms
-    await new Promise(r => setTimeout(r, 300));
+  const doExportBatchZip = (students, editorStatus = {}) => withGuard('جاري تجهيز الشهادات…', async () => {
+    const validation = validateOutputRequest({ state, students, mode: 'batch-zip', editorStatus });
+    if (!validation.isValid) throw new Error(validation.errors[0]);
 
     const printOnlyEl = document.querySelector('.print-only');
     if (!printOnlyEl) throw new Error('Print-only container element not found');
 
+    try {
     const date = new Date().toISOString().slice(0, 10);
 
-    // Step 3: Capture + ZIP (exportBatchZip makes print-only visible off-screen
-    // for the duration of capture, then restores the original styles)
-    await exportBatchZip(
+    const details = await exportBatchZipSequential({
+      students,
       printOnlyEl,
       paper,
-      `certificates-${date}.zip`,
-      (current, total) => {
+      filename: `certificates-${date}.zip`,
+      renderCertificate: async student => {
+        // Only one certificate exists in the hidden print host at any time.
+        setPrintStudents([student]);
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        return printOnlyEl.querySelector('.print-page .cert');
+      },
+      onProgress: (current, total, partInfo) => {
         setExportProgress({
           current,
           total,
-          label: `جاري توليد الشهادة ${current} من ${total}`,
+          label: partInfo.partCount > 1
+            ? `جاري توليد الشهادة ${current} من ${total} — الملف ${partInfo.part} من ${partInfo.partCount}`
+            : `جاري توليد الشهادة ${current} من ${total}`,
         });
       },
-    );
+    });
 
-    showToast?.(`✓ تم تصدير ${students.length} شهادة في ملف ZIP بنجاح`);
+    showToast?.(
+      details.zipCount > 1
+        ? `✓ تم تصدير ${students.length} شهادة في ${details.zipCount} ملفات ZIP`
+        : `✓ تم تصدير ${students.length} شهادة في ملف ZIP بنجاح`,
+    );
+    return { type: 'zip', ...details };
     } finally {
       // Always clear the temporary batch, including failed/cancelled captures.
       setPrintStudents(null);

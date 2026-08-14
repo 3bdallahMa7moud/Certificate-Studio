@@ -1,0 +1,214 @@
+/* Sports Champion - Professional Canva-like Design */
+.cert-sports-champion {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #FFFBF5 0%, #F5F7FA 100%);
+  color: var(--text, #1F2937);
+  padding: 4cqw 5cqw;
+  border: 1.5cqw solid var(--primary, #D35400);
+}
+
+/* Dynamic Stadium Glow */
+.cert-sports-champion .sports-stadium-glow {
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 70%;
+  height: 70%;
+  background: radial-gradient(ellipse at center, rgba(211, 84, 0, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Speed Lines (Diagonal stripes) */
+.cert-sports-champion::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(211, 84, 0, 0.02) 10px,
+    rgba(211, 84, 0, 0.02) 20px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cert-sports-champion .sports-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cert-sports-champion .cert-logo-sports-champion {
+  width: 5cqw;
+  height: 5cqw;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+}
+
+.cert-sports-champion .sports-school-lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.cert-sports-champion .sports-champ-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8cqw;
+  background: var(--primary, #D35400);
+  padding: 0.5cqw 1cqw;
+  border-radius: 8px;
+  transform: skewX(-15deg);
+  margin-bottom: 0.5cqw;
+}
+
+.cert-sports-champion .sports-champ-tag {
+  color: #FFF;
+  font-size: 0.9cqw;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transform: skewX(15deg); /* Correct text skew */
+}
+
+.cert-sports-champion .sports-school {
+  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
+  font-size: 1.5cqw;
+  font-weight: 800;
+  color: var(--primary, #D35400);
+  text-transform: uppercase;
+}
+
+.cert-sports-champion .sports-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: auto 0;
+  gap: 1cqw;
+}
+
+.cert-sports-champion .sports-title-banner {
+  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
+  font-size: 3.8cqw;
+  font-weight: 900;
+  color: transparent;
+  background: linear-gradient(180deg, var(--primary, #D35400) 0%, var(--accent, #E67E22) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  filter: drop-shadow(2px 4px 0px rgba(211,84,0,0.2));
+  transform: skewX(-5deg);
+}
+
+.cert-sports-champion .sports-athlete-zone {
+  width: 100%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background: #FFF;
+  border-top: 4px solid var(--primary, #D35400);
+  border-bottom: 4px solid var(--primary, #D35400);
+  padding: 1.5cqw 2cqw;
+  margin: 1cqw 0;
+  box-sizing: border-box;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+.cert-sports-champion .sports-athlete-zone .cert-student-name {
+  color: #1F2937;
+}
+
+.cert-sports-champion .sports-message {
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 1.4cqw;
+  line-height: 1.6;
+  color: #4B5563;
+  max-width: 85%;
+  font-weight: 600;
+}
+
+.cert-sports-champion .sports-stats-row {
+  display: flex;
+  gap: 1.5cqw;
+  justify-content: center;
+  margin-top: 1cqw;
+}
+
+.cert-sports-champion .sports-stat-badge {
+  background: #FFF;
+  border: 2px solid var(--primary, #D35400);
+  border-radius: 8px;
+  padding: 0.6cqw 1.2cqw;
+  font-size: 1.1cqw;
+  display: flex;
+  align-items: center;
+  gap: 0.5cqw;
+  box-shadow: 4px 4px 0px rgba(211, 84, 0, 0.2);
+  transform: skewX(-10deg);
+}
+.cert-sports-champion .sports-stat-badge > * {
+  transform: skewX(10deg); /* Counter skew */
+}
+
+.cert-sports-champion .sports-stat-label {
+  color: var(--primary, #D35400);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.cert-sports-champion .sports-stat-value {
+  color: #1F2937;
+  font-weight: 900;
+}
+
+.cert-sports-champion .sports-signatures {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.cert-sports-champion .sports-sig-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 18cqw;
+  background: #FFF;
+  padding: 1cqw;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  border-bottom: 4px solid var(--accent, #E67E22);
+}
+
+.cert-sports-champion .sports-sig-title {
+  font-size: 1cqw;
+  font-weight: 800;
+  color: var(--primary, #D35400);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5cqw;
+}
+
+.cert-sports-champion .sports-sig-name {
+  font-family: var(--student-font-ar, 'El Messiri'), serif;
+  font-size: 1.4cqw;
+  font-weight: 800;
+  color: #1F2937;
+}

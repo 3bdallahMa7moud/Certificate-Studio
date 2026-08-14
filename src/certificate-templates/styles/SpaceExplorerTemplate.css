@@ -1,0 +1,706 @@
+/* ==========================================================
+   SPACE EXPLORER CERTIFICATE
+   Arabic-first / RTL-safe Canva-inspired design
+   ========================================================== */
+
+.cert-space-explorer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  isolation: isolate;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  padding: 4.1cqw 5.2cqw 3.7cqw;
+
+  color: #f8fafc;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(14, 165, 233, 0.22), transparent 25%),
+    radial-gradient(circle at 82% 80%, rgba(244, 185, 66, 0.14), transparent 28%),
+    radial-gradient(circle at 55% 45%, rgba(99, 102, 241, 0.12), transparent 35%),
+    linear-gradient(145deg, #172554 0%, #0f172a 48%, #020617 100%);
+
+  border: 0.7cqw solid var(--primary, #0ea5e9);
+  border-radius: 2cqw;
+
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  text-rendering: geometricPrecision;
+}
+
+.cert-space-explorer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.75) 0.08cqw, transparent 0.11cqw),
+    radial-gradient(circle, rgba(125, 211, 252, 0.5) 0.06cqw, transparent 0.1cqw);
+  background-size: 8cqw 8cqw, 12cqw 12cqw;
+  background-position: 0 0, 4cqw 5cqw;
+  opacity: 0.25;
+}
+
+.cert-space-explorer::after {
+  content: '';
+  position: absolute;
+  inset: 1.2cqw;
+  z-index: 10;
+  pointer-events: none;
+
+  border: 0.14cqw solid rgba(125, 211, 252, 0.38);
+  border-radius: 1.3cqw;
+  box-shadow:
+    inset 0 0 0 0.14cqw rgba(244, 185, 66, 0.08),
+    inset 0 0 2cqw rgba(14, 165, 233, 0.06);
+}
+
+/* ---------- Direction / bidi safety ---------- */
+.cert-space-explorer.space-layout-rtl {
+  direction: rtl;
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+}
+
+.cert-space-explorer.space-layout-ltr {
+  direction: ltr;
+}
+
+.cert-space-explorer [dir='rtl'],
+.cert-space-explorer [lang='ar'] {
+  unicode-bidi: isolate;
+}
+
+.cert-space-explorer [dir='ltr'],
+.cert-space-explorer [lang='en'] {
+  unicode-bidi: isolate;
+}
+
+/* ---------- Art ---------- */
+.cert-space-explorer .space-art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cert-space-explorer .space-orb {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.cert-space-explorer .space-orb-1 {
+  top: -7cqw;
+  left: -6cqw;
+  width: 23cqw;
+  height: 23cqw;
+  background: radial-gradient(circle at 35% 30%, #bae6fd 0%, var(--primary, #0ea5e9) 25%, #0369a1 58%, #082f49 100%);
+  opacity: 0.64;
+  box-shadow: 0 0 4cqw rgba(14, 165, 233, 0.28), inset -2cqw -1cqw 3cqw rgba(2, 6, 23, 0.45);
+}
+
+.cert-space-explorer .space-orb-2 {
+  right: -8cqw;
+  bottom: -11cqw;
+  width: 28cqw;
+  height: 28cqw;
+  background: radial-gradient(circle at 32% 28%, #fef3c7 0%, var(--accent, #f4b942) 22%, #b45309 52%, #451a03 100%);
+  opacity: 0.26;
+  filter: blur(0.2cqw);
+}
+
+.cert-space-explorer .space-star {
+  position: absolute;
+  width: 0.55cqw;
+  height: 0.55cqw;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 1.2cqw rgba(255, 255, 255, 0.75);
+}
+
+.cert-space-explorer .space-star::before,
+.cert-space-explorer .space-star::after {
+  content: '';
+  position: absolute;
+  inset: 50% auto auto 50%;
+  background: rgba(255, 255, 255, 0.7);
+  transform: translate(-50%, -50%);
+  border-radius: 100cqw;
+}
+
+.cert-space-explorer .space-star::before {
+  width: 1.5cqw;
+  height: 0.1cqw;
+}
+
+.cert-space-explorer .space-star::after {
+  width: 0.1cqw;
+  height: 1.5cqw;
+}
+
+.space-star-one { top: 15%; left: 23%; }
+.space-star-two { top: 25%; right: 15%; transform: scale(0.7); }
+.space-star-three { top: 52%; left: 10%; transform: scale(0.5); }
+.space-star-four { top: 66%; right: 10%; transform: scale(0.8); }
+.space-star-five { bottom: 14%; left: 31%; transform: scale(0.55); }
+
+.cert-space-explorer .space-planet {
+  position: absolute;
+  top: 15%;
+  right: 7%;
+  width: 8cqw;
+  height: 8cqw;
+  border-radius: 50%;
+  opacity: 0.78;
+  background: radial-gradient(circle at 32% 28%, #fde68a 0%, #f59e0b 34%, #9a3412 100%);
+  box-shadow: 0 0 2.5cqw rgba(245, 158, 11, 0.22);
+}
+
+.cert-space-explorer .space-planet-ring {
+  position: absolute;
+  width: 135%;
+  height: 34%;
+  top: 34%;
+  left: -18%;
+  border: 0.32cqw solid rgba(125, 211, 252, 0.72);
+  border-radius: 50%;
+  transform: rotate(-18deg);
+}
+
+.cert-space-explorer .space-planet-spot {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(120, 53, 15, 0.28);
+}
+
+.space-planet-spot-one { width: 1.1cqw; height: 1.1cqw; top: 24%; left: 30%; }
+.space-planet-spot-two { width: 0.7cqw; height: 0.7cqw; bottom: 25%; right: 26%; }
+
+.cert-space-explorer .space-rocket {
+  position: absolute;
+  left: 8%;
+  bottom: 16%;
+  width: 5cqw;
+  height: 9cqw;
+  transform: rotate(34deg);
+  opacity: 0.7;
+}
+
+.cert-space-explorer .space-rocket-body {
+  position: absolute;
+  left: 1.35cqw;
+  top: 1.6cqw;
+  width: 2.3cqw;
+  height: 5.4cqw;
+  border-radius: 50% 50% 35% 35%;
+  background: linear-gradient(90deg, #e2e8f0, #ffffff 48%, #94a3b8);
+}
+
+.cert-space-explorer .space-rocket-nose {
+  position: absolute;
+  left: 1.35cqw;
+  top: 0;
+  width: 2.3cqw;
+  height: 2.8cqw;
+  border-radius: 50% 50% 15% 15%;
+  background: var(--accent, #f4b942);
+}
+
+.cert-space-explorer .space-rocket-window {
+  position: absolute;
+  left: 2cqw;
+  top: 2.8cqw;
+  width: 1cqw;
+  height: 1cqw;
+  border-radius: 50%;
+  background: #38bdf8;
+  border: 0.15cqw solid #0f172a;
+}
+
+.cert-space-explorer .space-rocket-fin {
+  position: absolute;
+  top: 5.6cqw;
+  width: 1.4cqw;
+  height: 2.3cqw;
+  background: #f97316;
+}
+
+.space-rocket-fin-start { left: 0.45cqw; transform: skewY(25deg); }
+.space-rocket-fin-end { right: 0.45cqw; transform: skewY(-25deg); }
+
+.cert-space-explorer .space-rocket-trail {
+  position: absolute;
+  top: 7cqw;
+  width: 0.6cqw;
+  border-radius: 100cqw;
+  background: linear-gradient(#fef3c7, #fb923c, transparent);
+}
+
+.space-rocket-trail-one { left: 1.65cqw; height: 3cqw; }
+.space-rocket-trail-two { right: 1.65cqw; height: 2.4cqw; }
+
+/* ---------- Header ---------- */
+.cert-space-explorer .space-command-bar {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: minmax(12cqw, auto) 1fr;
+  align-items: center;
+  gap: 2.2cqw;
+  min-height: 6cqw;
+  padding: 0 1cqw 1.25cqw;
+  border-bottom: 0.12cqw solid rgba(125, 211, 252, 0.28);
+}
+
+.cert-space-explorer .space-logo-slot {
+  min-width: 10cqw;
+  display: flex;
+  align-items: center;
+}
+
+.cert-space-explorer.space-layout-rtl .space-logo-slot {
+  justify-content: flex-start;
+}
+
+.cert-space-explorer.space-layout-ltr .space-logo-slot {
+  justify-content: flex-start;
+}
+
+.cert-space-explorer .cert-logo-space-explorer {
+  max-width: 12cqw;
+  max-height: 6cqw;
+}
+
+.cert-space-explorer .space-school-lockup {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25cqw;
+  min-width: 0;
+}
+
+.cert-space-explorer.space-layout-rtl .space-school-lockup {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.cert-space-explorer.space-layout-ltr .space-school-lockup {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.cert-space-explorer .space-command-label {
+  font-size: 0.78cqw;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--accent, #f4b942);
+}
+
+.cert-space-explorer.space-layout-rtl .space-command-label {
+  letter-spacing: 0;
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+}
+
+.cert-space-explorer .space-school {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.45cqw;
+  max-width: 70cqw;
+  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
+  font-size: 1.45cqw;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.35;
+}
+
+.cert-space-explorer .space-school-name-ar {
+  text-align: right;
+}
+
+.cert-space-explorer .space-school-name-en {
+  font-family: sans-serif;
+  font-size: 0.86em;
+  opacity: 0.86;
+}
+
+.cert-space-explorer .space-language-divider,
+.cert-space-explorer .space-inline-divider {
+  color: var(--accent, #f4b942);
+  opacity: 0.75;
+  unicode-bidi: isolate;
+}
+
+/* ---------- Main body ---------- */
+.cert-space-explorer .space-body {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 84%;
+  margin: auto;
+  text-align: center;
+  gap: 1.05cqw;
+}
+
+.cert-space-explorer .space-title-orbit {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35cqw;
+  width: 100%;
+  margin: 0;
+  text-align: center;
+}
+
+.cert-space-explorer .space-title-line {
+  display: block;
+  max-width: 100%;
+  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
+  font-size: 3.05cqw;
+  font-weight: 900;
+  line-height: 1.18;
+  color: #fff;
+  text-align: center;
+  text-wrap: balance;
+  text-shadow: 0 0.25cqw 0.8cqw rgba(0, 0, 0, 0.38), 0 0 1.8cqw rgba(14, 165, 233, 0.25);
+}
+
+.cert-space-explorer .space-title-en {
+  font-family: sans-serif;
+  font-size: 1.5cqw;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #bfdbfe;
+}
+
+.cert-space-explorer .space-title-divider {
+  display: block;
+  width: 9cqw;
+  height: 0.2cqw;
+  margin: 0.2cqw auto;
+  border-radius: 50cqw;
+  background: linear-gradient(90deg, transparent, var(--accent, #f4b942), transparent);
+}
+
+.cert-space-explorer .space-title-orbit::after {
+  content: '';
+  display: block;
+  width: 11cqw;
+  height: 0.22cqw;
+  margin: 0.45cqw auto 0;
+  border-radius: 50cqw;
+  background: linear-gradient(90deg, transparent, var(--accent, #f4b942), #fde68a, var(--accent, #f4b942), transparent);
+  box-shadow: 0 0 1cqw rgba(244, 185, 66, 0.28);
+}
+
+.cert-space-explorer .space-hero-name {
+  position: relative;
+  width: min(100%, 61cqw);
+  min-height: 7.6cqw;
+  display: grid;
+  place-items: center;
+  padding: 1.05cqw 3.2cqw;
+  margin-top: 0.25cqw;
+  box-sizing: border-box;
+  border: 0.12cqw solid rgba(125, 211, 252, 0.25);
+  border-radius: 1.2cqw;
+  background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.025));
+  box-shadow: 0 1.2cqw 3cqw rgba(2, 6, 23, 0.25), inset 0 0 1.4cqw rgba(125, 211, 252, 0.035);
+  backdrop-filter: blur(0.8cqw);
+}
+
+.cert-space-explorer .space-hero-name > * {
+  width: 100%;
+  text-align: center;
+}
+
+.cert-space-explorer .space-hero-name::before,
+.cert-space-explorer .space-hero-name::after {
+  content: '✦';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.15cqw;
+  color: var(--accent, #f4b942);
+  text-shadow: 0 0 1cqw rgba(244, 185, 66, 0.65);
+}
+
+.cert-space-explorer .space-hero-name::before { inset-inline-start: 1.6cqw; }
+.cert-space-explorer .space-hero-name::after { inset-inline-end: 1.6cqw; }
+
+.cert-space-explorer .space-student-name-ar,
+.cert-space-explorer .space-hero-name .cert-student-name {
+  text-align: center;
+  color: #fde68a;
+  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
+  font-weight: 800;
+  line-height: 1.2;
+  text-shadow: 0 0.2cqw 0.5cqw rgba(0,0,0,0.4), 0 0 1.2cqw rgba(244,185,66,0.2);
+}
+
+.cert-space-explorer .space-student-name-en {
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.cert-space-explorer .space-message {
+  max-width: 76%;
+  margin-top: 0.15cqw;
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 1.28cqw;
+  font-weight: 500;
+  line-height: 1.75;
+  color: #dbeafe;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.cert-space-explorer .space-message[dir='rtl'] {
+  line-height: 1.85;
+}
+
+/* ---------- Metrics ---------- */
+.cert-space-explorer .space-telemetry {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 0.72cqw;
+  margin-top: 0.45cqw;
+  width: 100%;
+}
+
+.cert-space-explorer .space-metric {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6cqw;
+  min-height: 2.8cqw;
+  padding: 0.5cqw 1.15cqw;
+  box-sizing: border-box;
+  border: 0.1cqw solid rgba(125, 211, 252, 0.22);
+  border-radius: 100cqw;
+  background: rgba(15, 23, 42, 0.46);
+  box-shadow: 0 0.45cqw 1.2cqw rgba(2, 6, 23, 0.18);
+  backdrop-filter: blur(0.5cqw);
+  white-space: nowrap;
+}
+
+.cert-space-explorer :is(
+  .space-subject-metric,
+  .space-grade-metric,
+  .space-year-metric,
+  .space-date-metric
+) {
+  max-width: 100%;
+}
+
+.cert-space-explorer .space-subject-metric {
+  min-width: 24cqw;
+}
+
+.cert-space-explorer :is(.space-grade-metric, .space-date-metric) {
+  min-width: 11cqw;
+}
+
+.cert-space-explorer .space-year-metric {
+  min-width: 16cqw;
+}
+
+.cert-space-explorer.space-layout-rtl .space-metric {
+  flex-direction: row;
+}
+
+.cert-space-explorer .space-metric-label {
+  font-size: 0.78cqw;
+  line-height: 1;
+  font-weight: 800;
+  color: #7dd3fc;
+}
+
+.cert-space-explorer.space-layout-rtl .space-metric-label {
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  letter-spacing: 0;
+}
+
+.cert-space-explorer .space-metric-value {
+  font-size: 0.98cqw;
+  line-height: 1.1;
+  font-weight: 800;
+  color: #fff;
+  unicode-bidi: isolate;
+}
+
+.cert-space-explorer .space-subject-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38cqw;
+}
+
+/* ---------- Signatures ---------- */
+.cert-space-explorer .space-signatures {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: minmax(18cqw, 1fr) 8cqw minmax(18cqw, 1fr);
+  align-items: end;
+  gap: 2cqw;
+  width: 100%;
+  padding: 0 2cqw 0.75cqw;
+  box-sizing: border-box;
+}
+
+.cert-space-explorer .space-sig-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+  gap: 0.38cqw;
+  text-align: center;
+}
+
+.cert-space-explorer :is(.space-sig-teacher, .space-sig-principal) {
+  justify-self: stretch;
+}
+
+.cert-space-explorer .space-sig-title {
+  font-size: 0.86cqw;
+  font-weight: 800;
+  color: var(--accent, #f4b942);
+  line-height: 1.2;
+}
+
+.cert-space-explorer.space-layout-rtl .space-sig-title {
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  letter-spacing: 0;
+}
+
+.cert-space-explorer .cert-sig {
+  display: block;
+  max-width: 10cqw;
+  max-height: 4.3cqw;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+.cert-space-explorer .space-sig-name {
+  position: relative;
+  width: 100%;
+  min-height: 2.3cqw;
+  box-sizing: border-box;
+  padding-top: 0.6cqw;
+  border-top: 0.12cqw solid rgba(244, 185, 66, 0.55);
+  font-family: var(--student-font-ar, 'El Messiri'), serif;
+  font-size: 1.18cqw;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #fff;
+  text-align: center;
+}
+
+.cert-space-explorer .space-sig-name::before {
+  content: '';
+  position: absolute;
+  top: -0.2cqw;
+  left: 50%;
+  width: 30%;
+  height: 0.18cqw;
+  transform: translateX(-50%);
+  border-radius: 10cqw;
+  background: var(--accent, #f4b942);
+  box-shadow: 0 0 0.7cqw rgba(244, 185, 66, 0.35);
+}
+
+.cert-space-explorer .space-sig-name-en {
+  font-family: sans-serif;
+  font-size: 0.75cqw;
+  line-height: 1.2;
+  color: #cbd5e1;
+  text-align: center;
+}
+
+.cert-space-explorer .space-crew-insignia {
+  position: relative;
+  width: 5.2cqw;
+  height: 5.2cqw;
+  margin: 0 auto 0.1cqw;
+  border-radius: 50%;
+}
+
+.cert-space-explorer .space-insignia-core {
+  position: absolute;
+  inset: 1.6cqw;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fde68a, var(--accent, #f4b942) 65%, #b45309);
+  box-shadow: 0 0 1.4cqw rgba(244, 185, 66, 0.45);
+}
+
+.cert-space-explorer .space-insignia-orbit {
+  position: absolute;
+  inset: 0.8cqw -0.25cqw;
+  border: 0.14cqw solid rgba(125, 211, 252, 0.52);
+  border-radius: 50%;
+  transform: rotate(-18deg);
+}
+
+/* ---------- Arabic-only refinements ---------- */
+.cert-space-explorer.space-layout-rtl.space-layout-single-language .space-school {
+  font-size: 1.6cqw;
+}
+
+.cert-space-explorer.space-layout-rtl.space-layout-single-language .space-title-ar {
+  font-size: 3.35cqw;
+}
+
+.cert-space-explorer.space-layout-rtl.space-layout-single-language .space-message {
+  max-width: 80%;
+  font-size: 1.34cqw;
+}
+
+.cert-space-explorer.space-layout-rtl.space-layout-single-language .space-telemetry {
+  gap: 0.8cqw;
+}
+
+/* ---------- Bilingual refinements ---------- */
+.cert-space-explorer.space-layout-bilingual .space-body {
+  gap: 0.82cqw;
+}
+
+.cert-space-explorer.space-layout-bilingual .space-title-ar {
+  font-size: 2.55cqw;
+}
+
+.cert-space-explorer.space-layout-bilingual .space-title-en {
+  font-size: 1.2cqw;
+}
+
+.cert-space-explorer.space-layout-bilingual .space-message {
+  font-size: 1.08cqw;
+  line-height: 1.6;
+}
+
+.cert-space-explorer.space-layout-bilingual .space-school {
+  font-size: 1.2cqw;
+}
+
+/* ---------- Browser fallback ---------- */
+@supports not (backdrop-filter: blur(1px)) {
+  .cert-space-explorer .space-hero-name,
+  .cert-space-explorer .space-metric {
+    background: rgba(15, 23, 42, 0.88);
+  }
+}

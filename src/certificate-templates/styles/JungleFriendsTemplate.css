@@ -1,0 +1,216 @@
+/* Jungle Friends - Professional Canva-like Design */
+.cert-jungle-friends {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: radial-gradient(circle at top right, #FFF9E8 0%, #F1F8E9 100%);
+  color: var(--text, #1E3F20);
+  padding: 4cqw 5cqw;
+  border: 1.5cqw solid var(--primary, #2E7D5A);
+  border-radius: 4cqw;
+}
+
+/* Add a subtle inner border like a picture frame */
+.cert-jungle-friends::before {
+  content: '';
+  position: absolute;
+  inset: 1cqw;
+  border: 2px dashed rgba(46, 125, 90, 0.4);
+  border-radius: 3cqw;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cert-jungle-friends .jungle-scene {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Organic leaf shapes in corners */
+.cert-jungle-friends .jungle-leaf {
+  position: absolute;
+  background: var(--primary, #2E7D5A);
+  opacity: 0.15;
+  border-radius: 0 50% 0 50%;
+}
+.cert-jungle-friends .jungle-leaf-1 {
+  top: -5cqw;
+  left: -5cqw;
+  width: 20cqw;
+  height: 20cqw;
+  transform: rotate(15deg);
+}
+.cert-jungle-friends .jungle-leaf-2 {
+  bottom: -8cqw;
+  right: -8cqw;
+  width: 25cqw;
+  height: 25cqw;
+  transform: rotate(195deg);
+}
+.cert-jungle-friends .jungle-leaf-3 {
+  top: -2cqw;
+  right: 5cqw;
+  width: 12cqw;
+  height: 12cqw;
+  border-radius: 50% 0 50% 0;
+  opacity: 0.1;
+}
+
+.cert-jungle-friends .jungle-paper {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Header */
+.cert-jungle-friends .jungle-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cert-jungle-friends .jungle-school {
+  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
+  font-size: 1.4cqw;
+  font-weight: 700;
+  color: var(--primary, #2E7D5A);
+  background: rgba(255, 255, 255, 0.6);
+  padding: 0.5cqw 1.5cqw;
+  border-radius: 12px;
+}
+
+.cert-jungle-friends .jungle-date-badge {
+  background: #FFF;
+  border: 2px solid var(--primary, #2E7D5A);
+  border-radius: 12px;
+  padding: 0.5cqw 1.5cqw;
+  font-size: 1.1cqw;
+  font-weight: 700;
+  color: var(--primary, #2E7D5A);
+  box-shadow: 4px 4px 0px rgba(46, 125, 90, 0.15);
+}
+
+/* Main Content */
+.cert-jungle-friends .jungle-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: auto 0;
+  gap: 1cqw;
+}
+
+.cert-jungle-friends .jungle-title-vine {
+  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
+  font-size: 3.5cqw;
+  font-weight: 900;
+  color: var(--primary, #2E7D5A);
+  display: flex;
+  align-items: center;
+  gap: 1.5cqw;
+  text-shadow: 2px 2px 0px #FFF, 4px 4px 0px rgba(46, 125, 90, 0.2);
+}
+
+.cert-jungle-friends .jungle-name-clearing {
+  width: 100%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  padding: 1.5cqw 2cqw;
+  margin: 0.5cqw 0;
+  box-sizing: border-box;
+}
+.cert-jungle-friends .jungle-name-clearing .cert-student-name {
+  color: #1E3F20;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+}
+
+.cert-jungle-friends .jungle-message {
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 1.4cqw;
+  line-height: 1.7;
+  color: var(--text, #385E3B);
+  max-width: 80%;
+  font-weight: 600;
+}
+
+/* Facts (Chips) */
+.cert-jungle-friends .jungle-facts {
+  display: flex;
+  gap: 1.5cqw;
+  justify-content: center;
+  margin-top: 1cqw;
+}
+
+.cert-jungle-friends .jungle-fact {
+  background: var(--soft, #FFF);
+  border: 2px solid var(--accent, #F2C94C);
+  box-shadow: 4px 4px 0px rgba(242, 201, 76, 0.3);
+  border-radius: 12px;
+  padding: 0.8cqw 1.5cqw;
+  font-size: 1.1cqw;
+  transition: transform 0.2s;
+}
+
+.cert-jungle-friends .jungle-fact-label {
+  color: var(--primary, #2E7D5A);
+  margin-right: 0.5cqw;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.cert-jungle-friends .jungle-fact-value {
+  font-weight: 800;
+  color: var(--text, #1E3F20);
+}
+
+/* Footer Signatures */
+.cert-jungle-friends .jungle-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.cert-jungle-friends .jungle-signature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 18cqw;
+  gap: 0.4cqw;
+}
+
+.cert-jungle-friends .jungle-signature-role {
+  font-size: 1cqw;
+  font-weight: 800;
+  color: var(--primary, #2E7D5A);
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.7);
+  padding: 0.3cqw 1cqw;
+  border-radius: 8px;
+  margin-bottom: 0.5cqw;
+}
+
+.cert-jungle-friends .jungle-signature-name {
+  font-family: var(--student-font-ar, 'El Messiri'), serif;
+  font-size: 1.4cqw;
+  font-weight: 700;
+  color: var(--text, #1E3F20);
+  border-top: 3px dashed var(--primary, #2E7D5A);
+  padding-top: 0.5cqw;
+  width: 100%;
+  text-align: center;
+}

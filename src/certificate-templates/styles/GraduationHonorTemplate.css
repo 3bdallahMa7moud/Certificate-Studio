@@ -1,0 +1,733 @@
+/* =========================================================
+   GRADUATION HONOR CERTIFICATE
+   Luxury Academic Editorial — Premium Version
+   Same Navy + Gold + Ivory palette
+   Arabic / English / Bilingual safe
+   ========================================================= */
+
+/* =========================================================
+   ROOT
+   ========================================================= */
+
+.cert-graduation-honor {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 3.05cqw 5.4cqw 2.65cqw;
+
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.98) 0%, rgba(251, 248, 240, 0.99) 50%, rgba(244, 239, 227, 1) 100%);
+
+  color: var(--text, #263244);
+  border: 1.15cqw solid var(--primary, #101C2D);
+  isolation: isolate;
+}
+
+/* Navy hairline inside the outer border */
+.cert-graduation-honor::before {
+  content: '';
+  position: absolute;
+  inset: 0.72cqw;
+  border: 0.055cqw solid rgba(16, 28, 45, 0.62);
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* Main gold frame */
+.cert-graduation-honor::after {
+  content: '';
+  position: absolute;
+  inset: 1.02cqw;
+  border: 0.13cqw solid var(--accent, #C9A35F);
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* =========================================================
+   DECORATIVE LAYER
+   ========================================================= */
+
+.cert-graduation-honor .grad-art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--accent, #C9A35F);
+}
+
+/* Very subtle third frame */
+.cert-graduation-honor .grad-gold-border {
+  position: absolute;
+  inset: 1.47cqw;
+  border: 0.04cqw solid rgba(201, 163, 95, 0.34);
+}
+
+/* =========================================================
+   FOUR ACADEMIC CORNER ORNAMENTS
+   ========================================================= */
+
+.cert-graduation-honor .grad-corner {
+  position: absolute;
+  width: 6.2cqw;
+  height: 6.2cqw;
+  opacity: 0.92;
+}
+
+.cert-graduation-honor .grad-corner::before,
+.cert-graduation-honor .grad-corner::after {
+  content: '';
+  position: absolute;
+  background: var(--accent, #C9A35F);
+}
+
+.cert-graduation-honor .grad-corner::before {
+  width: 5.4cqw;
+  height: 0.085cqw;
+}
+
+.cert-graduation-honor .grad-corner::after {
+  width: 0.085cqw;
+  height: 5.4cqw;
+}
+
+.cert-graduation-honor .grad-corner-tl {
+  top: 1.78cqw;
+  left: 1.78cqw;
+}
+
+.cert-graduation-honor .grad-corner-tl::before,
+.cert-graduation-honor .grad-corner-tl::after {
+  top: 0;
+  left: 0;
+}
+
+.cert-graduation-honor .grad-corner-tr {
+  top: 1.78cqw;
+  right: 1.78cqw;
+}
+
+.cert-graduation-honor .grad-corner-tr::before,
+.cert-graduation-honor .grad-corner-tr::after {
+  top: 0;
+  right: 0;
+}
+
+.cert-graduation-honor .grad-corner-bl {
+  bottom: 1.78cqw;
+  left: 1.78cqw;
+}
+
+.cert-graduation-honor .grad-corner-bl::before,
+.cert-graduation-honor .grad-corner-bl::after {
+  bottom: 0;
+  left: 0;
+}
+
+.cert-graduation-honor .grad-corner-br {
+  right: 1.78cqw;
+  bottom: 1.78cqw;
+}
+
+.cert-graduation-honor .grad-corner-br::before,
+.cert-graduation-honor .grad-corner-br::after {
+  right: 0;
+  bottom: 0;
+}
+
+/* small diamond on every corner */
+.cert-graduation-honor .grad-corner {
+  background:
+    linear-gradient(45deg, transparent 47%, rgba(201, 163, 95, 0.18) 48%, rgba(201, 163, 95, 0.18) 52%, transparent 53%);
+}
+
+/* =========================================================
+   WATERMARK SEAL
+   ========================================================= */
+
+.cert-graduation-honor .grad-watermark-seal {
+  position: absolute;
+  left: 50%;
+  top: 50.5%;
+  width: 33cqw;
+  height: 33cqw;
+  transform: translate(-50%, -50%);
+  color: var(--accent, #C9A35F);
+  opacity: 0.055;
+}
+
+.cert-graduation-honor .grad-watermark-seal circle,
+.cert-graduation-honor .grad-watermark-seal path {
+  stroke: currentColor;
+  stroke-width: 1.8;
+  vector-effect: non-scaling-stroke;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.cert-graduation-honor .grad-header {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: 7.2cqw;
+  box-sizing: border-box;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  padding: 0 8cqw;
+  text-align: center;
+}
+
+/* Logo stays independent so it never shifts the visual center */
+.cert-graduation-honor .cert-logo-graduation-honor {
+  position: absolute;
+  left: 0.25cqw;
+  top: 0.15cqw;
+  width: 5.3cqw;
+  height: 5.3cqw;
+  object-fit: contain;
+  filter: drop-shadow(0 0.18cqw 0.28cqw rgba(16, 28, 45, 0.12));
+}
+
+.cert-graduation-honor .grad-school-lockup {
+  width: 100%;
+  max-width: 72cqw;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* Put the academic cap above the class badge */
+.cert-graduation-honor .grad-badge-row {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+  gap: 0.38cqw;
+  margin: 0 auto 0.5cqw;
+}
+
+.cert-graduation-honor .grad-cap-emblem {
+  width: 4.15cqw;
+  height: 4.15cqw;
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: var(--primary, #101C2D);
+  border: 0.1cqw solid rgba(201, 163, 95, 0.72);
+  box-shadow:
+    0 0 0 0.22cqw rgba(201, 163, 95, 0.10),
+    0 0.25cqw 0.6cqw rgba(16, 28, 45, 0.14);
+}
+
+.cert-graduation-honor .grad-cap-svg {
+  display: block;
+  width: 67%;
+  height: 67%;
+}
+
+.cert-graduation-honor .grad-class-year {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 1.65cqw;
+  padding: 0.2cqw 1.05cqw;
+  box-sizing: border-box;
+
+  border: 0.055cqw solid rgba(201, 163, 95, 0.72);
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.72);
+
+  color: #9A7130;
+  font-size: 0.64cqw;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.cert-graduation-honor .grad-school {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.05cqw;
+
+  color: var(--primary, #101C2D);
+  font-family: var(--student-font-ar, 'El Messiri'), Georgia, serif;
+  font-size: 1.35cqw;
+  font-weight: 800;
+  line-height: 1.23;
+  letter-spacing: 0.035em;
+  text-align: center;
+}
+
+.cert-graduation-honor .grad-school::after {
+  content: '';
+  display: block;
+  width: 5.4cqw;
+  height: 0.07cqw;
+  margin-top: 0.45cqw;
+  background: linear-gradient(90deg, transparent, var(--accent, #C9A35F), transparent);
+}
+
+.cert-graduation-honor .grad-school>span {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+.cert-graduation-honor .grad-title-block {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 0.35cqw;
+  padding: 0 2cqw;
+  text-align: center;
+}
+
+.cert-graduation-honor .grad-title {
+  width: 100%;
+  max-width: 88%;
+  margin: 0 auto;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.08cqw;
+
+  color: var(--primary, #101C2D);
+  font-family: var(--student-font-ar, 'El Messiri'), Georgia, 'Times New Roman', serif;
+  font-size: 2.92cqw;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.018em;
+  text-align: center;
+}
+
+.cert-graduation-honor .grad-title[dir='ltr'] {
+  font-family: Georgia, 'Times New Roman', serif;
+  letter-spacing: 0.01em;
+}
+
+.cert-graduation-honor .grad-title>span {
+  display: block;
+  width: 100%;
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* Editorial divider with central diamond */
+.cert-graduation-honor .grad-ribbon-divider {
+  position: relative;
+  width: 17.5cqw;
+  height: 0.11cqw;
+  margin: 0.72cqw auto 0;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(201, 163, 95, 0.32) 10%,
+      var(--accent, #C9A35F) 42%,
+      transparent 42%,
+      transparent 58%,
+      var(--accent, #C9A35F) 58%,
+      rgba(201, 163, 95, 0.32) 90%,
+      transparent 100%);
+}
+
+.cert-graduation-honor .grad-ribbon-divider::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.65cqw;
+  height: 0.65cqw;
+  transform: translate(-50%, -50%) rotate(45deg);
+  box-sizing: border-box;
+  border: 0.11cqw solid var(--accent, #C9A35F);
+  background: #FBF8F0;
+}
+
+/* =========================================================
+   RECIPIENT / STUDENT
+   ========================================================= */
+
+.cert-graduation-honor .grad-recipient-zone {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.62cqw;
+  margin: 0;
+  padding: 0.95cqw 7cqw 0.8cqw;
+  text-align: center;
+}
+
+.cert-graduation-honor .grad-present-to {
+  width: 100%;
+  max-width: 72%;
+  margin: 0 auto;
+  padding: 0;
+
+  color: #7C8490;
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 0.66cqw;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: 0.09em;
+  text-align: center;
+}
+
+.cert-graduation-honor .grad-student-center {
+  position: relative;
+  z-index: 1;
+  width: 88%;
+  min-height: 4.4cqw;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0.08cqw auto;
+  padding: 0.35cqw 6.2cqw;
+  text-align: center;
+}
+
+/* Gold lines stop before the student's name */
+.cert-graduation-honor .grad-student-center::before,
+.cert-graduation-honor .grad-student-center::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 5.2cqw;
+  height: 0.075cqw;
+  background: linear-gradient(90deg, transparent, rgba(201, 163, 95, 0.88));
+}
+
+.cert-graduation-honor .grad-student-center::before {
+  left: 0;
+}
+
+.cert-graduation-honor .grad-student-center::after {
+  right: 0;
+  transform: rotate(180deg);
+}
+
+.cert-graduation-honor .grad-student-center>* {
+  position: relative;
+  z-index: 2;
+  margin-inline: auto !important;
+  text-align: center !important;
+}
+
+.cert-graduation-honor .grad-student-center .cert-student-name,
+.cert-graduation-honor .grad-recipient-zone .cert-student-name {
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto !important;
+  color: #9A7130;
+  line-height: 1.08;
+  text-align: center !important;
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+  text-shadow: 0 0.08cqw 0.12cqw rgba(154, 113, 48, 0.12);
+}
+
+.cert-graduation-honor .grad-message {
+  width: 62%;
+  max-width: 62%;
+  margin: 0.18cqw auto 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  color: #455267;
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 0.98cqw;
+  font-weight: 500;
+  line-height: 1.52;
+  text-align: center !important;
+  overflow-wrap: anywhere;
+}
+
+.cert-graduation-honor .grad-message>*,
+.cert-graduation-honor .grad-message p {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center !important;
+}
+
+/* =========================================================
+   ACADEMIC META STRIP
+   ========================================================= */
+
+.cert-graduation-honor .grad-meta-bar {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  width: 84%;
+  box-sizing: border-box;
+
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+
+  margin: 0 auto 1.15cqw;
+  padding: 0.45cqw 0 0.5cqw;
+
+  border-top: 0.07cqw solid rgba(201, 163, 95, 0.82);
+  border-bottom: 0.055cqw solid rgba(16, 28, 45, 0.19);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.52) 18%, rgba(255, 255, 255, 0.52) 82%, transparent);
+  text-align: center;
+}
+
+.cert-graduation-honor .grad-meta-cell {
+  position: relative;
+  min-width: 0;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.22cqw;
+
+  padding: 0.18cqw 0.75cqw;
+  text-align: center;
+}
+
+.cert-graduation-honor .grad-meta-cell:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  inset-inline-end: 0;
+  top: 18%;
+  width: 0.045cqw;
+  height: 64%;
+  background: rgba(16, 28, 45, 0.14);
+}
+
+.cert-graduation-honor .grad-meta-label {
+  display: block;
+  width: 100%;
+  color: #7B8491;
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 0.55cqw;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: 0.075em;
+  text-align: center;
+}
+
+.cert-graduation-honor .grad-meta-label::after {
+  content: '';
+  display: block;
+  width: 2.6cqw;
+  height: 0.045cqw;
+  margin: 0.22cqw auto 0;
+  background: rgba(201, 163, 95, 0.72);
+}
+
+.cert-graduation-honor .grad-meta-val {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  color: var(--primary, #101C2D);
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 0.88cqw;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.cert-graduation-honor .grad-language-separator {
+  color: var(--accent, #C9A35F);
+  opacity: 0.75;
+}
+
+/* =========================================================
+   SIGNATURES
+   ========================================================= */
+
+.cert-graduation-honor .grad-sign-row {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  width: 82%;
+  box-sizing: border-box;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+  column-gap: 17cqw;
+
+  margin: 0 auto;
+  padding: 0 0 0.05cqw;
+  text-align: center;
+}
+
+.cert-graduation-honor .grad-sign-box {
+  width: 100%;
+  min-width: 0;
+  min-height: 3.55cqw;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+
+  margin-inline: auto;
+  text-align: center;
+}
+
+.cert-graduation-honor .grad-sig-img {
+  display: block;
+  width: auto;
+  max-width: 10.5cqw;
+  height: auto;
+  max-height: 2.65cqw;
+  object-fit: contain;
+  margin: 0 auto 0.2cqw;
+}
+
+.cert-graduation-honor .grad-sign-title {
+  display: block;
+  width: 100%;
+  margin: 0 auto 0.28cqw;
+  color: #7C8490;
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 0.54cqw;
+  font-weight: 800;
+  line-height: 1.18;
+  letter-spacing: 0.055em;
+  text-align: center;
+}
+
+.cert-graduation-honor .grad-sign-name {
+  position: relative;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5cqw 0.35cqw 0;
+
+  border-top: 0.075cqw solid rgba(201, 163, 95, 0.95);
+  color: var(--primary, #101C2D);
+  font-family: var(--student-font-ar, 'El Messiri'), Georgia, serif;
+  font-size: 0.86cqw;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.cert-graduation-honor .grad-sign-name::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -0.23cqw;
+  width: 0.38cqw;
+  height: 0.38cqw;
+  box-sizing: border-box;
+  transform: translateX(-50%) rotate(45deg);
+  background: #FBF8F0;
+  border: 0.08cqw solid var(--accent, #C9A35F);
+}
+
+/* =========================================================
+   LANGUAGE + FLOW SAFETY
+   ========================================================= */
+
+.cert-graduation-honor [dir='rtl'],
+.cert-graduation-honor [dir='ltr'] {
+  unicode-bidi: plaintext;
+}
+
+.cert-graduation-honor .grad-school,
+.cert-graduation-honor .grad-title,
+.cert-graduation-honor .grad-present-to,
+.cert-graduation-honor .grad-message,
+.cert-graduation-honor .grad-meta-bar,
+.cert-graduation-honor .grad-sign-row {
+  text-align: center;
+}
+
+.cert-graduation-honor .grad-title>span+span {
+  margin-top: 0.12cqw;
+}
+
+.cert-graduation-honor .grad-school>span+span {
+  margin-top: 0.06cqw;
+}
+
+/* Avoid oversized English letter spacing when RTL is active */
+.cert-graduation-honor [dir='rtl'] .grad-class-year,
+.cert-graduation-honor [dir='rtl'] .grad-present-to,
+.cert-graduation-honor [dir='rtl'] .grad-meta-label,
+.cert-graduation-honor [dir='rtl'] .grad-sign-title {
+  letter-spacing: 0;
+}
+
+/* =========================================================
+   OVERFLOW SAFETY
+   ========================================================= */
+
+.cert-graduation-honor .grad-header>*,
+.cert-graduation-honor .grad-title-block>*,
+.cert-graduation-honor .grad-recipient-zone>*,
+.cert-graduation-honor .grad-meta-bar>*,
+.cert-graduation-honor .grad-sign-row>* {
+  min-width: 0;
+}

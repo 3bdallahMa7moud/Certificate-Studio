@@ -1,16 +1,74 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { getDefaultState, genSerial } from '../src/context/data.js';
 import {
+  genSerial,
+  getCurrentAcademicYear,
+  getDefaultState,
+} from '../src/context/data.js';
+import {
+  createStudentRenderPatch,
+  dateInputValue,
   duplicateIndexes,
   formatDateAr,
   formatDateEn,
   normalizeGradeValue,
+  normalizeStudentData,
   parseCsv,
   rowsToStudents,
   toDate,
 } from '../src/context/helpers.js';
+
+test('canonical student normalization is reusable across imports, projects, and history adapters', () => {
+  const normalized = normalizeStudentData({
+    name: '  ليان أحمد  ',
+    englishName: ' Layan Ahmed ',
+    gender: 'female',
+    grade: 'g08',
+    customMessage: 'Well done',
+    studentRowId: 'ROW-SHARED',
+    id: 'CERT-2026-SHARED',
+  }, {
+    subject: 'math',
+    behavior: 'excellence',
+  }, {
+    rowIdFactory: null,
+    serialFactory: null,
+  });
+
+  assert.equal(normalized.rowId, 'ROW-SHARED');
+  assert.equal(normalized.serial, 'CERT-2026-SHARED');
+  assert.equal(normalized.studentNameAr, 'ليان أحمد');
+  assert.equal(normalized.studentNameEn, 'Layan Ahmed');
+  assert.equal(normalized.grade, 'Grade 8');
+  assert.equal(normalized.subject, 'math');
+  assert.equal(normalized.behavior, 'excellence');
+  assert.equal(normalized.customMessageAr, '');
+  assert.equal(normalized.customMessageEn, 'Well done');
+});
+
+test('student render patches cannot override shared design or asset fields', () => {
+  const patch = createStudentRenderPatch({
+    rowId: 'ROW-1',
+    studentNameAr: 'ليان',
+    template: 'untrusted-template',
+    paperSize: 'letter-landscape',
+    logo: 'https://example.invalid/tracker.png',
+    customMessageEn: 'Well done',
+  }, {
+    grade: 'Grade 6',
+    template: 'editorial',
+    paperSize: 'a4-landscape',
+    logo: null,
+  });
+
+  assert.equal(patch.studentNameAr, 'ليان');
+  assert.equal(patch.studentRowId, 'ROW-1');
+  assert.equal(patch.customMessage, 'Well done');
+  assert.equal('template' in patch, false);
+  assert.equal('paperSize' in patch, false);
+  assert.equal('logo' in patch, false);
+});
 
 test('normalizeGradeValue accepts common grade formats', () => {
   assert.equal(normalizeGradeValue('7G2'), 'Grade 7');
@@ -53,6 +111,19 @@ test('formatDateAr and formatDateEn safely format dates', () => {
   assert.equal(formatDateEn(testDate), 'May 15, 2026');
   assert.ok(toDate(null) instanceof Date);
   assert.ok(toDate('invalid-date') instanceof Date);
+});
+
+test('empty certificate dates stay empty in display and input formatters', () => {
+  assert.equal(formatDateAr(''), '');
+  assert.equal(formatDateEn(''), '');
+  assert.equal(dateInputValue(''), '');
+  assert.equal(formatDateAr(null), '');
+  assert.equal(formatDateEn(undefined), '');
+});
+
+test('academic year is fixed for the 2026-2027 certificate cycle', () => {
+  assert.equal(getCurrentAcademicYear(new Date(2026, 6, 31, 12)), '2026–2027');
+  assert.equal(getCurrentAcademicYear(new Date(2026, 7, 1, 12)), '2026–2027');
 });
 
 // ── Phase 5 — Student Management ─────────────────────────────────────
@@ -177,5 +248,3 @@ test('tabpanel ARIA association generates matching IDs and labels', () => {
   assert.equal(inactiveAttrs['aria-selected'], false);
   assert.equal(inactiveAttrs.tabIndex, -1);
 });
-
-

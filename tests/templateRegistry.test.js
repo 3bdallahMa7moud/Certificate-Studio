@@ -73,7 +73,6 @@ test('template registry entries remain serializable metadata only and landscape 
         .find(candidate => candidate.id === elementId);
       return (
         element
-        && element.role !== 'achievement'
         && element.role !== 'term'
         && element.role !== 'serial'
         && element.role !== 'decoration'

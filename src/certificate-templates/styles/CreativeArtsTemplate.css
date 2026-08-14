@@ -1,0 +1,483 @@
+/* Creative Arts - polished bilingual certificate layout */
+.cert-creative-arts {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  isolation: isolate;
+
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+  align-content: stretch;
+  gap: 1.15cqw;
+
+  padding: 2.4cqw 3.35cqw 2.35cqw;
+  border: 0.9cqw solid transparent;
+  border-radius: 1.7cqw;
+
+  background:
+    radial-gradient(circle at 9% 15%, rgba(233, 30, 99, 0.13) 0, rgba(233, 30, 99, 0) 28%) padding-box,
+    radial-gradient(circle at 91% 82%, rgba(0, 188, 212, 0.13) 0, rgba(0, 188, 212, 0) 27%) padding-box,
+    linear-gradient(135deg, #fffdfb 0%, #fffdfa 54%, #f8fcfc 100%) padding-box,
+    linear-gradient(135deg, var(--primary, #6c3483) 0%, #406b8d 48%, var(--accent, #18a999) 100%) border-box;
+
+  color: var(--text, #2f2534);
+  font-family: var(--student-font-ar, 'Tajawal'), Arial, sans-serif;
+}
+
+.cert-creative-arts *,
+.cert-creative-arts *::before,
+.cert-creative-arts *::after {
+  box-sizing: border-box;
+}
+
+/* Decorative background */
+.cert-creative-arts .arts-art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cert-creative-arts .arts-art::before,
+.cert-creative-arts .arts-art::after {
+  content: '';
+  position: absolute;
+  width: 18cqw;
+  height: 18cqw;
+  border-radius: 42% 58% 60% 40% / 45% 42% 58% 55%;
+  border: 0.18cqw solid rgba(108, 52, 131, 0.12);
+  transform: rotate(24deg);
+}
+
+.cert-creative-arts .arts-art::before {
+  top: -8cqw;
+  right: 16cqw;
+}
+
+.cert-creative-arts .arts-art::after {
+  bottom: -9cqw;
+  left: 13cqw;
+  transform: rotate(-18deg);
+  border-color: rgba(24, 169, 153, 0.14);
+}
+
+.cert-creative-arts .arts-splash {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(4.2cqw);
+  opacity: 0.12;
+}
+
+.cert-creative-arts .arts-splash-1 {
+  top: -8cqw;
+  left: -8cqw;
+  width: 33cqw;
+  height: 33cqw;
+  background: #d75781;
+}
+
+.cert-creative-arts .arts-splash-2 {
+  right: -7cqw;
+  bottom: -6cqw;
+  width: 29cqw;
+  height: 29cqw;
+  background: #1bb6b1;
+}
+
+.cert-creative-arts .arts-splash-3 {
+  top: 35%;
+  left: 60%;
+  width: 14cqw;
+  height: 14cqw;
+  background: #f4c95d;
+  opacity: 0.06;
+}
+
+/* Header */
+.cert-creative-arts .arts-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.15cqw;
+  min-height: 5.1cqw;
+}
+
+.cert-creative-arts .cert-logo-creative-arts {
+  width: 4.7cqw;
+  height: 4.7cqw;
+  object-fit: contain;
+  flex: 0 0 auto;
+  transform: none;
+  filter: drop-shadow(0 0.3cqw 0.5cqw rgba(47, 37, 52, 0.08));
+}
+
+.cert-creative-arts .arts-school-lockup {
+  min-width: 0;
+  max-width: 64cqw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45cqw;
+  text-align: center;
+}
+
+.cert-creative-arts .arts-badge-row {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55cqw;
+}
+
+.cert-creative-arts .arts-badge-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.15cqw;
+  padding: 0.35cqw 1cqw;
+  border-radius: 999px;
+  background: var(--primary, #6c3483);
+  color: #fff;
+  font-size: 0.82cqw;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  box-shadow: 0 0.25cqw 0.65cqw rgba(108, 52, 131, 0.13);
+}
+
+.cert-creative-arts .arts-palette-icon {
+  width: 3.6cqw;
+  height: 3.6cqw;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.94);
+  border: 0.13cqw solid rgba(108, 52, 131, 0.12);
+  box-shadow: 0 0.35cqw 1cqw rgba(55, 37, 63, 0.09);
+}
+
+.cert-creative-arts .arts-palette-svg {
+  width: 2.55cqw;
+  height: 2.55cqw;
+  display: block;
+}
+
+.cert-creative-arts .arts-school {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.12cqw;
+  color: var(--primary, #6c3483);
+  line-height: 1.15;
+}
+
+.cert-creative-arts .arts-school-name {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  unicode-bidi: isolate;
+}
+
+.cert-creative-arts .arts-school-name-ar {
+  direction: rtl;
+  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
+  font-size: 1.55cqw;
+  font-weight: 800;
+}
+
+.cert-creative-arts .arts-school-name-en {
+  direction: ltr;
+  font-family: var(--student-font-en, Georgia), serif;
+  font-size: 1.08cqw;
+  font-weight: 600;
+  color: rgba(108, 52, 131, 0.82);
+}
+
+/* Title */
+.cert-creative-arts .arts-title-block {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25cqw;
+  text-align: center;
+  padding: 0 4cqw;
+}
+
+.cert-creative-arts .arts-title {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.08cqw;
+  max-width: 88cqw;
+  color: var(--primary, #6c3483);
+  line-height: 1.02;
+}
+
+.cert-creative-arts .arts-title-line {
+  display: block;
+  max-width: 100%;
+  unicode-bidi: isolate;
+  text-wrap: balance;
+}
+
+.cert-creative-arts .arts-title-ar {
+  direction: rtl;
+  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
+  font-size: clamp(2.1cqw, 3cqw, 3.15cqw);
+  font-weight: 900;
+}
+
+.cert-creative-arts .arts-title-en {
+  direction: ltr;
+  font-family: var(--student-font-en, Georgia), serif;
+  font-size: 2.42cqw;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.cert-creative-arts .arts-subtitle {
+  margin: 0.32cqw 0 0;
+  max-width: 62cqw;
+  font-size: 0.88cqw;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #9a3658;
+  text-align: center;
+  unicode-bidi: plaintext;
+}
+
+/* Recipient card */
+.cert-creative-arts .arts-recipient-zone {
+  position: relative;
+  z-index: 2;
+  width: min(74cqw, 78%);
+  min-height: 15.5cqw;
+  justify-self: center;
+  align-self: center;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9cqw;
+
+  padding: 1.55cqw 3.6cqw 1.7cqw;
+  border: 0.11cqw solid rgba(108, 52, 131, 0.08);
+  border-radius: 1.6cqw;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow:
+    0 1.2cqw 3cqw rgba(58, 41, 64, 0.06),
+    inset 0 0 0 0.09cqw rgba(255, 255, 255, 0.78);
+  text-align: center;
+}
+
+.cert-creative-arts .arts-recipient-zone::before {
+  content: '';
+  width: 6.5cqw;
+  height: 0.25cqw;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary, #6c3483), var(--accent, #18a999));
+  opacity: 0.62;
+}
+
+/* StudentName primitive - keep the primary name visually dominant */
+.cert-creative-arts .arts-recipient-zone .cert-student-name,
+.cert-creative-arts .arts-recipient-zone [class*='student-name'] {
+  max-width: 100%;
+  text-align: center;
+  line-height: 1.1;
+  unicode-bidi: plaintext;
+}
+
+.cert-creative-arts .arts-recipient-zone .cert-student-name {
+  color: #8f2f50;
+}
+
+.cert-creative-arts .arts-message {
+  width: 100%;
+  max-width: 64cqw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55cqw;
+  margin: 0;
+  color: #3f3543;
+  text-align: center;
+}
+
+.cert-creative-arts .arts-message-line {
+  margin: 0;
+  max-width: 100%;
+  text-align: center;
+  text-wrap: balance;
+  unicode-bidi: isolate;
+}
+
+.cert-creative-arts .arts-message-ar {
+  direction: rtl;
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 1.17cqw;
+  line-height: 1.55;
+  font-weight: 650;
+}
+
+.cert-creative-arts .arts-message-en {
+  direction: ltr;
+  font-family: var(--student-font-en, Arial), sans-serif;
+  font-size: 1.03cqw;
+  line-height: 1.45;
+  font-weight: 600;
+  color: #514755;
+}
+
+/* Metadata - deliberately lighter than form inputs */
+.cert-creative-arts .arts-meta-bar {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75cqw;
+  align-items: stretch;
+}
+
+.cert-creative-arts .arts-meta-bar.is-rtl {
+  direction: rtl;
+}
+
+.cert-creative-arts .arts-meta-bar.is-ltr {
+  direction: ltr;
+}
+
+.cert-creative-arts .arts-meta-card {
+  min-width: 0;
+  min-height: 4.25cqw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25cqw;
+  padding: 0.55cqw 0.8cqw;
+  border: 0;
+  border-top: 0.12cqw solid rgba(108, 52, 131, 0.22);
+  background: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  box-shadow: none;
+}
+
+.cert-creative-arts .arts-meta-label {
+  display: block;
+  font-size: 0.7cqw;
+  font-weight: 800;
+  line-height: 1;
+  color: #766a79;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  white-space: nowrap;
+}
+
+.cert-creative-arts .arts-meta-val {
+  min-width: 0;
+  display: block;
+  font-size: 1cqw;
+  font-weight: 750;
+  line-height: 1.25;
+  color: #302735;
+  unicode-bidi: isolate;
+  overflow-wrap: anywhere;
+}
+
+.cert-creative-arts .arts-subject-value>span {
+  unicode-bidi: isolate;
+}
+
+.cert-creative-arts .arts-subject-value .arts-subject-ar {
+  direction: rtl;
+}
+
+.cert-creative-arts .arts-subject-value .arts-subject-en {
+  direction: ltr;
+}
+
+/* Signatures */
+.cert-creative-arts .arts-sign-row {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 5cqw;
+}
+
+.cert-creative-arts .arts-sign-row.is-rtl {
+  direction: rtl;
+}
+
+.cert-creative-arts .arts-sign-row.is-ltr {
+  direction: ltr;
+}
+
+.cert-creative-arts .arts-sign-box {
+  position: relative;
+  width: min(29cqw, 31%);
+  min-height: 5.4cqw;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: 0.32cqw;
+  text-align: center;
+}
+
+.cert-creative-arts .arts-sig-img {
+  width: auto;
+  max-width: 11cqw;
+  height: 2.8cqw;
+  object-fit: contain;
+  margin-bottom: 0.05cqw;
+  align-self: center;
+}
+
+.cert-creative-arts .arts-sign-title {
+  display: block;
+  max-width: 100%;
+  padding-top: 0.55cqw;
+  border-top: 0.12cqw dashed rgba(24, 169, 153, 0.58);
+  font-size: 0.67cqw;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #6c6270;
+  unicode-bidi: plaintext;
+}
+
+.cert-creative-arts .arts-sign-name {
+  display: block;
+  width: 100%;
+  font-family: var(--student-font-ar, 'El Messiri'), serif;
+  font-size: 1.05cqw;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #2f2534;
+  text-align: center;
+  unicode-bidi: plaintext;
+}
+
+/* Keep isolated LTR values stable inside RTL certificates. */
+.cert-creative-arts bdi,
+.cert-creative-arts [dir='ltr'],
+.cert-creative-arts [dir='rtl'] {
+  unicode-bidi: isolate;
+}

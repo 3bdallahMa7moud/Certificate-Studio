@@ -1,6 +1,9 @@
 import { TEMPLATE_REGISTRY } from '../certificate-templates/registry.js';
 import { createEmptyTemplateCustomizations } from '../certificate-editor/customizationModel.js';
 
+export const ACADEMIC_YEAR = '2026–2027';
+export const ACADEMIC_YEAR_AR = '٢٠٢٦–٢٠٢٧';
+
 export const SUBJECTS = [
   { id:'math', icon:'Calculator', ar:'الرياضيات', en:'Mathematics' },
   { id:'science', icon:'FlaskConical', ar:'العلوم', en:'Science' },
@@ -41,6 +44,11 @@ export const BEHAVIORS = [
   { id:'creativity', icon:'Lightbulb', ar:'الإبداع', en:'Creativity' },
   { id:'leadership', icon:'Crown', ar:'القيادة', en:'Leadership' },
   { id:'kindness', icon:'Heart', ar:'اللطف والاحترام', en:'Kindness' },
+  { id:'academic_excellence', icon:'Award', ar:'التفوق الأكاديمي', en:'Academic Excellence' },
+  { id:'reading', icon:'BookOpen', ar:'القراءة المتميزة', en:'Outstanding Reading' },
+  { id:'quran', icon:'Star', ar:'حفظ القرآن الكريم', en:'Quran Memorization' },
+  { id:'innovation', icon:'Rocket', ar:'الابتكار', en:'Innovation' },
+  { id:'community_service', icon:'Handshake', ar:'خدمة المجتمع', en:'Community Service' },
 ];
 
 export const THEMES = [
@@ -186,7 +194,6 @@ export const TEMPLATES = TEMPLATE_REGISTRY.map(template => ({
 
 export const PAPER_SIZES = [
   { id:'a4-landscape', name:'A4 أفقي', page:'A4 landscape', ratio:'297 / 210', ratioNum:297/210, width:1400 },
-  { id:'a4-portrait', name:'A4 رأسي', page:'A4 portrait', ratio:'210 / 297', ratioNum:210/297, width:1000 },
   { id:'letter-landscape', name:'Letter أفقي', page:'Letter landscape', ratio:'279.4 / 215.9', ratioNum:279.4/215.9, width:1400 },
 ];
 
@@ -235,13 +242,58 @@ export const FIXED_CERTIFICATE_IDENTITY = {
   principalTitleEn: 'School Principal',
 };
 
+export function getForcedDate(date = new Date()) {
+  const validDate = date instanceof Date && !Number.isNaN(date.getTime()) ? new Date(date) : new Date();
+  validDate.setFullYear(Math.max(2026, new Date().getFullYear()));
+  return validDate;
+}
+
 export function genSerial() {
-  const year = new Date().getFullYear();
+  const year = Math.max(2026, new Date().getFullYear());
   const code = Math.random().toString(36).substring(2, 8).toUpperCase();
   return `CERT-${year}-${code}`;
 }
 
+export function normalizeAcademicYear(value = ACADEMIC_YEAR) {
+  const raw = String(value || '').trim();
+  if (!raw) return ACADEMIC_YEAR;
+  return ACADEMIC_YEAR;
+}
+
+export function displayAcademicYearValue(value = ACADEMIC_YEAR, locale = 'en') {
+  const normalized = normalizeAcademicYear(value);
+  if (normalized === ACADEMIC_YEAR && locale === 'ar') return ACADEMIC_YEAR_AR;
+  return normalized;
+}
+
+export function defaultAchievementPair(behaviorId = 'creativity') {
+  const behavior = BEHAVIORS.find(item => item.id === behaviorId) || BEHAVIORS[0];
+  return {
+    ar: behavior?.ar || '',
+    en: behavior?.en || '',
+  };
+}
+
+/**
+ * Stable internal identity for a student row. Unlike the visible certificate
+ * serial, this value is never regenerated when the serial is edited.
+ */
+export function genRowId() {
+  const cryptoApi = globalThis.crypto;
+  if (typeof cryptoApi?.randomUUID === 'function') {
+    return `ROW-${cryptoApi.randomUUID()}`;
+  }
+  const time = Date.now().toString(36).toUpperCase();
+  const random = Math.random().toString(36).slice(2, 12).toUpperCase();
+  return `ROW-${time}-${random}`;
+}
+
+export function getCurrentAcademicYear(date = new Date()) {
+  return ACADEMIC_YEAR;
+}
+
 export function getDefaultState() {
+  const defaultAchievement = defaultAchievementPair('creativity');
   return {
     template: 'editorial',
     paperSize: 'a4-landscape',
@@ -257,6 +309,8 @@ export function getDefaultState() {
     schoolNameEn: FIXED_CERTIFICATE_IDENTITY.schoolNameEn,
     subject: 'science',
     behavior: 'creativity',
+    achievementAr: defaultAchievement.ar,
+    achievementEn: defaultAchievement.en,
     teacherNameAr: FIXED_CERTIFICATE_IDENTITY.teacherNameAr,
     teacherNameEn: FIXED_CERTIFICATE_IDENTITY.teacherNameEn,
     teacherTitleAr: FIXED_CERTIFICATE_IDENTITY.teacherTitleAr,
@@ -265,11 +319,14 @@ export function getDefaultState() {
     principalNameEn: FIXED_CERTIFICATE_IDENTITY.principalNameEn,
     principalTitleAr: FIXED_CERTIFICATE_IDENTITY.principalTitleAr,
     principalTitleEn: FIXED_CERTIFICATE_IDENTITY.principalTitleEn,
-    academicYear: '2025 / 2026',
+    academicYear: ACADEMIC_YEAR,
     term: 'الفصل الدراسي الثاني',
     customMessage: MESSAGE_TEMPLATES[0].text,
+    customMessageAr: MESSAGE_TEMPLATES[0].text,
+    customMessageEn: '',
+    paletteMode: 'template',
     serial: genSerial(),
-    date: new Date().toISOString(),
+    date: getForcedDate().toISOString(),
     nameFontSize: 100,
     fontStyle: 'classic',
     languageMode: 'both',

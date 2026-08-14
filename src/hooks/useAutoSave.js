@@ -5,24 +5,33 @@ import {
   persistStateSync,
 } from '../services/storage.js';
 
-export function useAutoSave(state, showToast) {
+export function useAutoSave(state, showToast, enabled = true) {
   const [saveStatus, setSaveStatus] = useState('saved'); // 'saved' | 'saving' | 'error'
   const autosaveReady = useRef(false);
   const savedImages = useRef(extractImageAssets(state));
   const showToastRef = useRef(showToast);
   const latestState = useRef(state);
+  const enabledRef = useRef(enabled);
+  const hasUnsavedChanges = useRef(false);
 
   useEffect(() => {
     showToastRef.current = showToast;
   }, [showToast]);
 
   useEffect(() => {
-    latestState.current = state;
-  }, [state]);
+    enabledRef.current = enabled;
+  }, [enabled]);
 
   useEffect(() => {
+    latestState.current = state;
+    if (enabled && autosaveReady.current) hasUnsavedChanges.current = true;
+  }, [enabled, state]);
+
+  useEffect(() => {
+    if (!enabled) return undefined;
     if (!autosaveReady.current) {
       autosaveReady.current = true;
+      savedImages.current = extractImageAssets(state);
       return;
     }
     setSaveStatus('saving');
@@ -30,6 +39,7 @@ export function useAutoSave(state, showToast) {
       try {
         await persistStateAsync(state, savedImages.current);
         savedImages.current = extractImageAssets(state);
+        hasUnsavedChanges.current = false;
         setSaveStatus('saved');
       } catch {
         setSaveStatus('error');
@@ -37,10 +47,12 @@ export function useAutoSave(state, showToast) {
       }
     }, 500);
     return () => clearTimeout(timer);
-  }, [state]);
+  }, [enabled, state]);
 
   useEffect(() => {
     const onBeforeUnload = () => {
+      if (!enabledRef.current) return;
+      if (!hasUnsavedChanges.current) return;
       try {
         persistStateSync(latestState.current);
       } catch {}

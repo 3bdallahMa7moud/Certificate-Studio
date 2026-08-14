@@ -4,8 +4,7 @@ import { arrayBufferFile, downloadBlob, textFile } from '../services/imageUtils.
 import { exportProjectJson, validateProjectJsonString } from '../services/projectValidation.js';
 import {
   extractImageAssets,
-  persistImageAssets,
-  persistStateSync,
+  persistStateAsync,
 } from '../services/storage.js';
 
 export function useStudentImport(
@@ -64,7 +63,10 @@ export function useStudentImport(
       grade: state.grade,
       subject: state.subject,
       behavior: state.behavior,
-      customMessage: state.customMessage,
+      achievementAr: state.achievementAr,
+      achievementEn: state.achievementEn,
+      customMessageAr: state.customMessageAr || state.customMessage,
+      customMessageEn: state.customMessageEn,
     });
     updateState({ batchStudents: [...state.batchStudents, student] });
     if (showToast) showToast('تم نسخ الشهادة الحالية للقائمة');
@@ -79,8 +81,8 @@ export function useStudentImport(
   };
 
   const downloadCsvTemplate = () => {
-    const header = 'studentNameAr,studentNameEn,grade,subject,achievement,message\n';
-    const sample = 'محمد أحمد علي,Mohamed Ahmed Ali,Grade 7,الكيمياء,الإبداع,تقديرا للتميز في الكيمياء والمشاركة الفاعلة\n';
+    const header = 'studentNameAr,studentNameEn,gender,grade,subject,behavior,achievementAr,achievementEn,message,notes\n';
+    const sample = 'محمد أحمد علي,Mohamed Ahmed Ali,male,Grade 7,الكيمياء,creativity,الإبداع,Creativity,تقديرا للتميز في الكيمياء والمشاركة الفاعلة,\n';
     downloadBlob(new Blob(['\ufeff' + header + sample], { type: 'text/csv;charset=utf-8' }), 'certificate-studio-template.csv');
   };
 
@@ -89,7 +91,7 @@ export function useStudentImport(
       const jsonStr = exportProjectJson(state);
       const blob = new Blob([jsonStr], { type: 'application/json' });
       downloadBlob(blob, `certificate-project-${new Date().toISOString().slice(0, 10)}.json`);
-      if (showToast) showToast('تم تصدير ملف مشروع JSON بنجاح');
+      if (showToast) showToast('تم تصدير ملف المشروع بنجاح');
     } catch {
       if (showToast) showToast('تعذّر تصدير ملف المشروع');
     }
@@ -101,20 +103,25 @@ export function useStudentImport(
       const jsonText = await textFile(file);
       const res = validateProjectJsonString(jsonText);
       if (!res.valid) {
-        if (showToast) showToast(res.error || 'ملف JSON غير صالح أو تالف');
+        if (showToast) showToast(res.error || 'ملف المشروع غير صالح أو تالف');
         return;
       }
-      await persistImageAssets(res.data, extractImageAssets(state));
-      persistStateSync(res.data);
+      const orientationMigrated = Boolean(res.data.paperOrientationMigrated);
+      const importedState = orientationMigrated
+        ? { ...res.data, paperOrientationMigrated: false }
+        : res.data;
+      await persistStateAsync(importedState, extractImageAssets(state));
       if (setState) {
-        setState(res.data);
+        setState(importedState);
       } else {
-        updateState(res.data);
+        updateState(importedState);
       }
       if (onProjectImported) onProjectImported();
-      if (showToast) showToast('تم استيراد مشروع الشهادات بنجاح');
+      if (showToast) showToast(orientationMigrated
+        ? 'تم استيراد المشروع وتحويل المقاس العمودي القديم إلى مقاس أفقي.'
+        : 'تم استيراد مشروع الشهادات بنجاح');
     } catch {
-      if (showToast) showToast('تعذّر استيراد ملف مشروع JSON');
+      if (showToast) showToast('تعذّر استيراد ملف المشروع');
     }
   };
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  displayAcademicYear,
   displayDate,
   getSubject,
   primaryDisplayName,
@@ -12,10 +13,13 @@ import {
   titleFlowClass,
 } from '../templateUtils.js';
 import {
+  AchievementText,
   StudentName,
   TemplateLogo,
   mergeStaticProps,
+  CertificateMessage,
 } from './TemplatePrimitives.jsx';
+import '../styles/SportsChampionTemplate.css';
 
 const PREFIX = 'sports-champion';
 
@@ -166,25 +170,29 @@ export default function SportsChampionTemplate({ state, render }) {
           })}
         />
 
-        <p
-          className={`sports-message ${textFlowClass(state.customMessage)}`}
-          dir={textDirection(state.customMessage)}
-          {...element(`${PREFIX}-message`, {
-            contentKey: 'customMessage',
-            occurrenceId: `${PREFIX}-message`,
-          })}
+        <div
+          {...element(
+            `${PREFIX}-message`,
+            {
+              contentKey: 'customMessage',
+              occurrenceId: `${PREFIX}-message`,
+            },
+            {
+              className: `sports-message ${textFlowClass(state.customMessageAr || state.customMessageEn || '')}`,
+              dir: textDirection(state.customMessageAr || state.customMessageEn || ''),
+            },
+          )}
         >
-          {state.customMessage || 'تقديراً للروح الرياضية العالية، واللياقة البدنية المتميزة، والإنجاز الرائع في البطولة.'}
-        </p>
+          <CertificateMessage state={state} fallbackAr="تقديراً للروح الرياضية العالية، واللياقة البدنية المتميزة، والإنجاز الرائع في البطولة." fallbackEn="In recognition of high sportsmanship, outstanding physical fitness, and great achievement in the championship." />
+        </div>
       </main>
 
       <footer className="sports-meta-bar">
         <div
-          className="sports-meta-pill"
           {...element(`${PREFIX}-grade`, {
             contentKey: 'grade',
             occurrenceId: `${PREFIX}-grade`,
-          })}
+          }, { className: 'sports-meta-pill' })}
         >
           <span className="sports-meta-label">{showAr ? 'الصف' : 'GRADE'}</span>
           <span className="sports-meta-val">{state.grade}</span>
@@ -221,47 +229,54 @@ export default function SportsChampionTemplate({ state, render }) {
           </span>
         </div>
 
+        <div className="sports-meta-pill sports-achievement-pill">
+          <span className="sports-meta-label">{showAr ? 'الإنجاز' : 'ACHIEVEMENT'}</span>
+          <AchievementText
+            state={state}
+            element={element}
+            elementId={`${PREFIX}-achievement`}
+            className="sports-meta-val"
+            partClassName="certificate-achievement-part"
+          />
+        </div>
+
         <div
-          className="sports-meta-pill"
           {...element(`${PREFIX}-date`, {
             contentKey: 'date',
             occurrenceId: `${PREFIX}-date`,
-          })}
+          }, { className: 'sports-meta-pill' })}
         >
           <span className="sports-meta-label">{showAr ? 'التاريخ' : 'DATE'}</span>
           <span className="sports-meta-val">{displayDate(state)}</span>
         </div>
 
         <div
-          className="sports-meta-pill"
           {...element(`${PREFIX}-academic-year`, {
             contentKey: 'academicYear',
             occurrenceId: `${PREFIX}-academic-year`,
-          })}
+          }, { className: 'sports-meta-pill' })}
         >
           <span className="sports-meta-label">{showAr ? 'العام' : 'YEAR'}</span>
-          <span className="sports-meta-val">{state.academicYear || '—'}</span>
+          <span className="sports-meta-val">{displayAcademicYear(state)}</span>
         </div>
       </footer>
 
       <div className="sports-sign-row">
         <div
-          className="sports-sign-box"
           {...element(`${PREFIX}-teacher-name`, {
             occurrenceId: teacherPrimaryId,
             preservePosition: true,
-          })}
+          }, { className: 'sports-sign-box' })}
         >
           {state.teacherSig && (
             <img
               src={state.teacherSig}
               alt=""
-              className="sports-sig-img"
               {...element(`${PREFIX}-teacher-signature`, {
                 contentKey: 'teacherSig',
                 occurrenceId: `${PREFIX}-teacher-signature`,
                 preservePosition: true,
-              })}
+              }, { className: 'sports-sig-img cert-sig cert-sig-teacher' })}
             />
           )}
           <span className="sports-sign-title">{roleLabel(state, 'المعلم / المدرب', 'Coach')}</span>
@@ -271,22 +286,20 @@ export default function SportsChampionTemplate({ state, render }) {
         </div>
 
         <div
-          className="sports-sign-box"
           {...element(`${PREFIX}-principal-name`, {
             occurrenceId: principalPrimaryId,
             preservePosition: true,
-          })}
+          }, { className: 'sports-sign-box' })}
         >
           {state.principalSig && (
             <img
               src={state.principalSig}
               alt=""
-              className="sports-sig-img"
               {...element(`${PREFIX}-principal-signature`, {
                 contentKey: 'principalSig',
                 occurrenceId: `${PREFIX}-principal-signature`,
                 preservePosition: true,
-              })}
+              }, { className: 'sports-sig-img cert-sig cert-sig-principal' })}
             />
           )}
           <span className="sports-sign-title">{roleLabel(state, 'مدير المدرسة', 'Principal')}</span>

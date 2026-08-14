@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import Icon from './Icon.jsx';
 import { TEMPLATE_CATEGORIES, THEMES, TEMPLATES } from '../src/context/data.js';
 
@@ -21,13 +21,14 @@ export default function TemplateManager({ presetManager, onApplyPreset }) {
     renamePreset,
     duplicatePreset,
     deletePreset,
-    exportPresetJson,
-    importPresetJsonFile,
     restoreBuiltInPresets,
   } = presetManager;
 
   const [renamingName, setRenamingName] = useState(null);
   const [newPresetName, setNewPresetName] = useState('');
+  const presetNameId = useId();
+  const presetCategoryId = useId();
+  const presetSearchId = useId();
 
   const handleStartRename = (name) => {
     setRenamingName(name);
@@ -47,13 +48,17 @@ export default function TemplateManager({ presetManager, onApplyPreset }) {
       <div className="tmpl-save-box">
         <span className="tmpl-box-title"><Icon name="Save" size={14} /> حفظ التصميم كقالب جديد</span>
         <div className="tmpl-save-inputs">
+          <label className="sr-only" htmlFor={presetNameId}>اسم التصميم المحفوظ الجديد</label>
           <input
+            id={presetNameId}
             className="field-input ar"
             value={presetName}
             onChange={e => setPresetName(e.target.value)}
             placeholder="اسم القالب الجديد…"
           />
+          <label className="sr-only" htmlFor={presetCategoryId}>فئة التصميم المحفوظ</label>
           <select
+            id={presetCategoryId}
             className="field-input"
             value={presetCategory}
             onChange={e => setPresetCategory(e.target.value)}
@@ -76,7 +81,9 @@ export default function TemplateManager({ presetManager, onApplyPreset }) {
       <div className="tmpl-toolbar">
         <div className="sm-search-wrap">
           <Icon name="Search" size={14} className="sm-search-icon" />
+          <label className="sr-only" htmlFor={presetSearchId}>بحث في الإعدادات المحفوظة</label>
           <input
+            id={presetSearchId}
             className="sm-search"
             type="text"
             placeholder="بحث في القوالب…"
@@ -84,7 +91,7 @@ export default function TemplateManager({ presetManager, onApplyPreset }) {
             onChange={e => setSearchQuery(e.target.value)}
           />
           {searchQuery && (
-            <button className="sm-search-clear" onClick={() => setSearchQuery('')} title="مسح البحث">
+            <button type="button" className="sm-search-clear" onClick={() => setSearchQuery('')} title="مسح البحث" aria-label="مسح البحث">
               <Icon name="X" size={12} />
             </button>
           )}
@@ -96,6 +103,7 @@ export default function TemplateManager({ presetManager, onApplyPreset }) {
               key={cat.id}
               className={`tmpl-cat-pill ${filterCategory === cat.id ? 'active' : ''}`}
               onClick={() => setFilterCategory(cat.id)}
+              aria-pressed={filterCategory === cat.id}
             >
               <Icon name={cat.icon} size={12} />
               <span>{cat.ar}</span>
@@ -141,6 +149,7 @@ export default function TemplateManager({ presetManager, onApplyPreset }) {
                         className="table-input ar"
                         value={newPresetName}
                         onChange={e => setNewPresetName(e.target.value)}
+                        aria-label={`الاسم الجديد للتصميم ${name}`}
                         autoFocus
                       />
                       <button className="sm-bulk-btn edit" onClick={() => handleConfirmRename(name)}>
@@ -166,6 +175,7 @@ export default function TemplateManager({ presetManager, onApplyPreset }) {
                       className="tmpl-icon-act"
                       onClick={() => handleStartRename(name)}
                       title="إعادة تسمية"
+                      aria-label={`إعادة تسمية ${name}`}
                     >
                       <Icon name="Edit2" size={13} />
                     </button>
@@ -173,20 +183,15 @@ export default function TemplateManager({ presetManager, onApplyPreset }) {
                       className="tmpl-icon-act"
                       onClick={() => duplicatePreset(name)}
                       title="تكرار القالب"
+                      aria-label={`تكرار ${name}`}
                     >
                       <Icon name="Copy" size={13} />
-                    </button>
-                    <button
-                      className="tmpl-icon-act"
-                      onClick={() => exportPresetJson(name)}
-                      title="تصدير ملف JSON"
-                    >
-                      <Icon name="FileDown" size={13} />
                     </button>
                     <button
                       className="tmpl-icon-act danger"
                       onClick={() => deletePreset(name)}
                       title="حذف القالب"
+                      aria-label={`حذف ${name}`}
                     >
                       <Icon name="Trash2" size={13} />
                     </button>
@@ -200,18 +205,6 @@ export default function TemplateManager({ presetManager, onApplyPreset }) {
 
       {/* ── Secondary Actions (Import & Restore) ─────────────────────── */}
       <div className="tmpl-footer-actions">
-        <label className="btn-save import-label">
-          <Icon name="FolderOpen" /> استيراد قالب (JSON)
-          <input
-            type="file"
-            accept=".json"
-            hidden
-            onChange={e => {
-              importPresetJsonFile(e.target.files?.[0]);
-              e.target.value = '';
-            }}
-          />
-        </label>
         <button className="btn-save" onClick={restoreBuiltInPresets}>
           <Icon name="RotateCcw" /> استعادة القوالب الافتراضية
         </button>

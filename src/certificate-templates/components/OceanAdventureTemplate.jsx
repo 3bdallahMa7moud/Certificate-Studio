@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  displayAcademicYear,
   displayDate,
   getSubject,
   primaryDisplayName,
@@ -11,11 +12,15 @@ import {
   textFlowClass,
 } from '../templateUtils.js';
 import {
+  AchievementText,
   StudentName,
   TemplateLogo,
   mergeStaticProps,
+  CertificateMessage,
 } from './TemplatePrimitives.jsx';
+import '../styles/OceanAdventureTemplate.css';
 
+const PREFIX = 'ocean-adventure';
 const TITLE_AR = 'شهادة تقدير وتميز';
 const TITLE_EN = 'Certificate of Excellence';
 
@@ -32,7 +37,6 @@ export default function OceanAdventureTemplate({ state, render }) {
   const showAr = shouldShowAr(state);
   const showEn = shouldShowEn(state);
   const primaryLocale = showEn && !showAr ? 'en' : 'ar';
-  const messageClass = textFlowClass(state.customMessage);
   const titleAr = templateText('ocean-adventure-title', 'ar', TITLE_AR);
   const titleEn = templateText('ocean-adventure-title-en', 'en', TITLE_EN);
   const teacherSecondaryName = secondaryEnglishName(state, state.teacherNameEn);
@@ -110,7 +114,7 @@ export default function OceanAdventureTemplate({ state, render }) {
               { className: 'ocean-academic-year' },
             )}
           >
-            {state.academicYear}
+            {displayAcademicYear(state)}
           </div>
           <span className="ocean-meta-divider" aria-hidden="true" />
           <div
@@ -235,22 +239,31 @@ export default function OceanAdventureTemplate({ state, render }) {
           >
             {state.grade || '—'}
           </div>
+          <div className="ocean-info-chip ocean-achievement-chip">
+            <AchievementText
+              state={state}
+              element={element}
+              elementId="ocean-adventure-achievement"
+              className="ocean-achievement-value"
+              partClassName="certificate-achievement-part"
+            />
+          </div>
         </div>
 
         <div
           {...element(
-            'ocean-adventure-message',
+            `${PREFIX}-message`,
             {
               contentKey: 'customMessage',
-              occurrenceId: 'ocean-adventure-message',
+              occurrenceId: `${PREFIX}-message`,
             },
             {
-              className: `ocean-message ${messageClass}`,
-              dir: textDirection(state.customMessage),
+              className: `ocean-message ${textFlowClass(state.customMessageAr || state.customMessageEn || '')}`,
+              dir: textDirection(state.customMessageAr || state.customMessageEn || ''),
             },
           )}
         >
-          {state.customMessage}
+          <CertificateMessage state={state} fallbackAr="لاكتشافه/ا آفاقاً جديدة في التعلم والتميز بمجهود ملحوظ." fallbackEn="For exploring new horizons in learning and shining brightly." />
         </div>
       </main>
 
@@ -309,9 +322,9 @@ export default function OceanAdventureTemplate({ state, render }) {
           )}
         </div>
 
-        <div className="ocean-emblem" aria-hidden="true">
-          <span className="ocean-emblem-ring" />
-          <span className="ocean-emblem-shell" />
+        <div className="ocean-art" aria-hidden="true">
+          <div className="ocean-wave ocean-wave-1" />
+          <div className="ocean-wave ocean-wave-2" />
         </div>
 
         <div className="ocean-signature-card ocean-signature-principal">

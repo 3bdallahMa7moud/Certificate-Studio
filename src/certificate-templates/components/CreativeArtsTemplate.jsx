@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  displayAcademicYear,
   displayDate,
   getSubject,
   primaryDisplayName,
@@ -12,10 +13,13 @@ import {
   titleFlowClass,
 } from '../templateUtils.js';
 import {
+  AchievementText,
   StudentName,
   TemplateLogo,
   mergeStaticProps,
+  CertificateMessage,
 } from './TemplatePrimitives.jsx';
+import '../styles/CreativeArtsTemplate.css';
 
 const PREFIX = 'creative-arts';
 
@@ -51,9 +55,9 @@ export default function CreativeArtsTemplate({ state, render }) {
   return (
     <div className="cert-creative-arts">
       <div className="arts-art" aria-hidden="true">
-        <span className="arts-splash arts-splash-1" />
-        <span className="arts-splash arts-splash-2" />
-        <span className="arts-splash arts-splash-3" />
+        <div className="arts-splash arts-splash-1" />
+        <div className="arts-splash arts-splash-2" />
+        <div className="arts-splash arts-splash-3" />
       </div>
 
       <header className="arts-header">
@@ -150,9 +154,9 @@ export default function CreativeArtsTemplate({ state, render }) {
         <StudentName
           state={state}
           size={6.5}
-          fitWidth={74}
+          fitWidth={65}
           secondarySize={2.2}
-          secondaryFitWidth={74}
+          secondaryFitWidth={65}
           primaryProps={element(`${PREFIX}-student-name`, {
             contentKey: 'studentNameAr',
             locale: 'ar',
@@ -165,25 +169,29 @@ export default function CreativeArtsTemplate({ state, render }) {
           })}
         />
 
-        <p
-          className={`arts-message ${textFlowClass(state.customMessage)}`}
-          dir={textDirection(state.customMessage)}
-          {...element(`${PREFIX}-message`, {
-            contentKey: 'customMessage',
-            occurrenceId: `${PREFIX}-message`,
-          })}
+        <div
+          {...element(
+            `${PREFIX}-message`,
+            {
+              contentKey: 'customMessage',
+              occurrenceId: `${PREFIX}-message`,
+            },
+            {
+              className: `arts-message ${textFlowClass(state.customMessageAr || state.customMessageEn || '')}`,
+              dir: textDirection(state.customMessageAr || state.customMessageEn || ''),
+            },
+          )}
         >
-          {state.customMessage || 'تقديراً للحس الفني الراقي، واللمسات الإبداعية المتميزة، والمشاركة الفعالة في الأنشطة المدرسية.'}
-        </p>
+          <CertificateMessage state={state} fallbackAr="تقديراً لموهبته/ا الفنية وإبداعه/ا المتميز في مجالات الفنون." fallbackEn="In recognition of artistic talent and outstanding creativity in the arts." />
+        </div>
       </main>
 
       <footer className="arts-meta-bar">
         <div
-          className="arts-meta-card"
           {...element(`${PREFIX}-grade`, {
             contentKey: 'grade',
             occurrenceId: `${PREFIX}-grade`,
-          })}
+          }, { className: 'arts-meta-card' })}
         >
           <span className="arts-meta-label">{showAr ? 'الصف' : 'GRADE'}</span>
           <span className="arts-meta-val">{state.grade}</span>
@@ -220,47 +228,54 @@ export default function CreativeArtsTemplate({ state, render }) {
           </span>
         </div>
 
+        <div className="arts-meta-card arts-achievement-card">
+          <span className="arts-meta-label">{showAr ? 'الإنجاز' : 'ACHIEVEMENT'}</span>
+          <AchievementText
+            state={state}
+            element={element}
+            elementId={`${PREFIX}-achievement`}
+            className="arts-meta-val"
+            partClassName="certificate-achievement-part"
+          />
+        </div>
+
         <div
-          className="arts-meta-card"
           {...element(`${PREFIX}-date`, {
             contentKey: 'date',
             occurrenceId: `${PREFIX}-date`,
-          })}
+          }, { className: 'arts-meta-card' })}
         >
           <span className="arts-meta-label">{showAr ? 'التاريخ' : 'DATE'}</span>
           <span className="arts-meta-val">{displayDate(state)}</span>
         </div>
 
         <div
-          className="arts-meta-card"
           {...element(`${PREFIX}-academic-year`, {
             contentKey: 'academicYear',
             occurrenceId: `${PREFIX}-academic-year`,
-          })}
+          }, { className: 'arts-meta-card' })}
         >
           <span className="arts-meta-label">{showAr ? 'العام' : 'YEAR'}</span>
-          <span className="arts-meta-val">{state.academicYear || '—'}</span>
+          <span className="arts-meta-val">{displayAcademicYear(state)}</span>
         </div>
       </footer>
 
       <div className="arts-sign-row">
         <div
-          className="arts-sign-box"
           {...element(`${PREFIX}-teacher-name`, {
             occurrenceId: teacherPrimaryId,
             preservePosition: true,
-          })}
+          }, { className: 'arts-sign-box' })}
         >
           {state.teacherSig && (
             <img
               src={state.teacherSig}
               alt=""
-              className="arts-sig-img"
               {...element(`${PREFIX}-teacher-signature`, {
                 contentKey: 'teacherSig',
                 occurrenceId: `${PREFIX}-teacher-signature`,
                 preservePosition: true,
-              })}
+              }, { className: 'arts-sig-img cert-sig cert-sig-teacher' })}
             />
           )}
           <span className="arts-sign-title">{roleLabel(state, 'معلم النشاط / الفنون', 'Art Instructor')}</span>
@@ -270,22 +285,20 @@ export default function CreativeArtsTemplate({ state, render }) {
         </div>
 
         <div
-          className="arts-sign-box"
           {...element(`${PREFIX}-principal-name`, {
             occurrenceId: principalPrimaryId,
             preservePosition: true,
-          })}
+          }, { className: 'arts-sign-box' })}
         >
           {state.principalSig && (
             <img
               src={state.principalSig}
               alt=""
-              className="arts-sig-img"
               {...element(`${PREFIX}-principal-signature`, {
                 contentKey: 'principalSig',
                 occurrenceId: `${PREFIX}-principal-signature`,
                 preservePosition: true,
-              })}
+              }, { className: 'arts-sig-img cert-sig cert-sig-principal' })}
             />
           )}
           <span className="arts-sign-title">{roleLabel(state, 'مدير المدرسة', 'Principal')}</span>

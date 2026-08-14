@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  displayAcademicYear,
   displayDate,
   getSubject,
   primaryDisplayName,
@@ -12,10 +13,13 @@ import {
   titleFlowClass,
 } from '../templateUtils.js';
 import {
+  AchievementText,
   StudentName,
   TemplateLogo,
   mergeStaticProps,
+  CertificateMessage,
 } from './TemplatePrimitives.jsx';
+import '../styles/RainbowStarsTemplate.css';
 
 const PREFIX = 'rainbow-stars';
 
@@ -178,12 +182,12 @@ export default function RainbowStarsTemplate({ state, render }) {
               occurrenceId: `${PREFIX}-message`,
             },
             {
-              className: `rainbow-message ${textFlowClass(state.customMessage)}`,
-              dir: textDirection(state.customMessage),
+              className: `rainbow-message ${textFlowClass(state.customMessageAr || state.customMessageEn || '')}`,
+              dir: textDirection(state.customMessageAr || state.customMessageEn || ''),
             },
           )}
         >
-          {state.customMessage}
+          <CertificateMessage state={state} fallbackAr="تقديراً لتميزه/ا الرائع وجهوده/ا المستمرة في التعلم والمشاركة." fallbackEn="In recognition of outstanding excellence and continuous efforts in learning." />
         </div>
 
         <div className="rainbow-info-chips">
@@ -238,6 +242,19 @@ export default function RainbowStarsTemplate({ state, render }) {
             </span>
           </div>
 
+          <div className="rainbow-info-chip rainbow-achievement-chip">
+            <span className="rainbow-chip-label">
+              {roleLabel(state, 'الإنجاز', 'Achievement')}
+            </span>
+            <AchievementText
+              state={state}
+              element={element}
+              elementId={`${PREFIX}-achievement`}
+              className="rainbow-chip-value"
+              partClassName="certificate-achievement-part"
+            />
+          </div>
+
           <div className="rainbow-info-chip rainbow-date-chip">
             <span className="rainbow-chip-label">
               {roleLabel(state, 'التاريخ', 'Date')}
@@ -271,7 +288,7 @@ export default function RainbowStarsTemplate({ state, render }) {
                 { className: 'rainbow-chip-value' },
               )}
             >
-              {state.academicYear || '—'}
+              {displayAcademicYear(state)}
             </span>
           </div>
         </div>

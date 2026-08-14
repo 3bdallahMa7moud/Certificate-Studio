@@ -3,8 +3,12 @@
  * Classifies every imported row as valid, warning, or error.
  * Does NOT silently replace unknown values with unrelated defaults.
  */
-import { BEHAVIORS, GRADE_LEVELS, SUBJECTS, genSerial } from '../context/data.js';
-import { normalizeGenderValue, normalizeGradeValue, normalizeText } from '../context/helpers.js';
+import { BEHAVIORS, SUBJECTS, genRowId, genSerial } from '../context/data.js';
+import {
+  normalizeGradeValue,
+  normalizeStudentData,
+  normalizeText,
+} from '../context/helpers.js';
 
 /** Column keys that the wizard can map source columns to */
 export const IMPORTABLE_COLUMNS = [
@@ -14,7 +18,9 @@ export const IMPORTABLE_COLUMNS = [
   { key: 'grade',         label: 'الصف / Grade',   required: false },
   { key: 'subject',       label: 'المادة / Subject',required: false },
   { key: 'behavior',      label: 'التميز / Achievement', required: false },
-  { key: 'customMessage', label: 'نص الشهادة / Message', required: false },
+  { key: 'customMessageAr', label: 'نص الشهادة بالعربية', required: false },
+  { key: 'customMessageEn', label: 'Certificate message in English', required: false },
+  { key: 'customMessage', label: 'نص عام / Generic message', required: false },
   { key: 'serial',        label: 'الرقم التسلسلي / Serial', required: false },
   { key: 'notes',         label: 'ملاحظات / Notes', required: false },
   { key: '__ignore__',    label: '— تجاهل هذا العمود —', required: false },
@@ -29,7 +35,9 @@ export function autoDetectColumns(headers) {
   const GRADE_HINTS     = ['grade','class','الصف','الشعبة','المرحلة'];
   const SUBJECT_HINTS   = ['subject','المادة','مادة'];
   const BEHAVIOR_HINTS  = ['achievement','behavior','تميز','التميز','الانجاز','إنجاز'];
-  const MESSAGE_HINTS   = ['message','نص','رسالة'];
+  const AR_MESSAGE_HINTS = ['message ar','arabic message','نص عربي','الرسالة العربية','نص الشهادة بالعربية'];
+  const EN_MESSAGE_HINTS = ['message en','english message','نص انجليزي','نص إنجليزي','الرسالة الإنجليزية'];
+  const MESSAGE_HINTS   = ['message','نص الشهادة','رسالة'];
   const SERIAL_HINTS    = ['serial','رقم','تسلسلي','رقم تسلسلي'];
   const NOTES_HINTS     = ['notes','ملاحظة','ملاحظات'];
 
@@ -37,15 +45,17 @@ export function autoDetectColumns(headers) {
 
   headers.forEach((header, i) => {
     if (!header) return;
-    if (hint(AR_NAME_HINTS, header) && !mapping.studentNameAr)  { mapping.studentNameAr = i; return; }
-    if (hint(EN_NAME_HINTS, header) && !mapping.studentNameEn)  { mapping.studentNameEn = i; return; }
-    if (hint(GENDER_HINTS,  header) && !mapping.gender)         { mapping.gender = i; return; }
-    if (hint(GRADE_HINTS,   header) && !mapping.grade)          { mapping.grade = i; return; }
-    if (hint(SUBJECT_HINTS, header) && !mapping.subject)        { mapping.subject = i; return; }
-    if (hint(BEHAVIOR_HINTS,header) && !mapping.behavior)       { mapping.behavior = i; return; }
-    if (hint(MESSAGE_HINTS, header) && !mapping.customMessage)  { mapping.customMessage = i; return; }
-    if (hint(SERIAL_HINTS,  header) && !mapping.serial)         { mapping.serial = i; return; }
-    if (hint(NOTES_HINTS,   header) && !mapping.notes)          { mapping.notes = i; return; }
+    if (hint(AR_NAME_HINTS, header) && mapping.studentNameAr === undefined)  { mapping.studentNameAr = i; return; }
+    if (hint(EN_NAME_HINTS, header) && mapping.studentNameEn === undefined)  { mapping.studentNameEn = i; return; }
+    if (hint(GENDER_HINTS,  header) && mapping.gender === undefined)         { mapping.gender = i; return; }
+    if (hint(GRADE_HINTS,   header) && mapping.grade === undefined)          { mapping.grade = i; return; }
+    if (hint(SUBJECT_HINTS, header) && mapping.subject === undefined)        { mapping.subject = i; return; }
+    if (hint(BEHAVIOR_HINTS,header) && mapping.behavior === undefined)       { mapping.behavior = i; return; }
+    if (hint(AR_MESSAGE_HINTS, header) && mapping.customMessageAr === undefined) { mapping.customMessageAr = i; return; }
+    if (hint(EN_MESSAGE_HINTS, header) && mapping.customMessageEn === undefined) { mapping.customMessageEn = i; return; }
+    if (hint(MESSAGE_HINTS, header) && mapping.customMessage === undefined) { mapping.customMessage = i; return; }
+    if (hint(SERIAL_HINTS,  header) && mapping.serial === undefined)         { mapping.serial = i; return; }
+    if (hint(NOTES_HINTS,   header) && mapping.notes === undefined)          { mapping.notes = i; return; }
   });
 
   // Positional fallback for unnamed / headerless columns
@@ -114,12 +124,18 @@ export function validateImportRows(rows, columnMapping, stateDefaults) {
     const rawGrade = get(row, 'grade');
     const rawSubject = get(row, 'subject');
     const rawBehavior = get(row, 'behavior');
-    const rawMessage = get(row, 'customMessage');
+    const explicitMessageAr = get(row, 'customMessageAr');
+    const explicitMessageEn = get(row, 'customMessageEn');
+    const genericMessage = get(row, 'customMessage');
+    const genericHasArabic = /[\u0600-\u06ff]/.test(genericMessage);
+    const genericHasLatin = /[a-zA-Z]/.test(genericMessage);
+    const rawMessageAr = explicitMessageAr || (genericMessage && genericHasArabic ? genericMessage : '');
+    const rawMessageEn = explicitMessageEn || (genericMessage && genericHasLatin && !genericHasArabic ? genericMessage : '');
     const rawSerial = get(row, 'serial');
     const rawNotes = get(row, 'notes');
 
     // Skip completely empty rows
-    const allEmpty = [rawAr, rawEn, rawGender, rawGrade, rawSubject, rawBehavior, rawMessage, rawNotes]
+    const allEmpty = [rawAr, rawEn, rawGender, rawGrade, rawSubject, rawBehavior, rawMessageAr, rawMessageEn, genericMessage, rawNotes]
       .every(v => !v);
     if (allEmpty) {
       return { rowIndex, status: 'skipped', issues: [{ type: 'skip', message: 'صف فارغ' }], student: null };
@@ -180,17 +196,19 @@ export function validateImportRows(rows, columnMapping, stateDefaults) {
     const hasError = issues.some(i => i.type === 'error');
     const status = hasError ? 'error' : issues.length > 0 ? 'warning' : 'valid';
 
-    const student = hasError ? null : {
+    const student = hasError ? null : normalizeStudentData({
+      rowId: genRowId(),
       studentNameAr: rawAr,
       studentNameEn: rawEn,
-      gender: normalizeGenderValue(rawGender),
+      gender: rawGender,
       grade: gradeNormalized || stateDefaults.grade,
       subject: subjectMatch ? subjectMatch.id : stateDefaults.subject,
       behavior: behaviorMatch ? behaviorMatch.id : stateDefaults.behavior,
-      customMessage: rawMessage,
+      customMessageAr: rawMessageAr,
+      customMessageEn: rawMessageEn,
       serial: rawSerial || genSerial(),
       notes: rawNotes,
-    };
+    }, stateDefaults);
 
     return { rowIndex, status, issues, student };
   });

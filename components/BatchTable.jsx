@@ -3,6 +3,15 @@ import Icon from './Icon.jsx';
 import { BEHAVIORS, GRADE_LEVELS, SUBJECTS } from '../src/context/data.js';
 
 export default function BatchTable({ students, duplicates, updateStudent, previewStudent, deleteStudent }) {
+  const achievementPatchForBehavior = (behaviorId) => {
+    const behavior = BEHAVIORS.find(item => item.id === behaviorId) || BEHAVIORS[0];
+    return {
+      behavior: behavior.id,
+      achievementAr: behavior.ar,
+      achievementEn: behavior.en,
+    };
+  };
+
   if (!students.length) {
     return (
       <div className="batch-table-wrap">
@@ -71,10 +80,24 @@ export default function BatchTable({ students, duplicates, updateStudent, previe
                 <select
                   className="table-input"
                   value={student.behavior}
-                  onChange={e => updateStudent(index, { behavior: e.target.value })}
+                  onChange={e => updateStudent(index, achievementPatchForBehavior(e.target.value))}
                 >
                   {BEHAVIORS.map(behavior => <option key={behavior.id} value={behavior.id}>{behavior.ar}</option>)}
                 </select>
+                <input
+                  className="table-input ar table-achievement-input"
+                  value={student.achievementAr || ''}
+                  onChange={e => updateStudent(index, { achievementAr: e.target.value })}
+                  dir="rtl"
+                  aria-label={`نص تميّز الطالب ${index + 1} بالعربية`}
+                />
+                <input
+                  className="table-input en table-achievement-input"
+                  value={student.achievementEn || ''}
+                  onChange={e => updateStudent(index, { achievementEn: e.target.value })}
+                  dir="ltr"
+                  aria-label={`Achievement text for student ${index + 1}`}
+                />
               </td>
               <td data-label="إجراءات">
                 <div className="row-actions">

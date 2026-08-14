@@ -3,6 +3,8 @@
  * Validates individual and batch certificates before export or print.
  */
 import { TEMPLATE_REGISTRY } from '../certificate-templates/registry.js';
+import { visualNameUnits } from '../certificate-templates/templateUtils.js';
+import { createStudentRenderPatch } from '../context/helpers.js';
 
 export function validateCertificateState(state = {}, editorStatus = {}) {
   const errors = [];
@@ -18,7 +20,11 @@ export function validateCertificateState(state = {}, editorStatus = {}) {
     errors.push('الصف الدراسي مطلوب.');
   }
 
-  const hasMessage = Boolean(state.customMessage && state.customMessage.trim());
+  const hasMessage = Boolean(
+    state.customMessage?.trim?.()
+    || state.customMessageAr?.trim?.()
+    || state.customMessageEn?.trim?.(),
+  );
   if (!hasMessage) {
     errors.push('نص الشهادة مطلوب.');
   }
@@ -62,18 +68,68 @@ export function validateCertificateState(state = {}, editorStatus = {}) {
   }
 
   const fullStudentName = `${state.studentNameAr || ''} ${state.studentNameEn || ''}`.trim();
+  if (visualNameUnits(fullStudentName) > 96) {
+    errors.push('اسم الطالب أطول من المساحة الآمنة المتاحة في القالب. اختصر الاسم قبل التصدير.');
+  }
   if (fullStudentName.length > 40) {
     warnings.push('اسم الطالب طويل جداً (أكثر من 40 حرفاً) وقد يتداخل في التصميم.');
   }
 
-  if (state.customMessage && state.customMessage.length > 200) {
+  const longestMessage = [state.customMessage, state.customMessageAr, state.customMessageEn]
+    .filter(value => typeof value === 'string')
+    .sort((a, b) => b.length - a.length)[0] || '';
+  if (longestMessage.length > 200) {
     warnings.push('نص الشهادة طويل جداً (أكثر من 200 حرفاً) وقد يتجاوز حدود النص.');
+  }
+  if (longestMessage.length > 600) {
+    errors.push('نص الشهادة أطول من المساحة الآمنة المتاحة. اختصر النص قبل التصدير.');
   }
 
   return {
     isValid: errors.length === 0,
     errors,
     warnings,
+  };
+}
+
+/**
+ * Single validation gateway used by every print/export entry point.
+ * Batch validation checks the exact selected list, never the full stored list.
+ */
+export function validateOutputRequest({
+  state = {},
+  students = null,
+  mode = 'png',
+  editorStatus = {},
+} = {}) {
+  const isBatch = mode === 'batch-print' || mode === 'batch-zip';
+  if (!isBatch) return validateCertificateState(state, editorStatus);
+
+  const batchResult = validateBatchSelection(students);
+  if (!batchResult.isValid) return batchResult;
+
+  const perStudentResults = students.map(student => {
+    const result = validateCertificateState({
+      ...state,
+      ...createStudentRenderPatch(student, state),
+    }, editorStatus);
+    const label = student.studentNameAr || student.studentNameEn || 'طالب بلا اسم';
+    return {
+      errors: result.errors.map(error => `${label}: ${error}`),
+      warnings: result.warnings.map(warning => `${label}: ${warning}`),
+    };
+  });
+
+  return {
+    isValid: batchResult.isValid && perStudentResults.every(result => result.errors.length === 0),
+    errors: [...new Set([
+      ...batchResult.errors,
+      ...perStudentResults.flatMap(result => result.errors),
+    ])],
+    warnings: [...new Set([
+      ...batchResult.warnings,
+      ...perStudentResults.flatMap(result => result.warnings),
+    ])],
   };
 }
 

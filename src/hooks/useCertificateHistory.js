@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { createRecordFromState, genRecordId } from '../services/historyModel.js';
+import {
+  createRecordEditorStatePatch,
+  createRecordFromState,
+  genRecordId,
+  getRecordRenderState,
+  getSnapshotAssetReferences,
+  setSnapshotAssetReferences,
+} from '../services/historyModel.js';
 import {
   deleteHistoryRecord,
   deleteHistoryRecords,
@@ -169,6 +176,9 @@ export function useCertificateHistory(showToast = null) {
 
   const archiveRecord = id => updateStatus(id, 'archived');
   const restoreFromArchive = id => updateStatus(id, 'ready');
+  const markRecordAsIssued = record => (
+    record?.id ? updateStatus(record.id, 'issued') : null
+  );
 
   const deleteSingleRecord = async id => {
     await deleteHistoryRecord(id);
@@ -197,25 +207,21 @@ export function useCertificateHistory(showToast = null) {
   const duplicateRecord = async (sourceRecord, newStudent = null) => {
     const now = new Date().toISOString();
     const targetStudent = newStudent || sourceRecord.student;
-    const duplicated = {
-      ...sourceRecord,
-      id: genRecordId(),
-      status: 'draft',
-      createdAt: now,
-      updatedAt: now,
-      issuedAt: null,
-      student: {
-        id: targetStudent.id || null,
-        name: targetStudent.name || sourceRecord.student.name,
-        englishName: targetStudent.englishName || sourceRecord.student.englishName,
-        grade: targetStudent.grade || sourceRecord.student.grade,
-        gender: targetStudent.gender || sourceRecord.student.gender,
-      },
-      source: {
+    const duplicatedSnapshot = createRecordFromState(
+      getRecordRenderState(sourceRecord),
+      'draft',
+      {
+        id: genRecordId(),
+        student: targetStudent,
         mode: 'individual',
-        batchId: null,
+        createdAt: now,
+        updatedAt: now,
       },
-    };
+    );
+    const duplicated = setSnapshotAssetReferences(
+      duplicatedSnapshot,
+      getSnapshotAssetReferences(sourceRecord),
+    );
     const saved = await saveHistoryRecord(duplicated);
     setRecords(prev => [saved, ...prev]);
     showToast?.('تم تكرار الشهادة كمسودة جديدة');
@@ -224,33 +230,7 @@ export function useCertificateHistory(showToast = null) {
 
   // Convert a record back to editor state patch
   const getRecordEditorState = record => {
-    if (!record) return null;
-    const tSnapshot = record.template?.customizationSnapshot || {};
-    const tId = record.template?.templateId || 'editorial';
-
-    return {
-      currentRecordId: record.id,
-      studentNameAr: record.student?.name || '',
-      studentNameEn: record.student?.englishName || '',
-      grade: record.student?.grade || '',
-      gender: record.student?.gender || '',
-      serial: record.student?.id || genRecordId(),
-      certificateType: record.certificate?.typeId || 'academic_excellence',
-      subject: record.certificate?.subject || 'science',
-      customMessage: record.certificate?.message?.ar || '',
-      date: record.certificate?.date || new Date().toISOString(),
-      academicYear: record.certificate?.academicYear || '2025 / 2026',
-      languageMode: record.certificate?.language || 'both',
-      template: tId,
-      theme: record.template?.themeId || 'midnight',
-      ...(record.issuer?.schoolNameAr ? { schoolNameAr: record.issuer.schoolNameAr } : {}),
-      ...(record.issuer?.schoolNameEn ? { schoolNameEn: record.issuer.schoolNameEn } : {}),
-      ...(record.issuer?.teacherNameAr ? { teacherNameAr: record.issuer.teacherNameAr } : {}),
-      ...(record.issuer?.teacherNameEn ? { teacherNameEn: record.issuer.teacherNameEn } : {}),
-      ...(record.issuer?.principalNameAr ? { principalNameAr: record.issuer.principalNameAr } : {}),
-      ...(record.issuer?.principalNameEn ? { principalNameEn: record.issuer.principalNameEn } : {}),
-      templateCustomizations: tSnapshot,
-    };
+    return createRecordEditorStatePatch(record);
   };
 
   const resetFilters = () => {
@@ -370,6 +350,7 @@ export function useCertificateHistory(showToast = null) {
     saveDraft,
     markAsIssued,
     markBatchAsIssued,
+    markRecordAsIssued,
     archiveRecord,
     restoreFromArchive,
     deleteSingleRecord,

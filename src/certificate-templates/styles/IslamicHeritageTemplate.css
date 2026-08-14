@@ -1,0 +1,201 @@
+/* Islamic Heritage - Professional Canva-like Design */
+.cert-islamic-heritage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: radial-gradient(circle at center, #FDFBF7 0%, #F5F0E1 100%);
+  color: var(--text, #1C2833);
+  padding: 4.5cqw 5.5cqw;
+  border: 1.5cqw solid var(--primary, #0B5345);
+  box-shadow: inset 0 0 0 0.5cqw var(--accent, #D4AC0D);
+}
+
+/* Islamic Pattern Background */
+.cert-islamic-heritage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(var(--accent, #D4AC0D) 1px, transparent 1px),
+    radial-gradient(var(--accent, #D4AC0D) 1px, transparent 1px);
+  background-position: 0 0, 2cqw 2cqw;
+  background-size: 4cqw 4cqw;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Ornate Corner Accents */
+.cert-islamic-heritage .islamic-corner {
+  position: absolute;
+  width: 8cqw;
+  height: 8cqw;
+  background: transparent;
+  border: 3px solid var(--primary, #0B5345);
+  z-index: 2;
+  pointer-events: none;
+}
+.cert-islamic-heritage .islamic-corner-tl { top: 1.5cqw; left: 1.5cqw; border-right: none; border-bottom: none; }
+.cert-islamic-heritage .islamic-corner-tr { top: 1.5cqw; right: 1.5cqw; border-left: none; border-bottom: none; }
+.cert-islamic-heritage .islamic-corner-bl { bottom: 1.5cqw; left: 1.5cqw; border-right: none; border-top: none; }
+.cert-islamic-heritage .islamic-corner-br { bottom: 1.5cqw; right: 1.5cqw; border-left: none; border-top: none; }
+
+.cert-islamic-heritage .islamic-header {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cert-islamic-heritage .cert-logo-islamic-heritage {
+  width: 5.5cqw;
+  height: 5.5cqw;
+  object-fit: contain;
+}
+
+.cert-islamic-heritage .islamic-school-lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.cert-islamic-heritage .islamic-hijri-date {
+  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
+  color: var(--accent, #D4AC0D);
+  font-size: 1cqw;
+  font-weight: 700;
+  margin-bottom: 0.2cqw;
+}
+
+.cert-islamic-heritage .islamic-school {
+  font-family: var(--student-font-ar, 'Amiri'), serif;
+  font-size: 1.6cqw;
+  font-weight: 700;
+  color: var(--primary, #0B5345);
+}
+
+.cert-islamic-heritage .islamic-body {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: auto 0;
+  gap: 1.5cqw;
+}
+
+.cert-islamic-heritage .islamic-title-banner {
+  font-family: var(--student-font-ar, 'Amiri'), serif;
+  font-size: 3.8cqw;
+  font-weight: 700;
+  color: var(--primary, #0B5345);
+  position: relative;
+  display: inline-block;
+  padding: 0 2cqw;
+}
+.cert-islamic-heritage .islamic-title-banner::before,
+.cert-islamic-heritage .islamic-title-banner::after {
+  content: '❖';
+  color: var(--accent, #D4AC0D);
+  font-size: 1.5cqw;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.cert-islamic-heritage .islamic-title-banner::before { right: -1cqw; }
+.cert-islamic-heritage .islamic-title-banner::after { left: -1cqw; }
+
+.cert-islamic-heritage .islamic-student-name-wrapper {
+  width: 100%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--accent, #D4AC0D);
+  padding: 1.5cqw 2cqw;
+  border-radius: 4px;
+  box-sizing: border-box;
+  text-align: center;
+}
+.cert-islamic-heritage .islamic-student-name-wrapper .cert-student-name {
+  color: var(--primary, #0B5345);
+}
+
+.cert-islamic-heritage .islamic-message {
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 1.4cqw;
+  line-height: 1.8;
+  color: #2E4053;
+  max-width: 80%;
+  font-weight: 600;
+}
+
+.cert-islamic-heritage .islamic-info-grid {
+  display: flex;
+  gap: 2cqw;
+  justify-content: center;
+  margin-top: 1cqw;
+}
+
+.cert-islamic-heritage .islamic-info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(11, 83, 69, 0.2);
+  padding: 0.8cqw 2cqw;
+  border-radius: 4px;
+}
+
+.cert-islamic-heritage .islamic-info-label {
+  color: var(--accent, #D4AC0D);
+  font-size: 0.9cqw;
+  font-weight: 700;
+  margin-bottom: 0.3cqw;
+}
+
+.cert-islamic-heritage .islamic-info-value {
+  color: var(--primary, #0B5345);
+  font-weight: 800;
+  font-size: 1.1cqw;
+}
+
+.cert-islamic-heritage .islamic-signatures {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.cert-islamic-heritage .islamic-sig-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 18cqw;
+}
+
+.cert-islamic-heritage .islamic-sig-title {
+  font-size: 1.1cqw;
+  font-weight: 700;
+  color: var(--primary, #0B5345);
+  margin-bottom: 0.5cqw;
+}
+
+.cert-islamic-heritage .islamic-sig-name {
+  font-family: var(--student-font-ar, 'Amiri'), serif;
+  font-size: 1.5cqw;
+  font-weight: 700;
+  color: #1C2833;
+  border-top: 2px solid var(--accent, #D4AC0D);
+  padding-top: 0.5cqw;
+  width: 100%;
+  text-align: center;
+}

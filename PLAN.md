@@ -190,6 +190,7 @@ Phase 9 completed. Full test suite and quality gates active: 38/38 unit, compone
 | **Built-in Designs** | [src/context/data.js](file:///c:/Users/Abdallah/Desktop/Certificate%20Studio/src/context/data.js) | Added pre-configured built-in templates across categories (BUILTIN_PRESETS). Built-in templates are recoverable anytime via "استعادة القوالب الافتراضية". |
 | **Template Manager UI** | [components/TemplateManager.jsx](file:///c:/Users/Abdallah/Desktop/Certificate%20Studio/components/TemplateManager.jsx) | Built new interactive Template Manager with search input, category filter pills, template cards with color theme dots & style badges, apply, rename, duplicate, delete with confirmation, JSON export, and JSON import validation. |
 | **Preset Hook Extensions** | [src/hooks/usePresetManager.js](file:///c:/Users/Abdallah/Desktop/Certificate%20Studio/src/hooks/usePresetManager.js) | Updated hook to manage ilteredPresets, savePreset(name, category), enamePreset, duplicatePreset, deletePreset, exportPresetJson, importPresetJsonFile, and estoreBuiltInPresets. Guarantees templates contain design data ONLY (omits student records). |
+| **Preset Hook Extensions** | [src/hooks/usePresetManager.js](file:///c:/Users/Abdallah/Desktop/Certificate%20Studio/src/hooks/usePresetManager.js) | Updated hook to manage ilteredPresets, savePreset(name, category), enamePreset, duplicatePreset, deletePreset, exportPresetJson, importPresetJsonFile, and estoreBuiltInPresets. Guarantees templates contain design data ONLY (omits student records). |
 | **Styling** | [src/index.css](file:///c:/Users/Abdallah/Desktop/Certificate%20Studio/src/index.css) | Added .template-manager, .tmpl-card, .tmpl-card-thumb, .tmpl-cat-pill, and responsive grid layout. |
 | **Unit Tests** | [tests/templateManager.test.js](file:///c:/Users/Abdallah/Desktop/Certificate%20Studio/tests/templateManager.test.js) | Added 4 unit tests validating built-in presets structure, design-only extraction, search/category filtering, and preset JSON serialization (42/42 tests pass). |
 
@@ -197,3 +198,18 @@ Phase 9 completed. Full test suite and quality gates active: 38/38 unit, compone
 
 ## Stop Condition
 Phase 10 completed. Template system implemented: Save design without student data, template thumbnails with theme dots, rename, duplicate, delete with confirmation, import/export template JSON, search & category filtering (7 categories), and recoverable built-in templates. 42/42 tests pass. Production build succeeds. Waiting for user instruction to proceed.
+
+---
+
+## Phase 11 Test Regression Fixes (Completed)
+
+| Fix | Target File | Root Cause | Resolution |
+| :--- | :--- | :--- | :--- |
+| **Editorial canvas height assertion** | [tests/templateDefaults.test.js](file:///c:/Users/Abdallah/Desktop/Certificate%20Studio/tests/templateDefaults.test.js) | The editorial template canvas was migrated from `297×188` to the standard A4 landscape `297×210` (matching all 12 templates), but the test assertion still expected the old `188` value. | Updated the `deepEqual` expectation to `height: 210`. |
+| **StudioPage SSR suspension** | [pages/StudioPage.jsx](file:///c:/Users/Abdallah/Desktop/Certificate%20Studio/pages/StudioPage.jsx) | `ImportWizard` (a `lazy()` component) was always rendered unconditionally at line 1118. During `renderToStaticMarkup` in Node tests, lazy imports throw a Promise (Suspense), which `renderToStaticMarkup` does not support — producing an "A component suspended while responding to synchronous input" error. | Made `ImportWizard` conditionally rendered only when `importWizard.wiz.open === true`, so the lazy module is never loaded during SSR. |
+| **ImportWizard SSR empty output** | [components/Dialog.jsx](file:///c:/Users/Abdallah/Desktop/Certificate%20Studio/components/Dialog.jsx) | `Dialog` used `createPortal(…, document.body)` and returned `null` when `typeof document === 'undefined'` (SSR). When the test rendered `ImportWizard` directly via `renderToStaticMarkup`, the `Dialog` shell returned nothing — making the entire modal HTML empty and causing the CSS class assertion (`/wiz-mapping-grid/`) to fail. | Added an SSR code path in `Dialog`: when `typeof document === 'undefined'`, render children inline (no portal) so `renderToStaticMarkup` can see the full markup. The portal behavior in browsers is unchanged. |
+
+---
+
+## Stop Condition
+Phase 11 completed. All 3 failing tests fixed: editorial canvas height expectation updated, lazy ImportWizard gated behind `wiz.open` to prevent SSR suspension, and Dialog renders inline (no portal) in SSR so static markup tests can inspect modal content. **140/140 tests pass**. Production build succeeds (bundle size warning is pre-existing). Waiting for user instruction to proceed.

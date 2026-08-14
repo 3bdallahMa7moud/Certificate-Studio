@@ -155,10 +155,12 @@ test('legacy defaults cover the existing standard certificate fields as metadata
       && element.locked
       && !element.selectable
     ));
-    for (const role of ['achievement', 'term', 'serial']) {
+    for (const role of ['term', 'serial']) {
       const element = definition.elements.find(candidate => candidate.role === role);
       if (element) assert.equal(element.selectable, false);
     }
+    const achievement = definition.elements.find(candidate => candidate.role === 'achievement');
+    assert.equal(achievement?.selectable, true);
   }
 });
 
@@ -173,7 +175,7 @@ test('template defaults stay landscape-only and retain legacy reference proporti
 
   assert.deepEqual(TEMPLATE_DEFAULTS.editorial.canvas, {
     width: 297,
-    height: 188,
+    height: 210,
     unit: 'certificate-space',
     coordinateModel: 'authored-position-offset',
   });

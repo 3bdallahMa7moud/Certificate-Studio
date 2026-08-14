@@ -26,7 +26,8 @@ test('2. createRecordFromState generates serializable versioned record model', (
   const state = getDefaultState();
   const record = createRecordFromState(state, 'draft');
 
-  assert.equal(record.version, 1);
+  assert.equal(record.version, 2);
+  assert.equal(record.renderSnapshot.version, 2);
   assert.equal(record.status, 'draft');
   assert.ok(record.createdAt);
   assert.ok(record.updatedAt);
@@ -161,7 +162,7 @@ test('9. validateBackupObject accepts valid backup structure and returns summary
         { id: 'R1', status: 'draft', student: { name: 'طالب 1' } },
         { id: 'R2', status: 'issued', student: { name: 'طالب 2' }, issuedAt: new Date().toISOString() },
       ],
-      assets: { logo: 'data:image/png;base64,123' },
+      assets: { logo: 'data:image/png;base64,iVBORw0KGgo=' },
     },
   };
 

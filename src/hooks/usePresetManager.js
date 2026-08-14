@@ -1,9 +1,14 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BUILTIN_PRESETS } from '../context/data.js';
 import { mergeTemplateCustomizations } from '../certificate-editor/customizationModel.js';
 import { downloadBlob } from '../services/imageUtils.js';
 import { extractDesignPreset } from '../services/projectValidation.js';
-import { loadPresets, persistStateAsync, savePresets } from '../services/storage.js';
+import {
+  loadPresets,
+  loadPresetsAsync,
+  persistStateAsync,
+  savePresetsAsync,
+} from '../services/storage.js';
 
 export function usePresetManager(
   state,
@@ -25,6 +30,20 @@ export function usePresetManager(
   const [selectedPreset, setSelectedPreset] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
+
+  const refreshPresets = useCallback(async () => {
+    const loaded = await loadPresetsAsync();
+    setPresets(Object.keys(loaded).length ? loaded : { ...BUILTIN_PRESETS });
+    return loaded;
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    loadPresetsAsync().then(loaded => {
+      if (active) setPresets(Object.keys(loaded).length ? loaded : { ...BUILTIN_PRESETS });
+    }).catch(() => {});
+    return () => { active = false; };
+  }, []);
 
   useEffect(() => {
     const names = Object.keys(presets).sort((a, b) => a.localeCompare(b, 'ar'));
@@ -50,7 +69,21 @@ export function usePresetManager(
     }
   };
 
-  const savePreset = (nameToSave = presetName, categoryToSave = presetCategory) => {
+  const commitPresets = async (next, successMessage) => {
+    setPresets(next);
+    try {
+      await savePresetsAsync(next);
+      if (showToast && successMessage) showToast(successMessage);
+      return true;
+    } catch {
+      if (showToast) {
+        showToast('تعذّر تثبيت القوالب في IndexedDB؛ احتُفظ بنسخة استرداد محلية للمحاولة التالية.');
+      }
+      return false;
+    }
+  };
+
+  const savePreset = async (nameToSave = presetName, categoryToSave = presetCategory) => {
     const name = nameToSave.trim();
     if (!name) {
       if (showToast) showToast('اكتب اسم القالب أولاً');
@@ -62,11 +95,9 @@ export function usePresetManager(
       customMessage: state.customMessage || '',
     };
     const next = { ...presets, [name]: designConfig };
-    setPresets(next);
-    savePresets(next);
     setSelectedPreset(name);
     setPresetName('');
-    if (showToast) showToast('✓ تم حفظ تصميم القالب بنجاح');
+    await commitPresets(next, '✓ تم حفظ تصميم القالب بنجاح');
   };
 
   const loadPreset = (name) => {
@@ -98,40 +129,34 @@ export function usePresetManager(
     if (showToast) showToast(`✓ تم تطبيق قالب "${name}"`);
   };
 
-  const renamePreset = (oldName, newName) => {
+  const renamePreset = async (oldName, newName) => {
     const trimmed = newName.trim();
     if (!trimmed || trimmed === oldName || !presets[oldName]) return;
     const next = { ...presets };
     next[trimmed] = next[oldName];
     delete next[oldName];
-    setPresets(next);
-    savePresets(next);
     if (selectedPreset === oldName) setSelectedPreset(trimmed);
-    if (showToast) showToast('✓ تم تغيير اسم القالب');
+    await commitPresets(next, '✓ تم تغيير اسم القالب');
   };
 
-  const duplicatePreset = (name) => {
+  const duplicatePreset = async (name) => {
     if (!presets[name]) return;
     const newName = `${name} (نسخة)`;
     const next = { ...presets, [newName]: { ...presets[name] } };
-    setPresets(next);
-    savePresets(next);
     setSelectedPreset(newName);
-    if (showToast) showToast(`✓ تم نسخ القالب إلى "${newName}"`);
+    await commitPresets(next, `✓ تم نسخ القالب إلى "${newName}"`);
   };
 
-  const deletePreset = (name) => {
+  const deletePreset = async (name) => {
     if (!name || !presets[name]) return;
     if (window.confirm && !window.confirm(`هل أنت تأكد من حذف القالب "${name}"؟`)) return;
     const next = { ...presets };
     delete next[name];
-    setPresets(next);
-    savePresets(next);
     if (selectedPreset === name) {
       const names = Object.keys(next).sort((a, b) => a.localeCompare(b, 'ar'));
       setSelectedPreset(names[0] || '');
     }
-    if (showToast) showToast('تم حذف القالب');
+    await commitPresets(next, 'تم حذف القالب');
   };
 
   const exportPresetJson = (name) => {
@@ -146,13 +171,13 @@ export function usePresetManager(
     const blob = new Blob([jsonStr], { type: 'application/json' });
     const safeName = name.replace(/[^\u0600-\u06FFa-zA-Z0-9]/g, '-');
     downloadBlob(blob, `preset-${safeName}.json`);
-    if (showToast) showToast('✓ تم تصدير ملف القالب (JSON)');
+    if (showToast) showToast('✓ تم تصدير ملف القالب');
   };
 
   const importPresetJsonFile = (file) => {
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
         const parsed = JSON.parse(e.target.result);
         const presetObj = parsed.type === 'certificate-studio-preset' ? parsed.preset : parsed;
@@ -161,10 +186,8 @@ export function usePresetManager(
         const cleanPreset = extractDesignPreset(presetObj);
 
         const next = { ...presets, [name]: cleanPreset };
-        setPresets(next);
-        savePresets(next);
         setSelectedPreset(name);
-        if (showToast) showToast(`✓ تم استيراد القالب "${name}" بنجاح`);
+        await commitPresets(next, `✓ تم استيراد القالب "${name}" بنجاح`);
       } catch (err) {
         if (showToast) showToast(`تعذّر استيراد القالب: ${err.message}`);
       }
@@ -172,12 +195,10 @@ export function usePresetManager(
     reader.readAsText(file);
   };
 
-  const restoreBuiltInPresets = () => {
+  const restoreBuiltInPresets = async () => {
     if (window.confirm && !window.confirm('هل تريد استعادة القوالب المجهزة افتراضياً؟')) return;
     const next = { ...presets, ...BUILTIN_PRESETS };
-    setPresets(next);
-    savePresets(next);
-    if (showToast) showToast('✓ تم استعادة القوالب الافتراضية بنجاح');
+    await commitPresets(next, '✓ تم استعادة القوالب الافتراضية بنجاح');
   };
 
   const presetNames = Object.keys(presets).sort((a, b) => a.localeCompare(b, 'ar'));
@@ -205,5 +226,6 @@ export function usePresetManager(
     exportPresetJson,
     importPresetJsonFile,
     restoreBuiltInPresets,
+    refreshPresets,
   };
 }

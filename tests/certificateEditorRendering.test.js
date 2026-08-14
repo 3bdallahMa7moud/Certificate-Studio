@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { after, before, test } from 'node:test';
 
 import react from '@vitejs/plugin-react';
@@ -17,6 +18,12 @@ let TEMPLATE_COMPONENTS;
 let TEMPLATE_REGISTRY;
 let resolveTemplateComponent;
 let getDefaultState;
+let preloadCertificateEditorOverlay;
+
+const EDITOR_OVERLAY_SOURCE = readFileSync(
+  new URL('../components/CertificateEditor/CertificateEditorOverlay.jsx', import.meta.url),
+  'utf8',
+);
 
 const TEMPLATE_ROOTS = Object.freeze({
   editorial: 'cert-editorial',
@@ -51,9 +58,13 @@ before(async () => {
     configFile: false,
     appType: 'custom',
     logLevel: 'silent',
+    optimizeDeps: { disabled: true, noDiscovery: true, include: [] },
+    ssr: { optimizeDeps: { disabled: true, noDiscovery: true, include: [] } },
     plugins: [react()],
     server: { middlewareMode: true },
   });
+  ({ preloadCertificateEditorOverlay } = await server.ssrLoadModule('/components/CertificateFrame.jsx'));
+  await preloadCertificateEditorOverlay();
   ({ default: Certificate } = await server.ssrLoadModule('/components/Certificate.jsx'));
   ({ default: ImportWizard } = await server.ssrLoadModule('/components/ImportWizard.jsx'));
   ({ default: StudioPage } = await server.ssrLoadModule('/pages/StudioPage.jsx'));
@@ -151,7 +162,7 @@ test('import wizard column-mapping step renders its imported field definitions',
   assert.match(html, /Grade 7/);
 });
 
-test('component registry resolves exactly eight active templates and keeps the editorial fallback', () => {
+test('component registry resolves all twelve active templates and keeps the editorial fallback', () => {
   const expectedIds = Object.keys(TEMPLATE_ROOTS);
 
   assert.deepEqual(
@@ -173,7 +184,7 @@ test('component registry resolves exactly eight active templates and keeps the e
   );
 });
 
-test('template gallery renders eight real localized cards with motifs and selected state', () => {
+test('template gallery renders twelve real CertificateFrame thumbnails and selected state', () => {
   const html = renderToStaticMarkup(
     React.createElement(TemplateGallery, {
       selected: 'ocean-adventure',
@@ -184,7 +195,9 @@ test('template gallery renders eight real localized cards with motifs and select
 
   assert.match(html, /class="template-gallery"/);
   assert.match(html, /dir="rtl"/);
-  assert.equal((html.match(/data-template-id=/g) || []).length, 12);
+  assert.equal((html.match(/class="template-gallery-card/g) || []).length, 12);
+  assert.equal((html.match(/data-mode="thumbnail"/g) || []).length, 12);
+  assert.equal((html.match(/certificate-frame--thumbnail/g) || []).length, 12);
   assert.equal((html.match(/aria-pressed="true"/g) || []).length, 1);
   assert.match(
     html,
@@ -193,21 +206,14 @@ test('template gallery renders eight real localized cards with motifs and select
 
   for (const template of TEMPLATE_REGISTRY) {
     assert.match(html, new RegExp(`data-template-id="${template.id}"`));
+    assert.match(html, new RegExp(`class="${TEMPLATE_ROOTS[template.id]}`));
     assert.match(html, new RegExp(template.displayNameEn));
     assert.ok(html.includes(template.displayNameAr));
     assert.ok(html.includes(template.categoryNameEn.replace(/&/g, '&amp;')));
     assert.ok(html.includes(template.categoryNameAr));
   }
 
-  for (const motif of [
-    'cloud-stars',
-    'jungle-leaves',
-    'space-orbit',
-    'ocean-waves',
-    'storybook-castle',
-  ]) {
-    assert.match(html, new RegExp(`template-gallery-thumb-motif--${motif}`));
-  }
+  assert.doesNotMatch(html, /template-gallery-thumb-card|template-gallery-thumb-motif-shape/);
 });
 
 test('static rendering preserves all three legacy roots without editor chrome', () => {
@@ -226,7 +232,7 @@ test('static rendering preserves all three legacy roots without editor chrome', 
   }
 });
 
-test('all five child-friendly templates render statically without editor chrome', () => {
+test('all nine illustrated templates render statically without editor chrome', () => {
   for (const template of NEW_TEMPLATE_IDS) {
     const html = renderCertificate(stateFor(template));
     assert.match(html, new RegExp(`class="${TEMPLATE_ROOTS[template]}`));
@@ -244,8 +250,7 @@ test('editor rendering emits semantic targets for every template only in editor 
     });
     const combinedHtml = htmlByLanguage.join('');
     assert.ok(htmlByLanguage.every(html => /certificate-editor-overlay/.test(html)));
-    assert.ok(htmlByLanguage.every(html => /data-selection-mode="navigator"/.test(html)));
-    assert.doesNotMatch(combinedHtml, /certificate-editor-hit-target|certificate-direct-edit/);
+    assert.ok(htmlByLanguage.every(html => /data-selection-mode="canvas"/.test(html)));
     const ids = defaults.elements
       .filter(element => element.selectable)
       .flatMap(element => element.occurrences.map(occurrence => occurrence.id));
@@ -255,6 +260,11 @@ test('editor rendering emits semantic targets for every template only in editor 
     assert.match(combinedHtml, /data-content-key=/);
     assert.match(combinedHtml, /data-locale="(?:ar|en)"/);
   }
+
+  assert.match(EDITOR_OVERLAY_SOURCE, /certificate-editor-hit-target/);
+  assert.match(EDITOR_OVERLAY_SOURCE, /DirectEditOverlay/);
+  assert.match(EDITOR_OVERLAY_SOURCE, /event\.key === 'Enter'/);
+  assert.match(EDITOR_OVERLAY_SOURCE, /event\.key\.startsWith\('Arrow'\)/);
 });
 
 test('new templates expose the correct Arabic, English, and bilingual occurrences', () => {
@@ -322,6 +332,7 @@ test('all child-friendly templates preserve long Arabic, English, and bilingual 
     }));
     assert.ok(bilingualHtml.includes(longArabicName));
     assert.ok(bilingualHtml.includes(longEnglishName));
+    assert.match(bilingualHtml, /multi-line-name/);
   }
 });
 

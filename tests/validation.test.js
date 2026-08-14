@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { getDefaultState } from '../src/context/data.js';
 import {
+  ensureStudentRowIds,
   exportProjectJson,
   extractDesignPreset,
   extractProjectDraft,
@@ -9,6 +10,49 @@ import {
   validateAndNormalizeProjectData,
   validateProjectJsonString,
 } from '../src/services/projectValidation.js';
+
+test('student rowId survives serial edits while missing or duplicate ids are repaired', () => {
+  const original = ensureStudentRowIds([
+    { rowId: 'ROW-PERSISTENT', serial: 'CERT-2026-AAAAAA', studentNameEn: 'A' },
+    { serial: 'CERT-2026-BBBBBB', studentNameEn: 'B' },
+    { rowId: 'ROW-PERSISTENT', serial: 'CERT-2026-CCCCCC', studentNameEn: 'C' },
+  ], 'row-id-contract');
+
+  const afterSerialEdit = ensureStudentRowIds(
+    original.map(student => ({ ...student, serial: `${student.serial}-EDITED` })),
+    'row-id-contract',
+  );
+
+  assert.equal(original[0].rowId, 'ROW-PERSISTENT');
+  assert.equal(afterSerialEdit[0].rowId, 'ROW-PERSISTENT');
+  assert.deepEqual(
+    afterSerialEdit.map(student => student.rowId),
+    original.map(student => student.rowId),
+  );
+  assert.equal(new Set(original.map(student => student.rowId)).size, original.length);
+  assert.ok(original.every(student => /^ROW-/.test(student.rowId)));
+});
+
+test('legacy rowId migration is independent of row order and visible serial numbers', () => {
+  const legacy = [
+    { serial: 'OLD-1', studentNameAr: 'أسماء علي', grade: 'Grade 4' },
+    { serial: 'OLD-2', studentNameAr: 'ليان حسن', grade: 'Grade 5' },
+  ];
+  const first = ensureStudentRowIds(legacy, 'stable-legacy');
+  const reordered = ensureStudentRowIds([
+    { ...legacy[1], serial: 'CHANGED-2' },
+    { ...legacy[0], serial: 'CHANGED-1' },
+  ], 'stable-legacy');
+
+  assert.equal(
+    first.find(student => student.studentNameAr === 'أسماء علي').rowId,
+    reordered.find(student => student.studentNameAr === 'أسماء علي').rowId,
+  );
+  assert.equal(
+    first.find(student => student.studentNameAr === 'ليان حسن').rowId,
+    reordered.find(student => student.studentNameAr === 'ليان حسن').rowId,
+  );
+});
 
 test('extractDesignPreset includes design attributes and omits student records', () => {
   const state = {
@@ -74,7 +118,7 @@ test('exportProjectJson and validateProjectJsonString validate and parse project
 test('validateProjectJsonString rejects invalid or corrupted JSON strings', () => {
   const invalidJsonResult = validateProjectJsonString('{ bad: json ');
   assert.equal(invalidJsonResult.valid, false);
-  assert.ok(invalidJsonResult.error.includes('JSON'));
+  assert.ok(invalidJsonResult.error.includes('المشروع'));
 
   const badObjectResult = validateAndNormalizeProjectData(null);
   assert.equal(badObjectResult.valid, false);

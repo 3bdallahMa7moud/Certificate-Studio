@@ -25,6 +25,7 @@ export default function EditableElementFrame({
   onDragStop,
   onResize,
   onResizeStop,
+  onDirectEdit,
 }) {
   if (!rect) return null;
 
@@ -56,6 +57,10 @@ export default function EditableElementFrame({
         width: ref.offsetWidth,
         height: ref.offsetHeight,
       })}
+      onDoubleClick={event => {
+        event.stopPropagation();
+        onDirectEdit?.();
+      }}
       resizeHandleClasses={{
         top: 'certificate-editor-handle handle-top',
         right: 'certificate-editor-handle handle-right',

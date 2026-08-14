@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  displayAcademicYear,
   displayDate,
   getSubject,
   primaryDisplayName,
@@ -12,10 +13,13 @@ import {
   titleFlowClass,
 } from '../templateUtils.js';
 import {
+  AchievementText,
   StudentName,
   TemplateLogo,
   mergeStaticProps,
+  CertificateMessage,
 } from './TemplatePrimitives.jsx';
+import '../styles/SpaceExplorerTemplate.css';
 
 const PREFIX = 'space-explorer';
 
@@ -25,42 +29,56 @@ export default function SpaceExplorerTemplate({ state, render }) {
       baseProps,
       render?.element?.(elementId, options) || {},
     );
+
   const templateText = (elementId, locale, fallback) =>
     render?.text?.(elementId, locale, fallback) ?? fallback;
+
   const showAr = shouldShowAr(state);
   const showEn = shouldShowEn(state);
   const primaryLocale = showEn && !showAr ? 'en' : 'ar';
   const subject = getSubject(state.subject);
+
   const titleAr = templateText(
     `${PREFIX}-title`,
     'ar',
     'شهادة تقدير وتميز',
   );
+
   const titleEn = templateText(
     `${PREFIX}-title-en`,
     'en',
     'Certificate of Excellence',
   );
+
   const teacherPrimaryId = primaryLocale === 'en'
     ? `${PREFIX}-teacher-name-en`
     : `${PREFIX}-teacher-name`;
+
   const principalPrimaryId = primaryLocale === 'en'
     ? `${PREFIX}-principal-name-en`
     : `${PREFIX}-principal-name`;
 
+  const messageText = state.customMessageAr || state.customMessageEn || '';
+
   return (
     <div className="cert-space-explorer">
+      {/* Decorative space layer */}
       <div className="space-art" aria-hidden="true">
+        <div className="space-orb space-orb-1" />
+        <div className="space-orb space-orb-2" />
+
         <span className="space-star space-star-one" />
         <span className="space-star space-star-two" />
         <span className="space-star space-star-three" />
         <span className="space-star space-star-four" />
         <span className="space-star space-star-five" />
+
         <div className="space-planet">
           <span className="space-planet-ring" />
           <span className="space-planet-spot space-planet-spot-one" />
           <span className="space-planet-spot space-planet-spot-two" />
         </div>
+
         <div className="space-rocket">
           <span className="space-rocket-nose" />
           <span className="space-rocket-body" />
@@ -72,6 +90,7 @@ export default function SpaceExplorerTemplate({ state, render }) {
         </div>
       </div>
 
+      {/* Top identity bar */}
       <header className="space-command-bar">
         <TemplateLogo
           state={state}
@@ -82,10 +101,12 @@ export default function SpaceExplorerTemplate({ state, render }) {
             preservePosition: true,
           })}
         />
+
         <div className="space-school-lockup">
           <span className="space-command-label" aria-hidden="true">
-            {showAr ? 'محطة الإطلاق' : 'LAUNCH STATION'}
+            {showAr ? 'رحلة نحو التميز' : 'JOURNEY TO EXCELLENCE'}
           </span>
+
           <div className="space-school">
             {showAr && (
               <span
@@ -99,9 +120,13 @@ export default function SpaceExplorerTemplate({ state, render }) {
                 {state.schoolNameAr || 'اسم المدرسة'}
               </span>
             )}
+
             {showAr && showEn && (
-              <span className="space-school-separator" aria-hidden="true">·</span>
+              <span className="space-school-separator" aria-hidden="true">
+                ·
+              </span>
             )}
+
             {showEn && (
               <span
                 {...element(`${PREFIX}-school-name-en`, {
@@ -116,109 +141,65 @@ export default function SpaceExplorerTemplate({ state, render }) {
             )}
           </div>
         </div>
-
-        <div className="space-command-meta">
-          <div className="space-meta-cell space-year-cell">
-            <span className="space-meta-label">
-              {roleLabel(state, 'العام الدراسي', 'Academic year')}
-            </span>
-            <span
-              {...element(
-                `${PREFIX}-academic-year`,
-                {
-                  contentKey: 'academicYear',
-                  occurrenceId: `${PREFIX}-academic-year`,
-                },
-                { className: 'space-meta-value' },
-              )}
-            >
-              {state.academicYear || '—'}
-            </span>
-          </div>
-          <div className="space-meta-cell space-date-cell">
-            <span className="space-meta-label">
-              {roleLabel(state, 'التاريخ', 'Date')}
-            </span>
-            <span
-              {...element(
-                `${PREFIX}-date`,
-                {
-                  contentKey: 'date',
-                  locale: primaryLocale,
-                  occurrenceId: `${PREFIX}-date`,
-                },
-                { className: 'space-meta-value' },
-              )}
-            >
-              {displayDate(state)}
-            </span>
-          </div>
-        </div>
       </header>
 
-      <main className="space-mission-card">
-        <div className="space-mission-heading">
-          <span className="space-mission-code" aria-hidden="true">MISSION 01</span>
-          <div
-            className={`space-title ${titleFlowClass(state)}`}
-            dir={titleDirection(state)}
-          >
-            {showAr && (
-              <span
-                {...element(`${PREFIX}-title`, {
-                  contentKey: 'title',
-                  locale: 'ar',
-                  occurrenceId: `${PREFIX}-title`,
-                  inline: true,
-                })}
-              >
-                {titleAr}
-              </span>
-            )}
-            {showAr && showEn && (
-              <span className="space-title-separator" aria-hidden="true">·</span>
-            )}
-            {showEn && (
-              <span
-                {...element(`${PREFIX}-title-en`, {
-                  contentKey: 'title',
-                  locale: 'en',
-                  occurrenceId: `${PREFIX}-title-en`,
-                  inline: true,
-                })}
-              >
-                {titleEn}
-              </span>
-            )}
-          </div>
-          <span className="space-mission-status" aria-hidden="true">
-            {showAr ? 'تم الإنجاز' : 'COMPLETED'}
-          </span>
+      {/* Main certificate content */}
+      <main className="space-body">
+        <div
+          className={`space-title-orbit ${titleFlowClass(state)}`}
+          dir={titleDirection(state)}
+        >
+          {showAr && (
+            <span
+              {...element(`${PREFIX}-title`, {
+                contentKey: 'title',
+                locale: 'ar',
+                occurrenceId: `${PREFIX}-title`,
+                inline: true,
+              })}
+            >
+              {titleAr}
+            </span>
+          )}
+
+          {showAr && showEn && (
+            <span className="space-title-separator" aria-hidden="true">
+              ·
+            </span>
+          )}
+
+          {showEn && (
+            <span
+              {...element(`${PREFIX}-title-en`, {
+                contentKey: 'title',
+                locale: 'en',
+                occurrenceId: `${PREFIX}-title-en`,
+                inline: true,
+              })}
+            >
+              {titleEn}
+            </span>
+          )}
         </div>
 
-        <div className="space-name-orbit">
-          <span className="space-orbit-line" aria-hidden="true" />
-          <span className="space-orbit-moon space-orbit-moon-start" aria-hidden="true" />
-          <span className="space-orbit-moon space-orbit-moon-end" aria-hidden="true" />
-          <div className="space-name-stage">
-            <StudentName
-              state={state}
-              size={6.8}
-              fitWidth={74}
-              secondarySize={2.2}
-              secondaryFitWidth={74}
-              primaryProps={element(`${PREFIX}-student-name`, {
-                contentKey: 'studentNameAr',
-                locale: 'ar',
-                occurrenceId: `${PREFIX}-student-name`,
-              })}
-              secondaryProps={element(`${PREFIX}-student-name-en`, {
-                contentKey: 'studentNameEn',
-                locale: 'en',
-                occurrenceId: `${PREFIX}-student-name-en`,
-              })}
-            />
-          </div>
+        <div className="space-hero-name">
+          <StudentName
+            state={state}
+            size={5.4}
+            fitWidth={66}
+            secondarySize={2}
+            secondaryFitWidth={66}
+            primaryProps={element(`${PREFIX}-student-name`, {
+              contentKey: 'studentNameAr',
+              locale: 'ar',
+              occurrenceId: `${PREFIX}-student-name`,
+            })}
+            secondaryProps={element(`${PREFIX}-student-name-en`, {
+              contentKey: 'studentNameEn',
+              locale: 'en',
+              occurrenceId: `${PREFIX}-student-name-en`,
+            })}
+          />
         </div>
 
         <div
@@ -229,79 +210,137 @@ export default function SpaceExplorerTemplate({ state, render }) {
               occurrenceId: `${PREFIX}-message`,
             },
             {
-              className: `space-message ${textFlowClass(state.customMessage)}`,
-              dir: textDirection(state.customMessage),
+              className: `space-message ${textFlowClass(messageText)}`,
+              dir: textDirection(messageText),
             },
           )}
         >
-          {state.customMessage}
+          <CertificateMessage
+            state={state}
+            fallbackAr="لتميزه/ا الاستثنائي ونجاحه/ا في إتمام المهمة التعليمية بنجاح."
+            fallbackEn="For exceptional performance and successfully completing the educational mission."
+          />
         </div>
 
-        <div className="space-mission-facts">
-          <div className="space-fact space-subject-fact">
-            <span className="space-fact-index" aria-hidden="true">01</span>
-            <div className="space-fact-copy">
-              <span className="space-fact-label">
-                {roleLabel(state, 'المادة', 'Subject')}
-              </span>
-              <span className="space-fact-value">
-                {showAr && (
-                  <span
-                    {...element(`${PREFIX}-subject`, {
-                      contentKey: 'subject',
-                      locale: 'ar',
-                      occurrenceId: `${PREFIX}-subject`,
-                      inline: true,
-                    })}
-                  >
-                    {subject.ar}
-                  </span>
-                )}
-                {showAr && showEn && <span aria-hidden="true"> · </span>}
-                {showEn && (
-                  <span
-                    {...element(`${PREFIX}-subject-en`, {
-                      contentKey: 'subject',
-                      locale: 'en',
-                      occurrenceId: `${PREFIX}-subject-en`,
-                      inline: true,
-                    })}
-                  >
-                    {subject.en}
-                  </span>
-                )}
-              </span>
-            </div>
+        {/* Compact information chips */}
+        <div className="space-telemetry">
+          <div className="space-metric space-subject-metric">
+            <span className="space-metric-label">
+              {roleLabel(state, 'المادة', 'Subject')}
+            </span>
+
+            <span className="space-metric-value">
+              {showAr && (
+                <span
+                  {...element(`${PREFIX}-subject`, {
+                    contentKey: 'subject',
+                    locale: 'ar',
+                    occurrenceId: `${PREFIX}-subject`,
+                    inline: true,
+                  })}
+                >
+                  {subject.ar}
+                </span>
+              )}
+
+              {showAr && showEn && <span aria-hidden="true"> · </span>}
+
+              {showEn && (
+                <span
+                  {...element(`${PREFIX}-subject-en`, {
+                    contentKey: 'subject',
+                    locale: 'en',
+                    occurrenceId: `${PREFIX}-subject-en`,
+                    inline: true,
+                  })}
+                >
+                  {subject.en}
+                </span>
+              )}
+            </span>
           </div>
 
-          <div className="space-fact space-grade-fact">
-            <span className="space-fact-index" aria-hidden="true">02</span>
-            <div className="space-fact-copy">
-              <span className="space-fact-label">
-                {roleLabel(state, 'الصف', 'Grade')}
-              </span>
-              <span
-                {...element(
-                  `${PREFIX}-grade`,
-                  {
-                    contentKey: 'grade',
-                    occurrenceId: `${PREFIX}-grade`,
-                  },
-                  { className: 'space-fact-value' },
-                )}
-              >
-                {state.grade || '—'}
-              </span>
-            </div>
+          <div className="space-metric space-grade-metric">
+            <span className="space-metric-label">
+              {roleLabel(state, 'الصف', 'Grade')}
+            </span>
+
+            <span
+              {...element(
+                `${PREFIX}-grade`,
+                {
+                  contentKey: 'grade',
+                  occurrenceId: `${PREFIX}-grade`,
+                },
+                { className: 'space-metric-value' },
+              )}
+            >
+              {state.grade || '—'}
+            </span>
+          </div>
+
+          <div className="space-metric space-achievement-metric">
+            <span className="space-metric-label">
+              {roleLabel(state, 'الإنجاز', 'Achievement')}
+            </span>
+
+            <AchievementText
+              state={state}
+              element={element}
+              elementId={`${PREFIX}-achievement`}
+              className="space-metric-value"
+              partClassName="certificate-achievement-part"
+            />
+          </div>
+
+          <div className="space-metric space-year-metric">
+            <span className="space-metric-label">
+              {roleLabel(state, 'العام الدراسي', 'Academic year')}
+            </span>
+
+            <span
+              {...element(
+                `${PREFIX}-academic-year`,
+                {
+                  contentKey: 'academicYear',
+                  occurrenceId: `${PREFIX}-academic-year`,
+                },
+                { className: 'space-metric-value' },
+              )}
+            >
+              {displayAcademicYear(state)}
+            </span>
+          </div>
+
+          <div className="space-metric space-date-metric">
+            <span className="space-metric-label">
+              {roleLabel(state, 'التاريخ', 'Date')}
+            </span>
+
+            <span
+              {...element(
+                `${PREFIX}-date`,
+                {
+                  contentKey: 'date',
+                  locale: primaryLocale,
+                  occurrenceId: `${PREFIX}-date`,
+                },
+                { className: 'space-metric-value' },
+              )}
+            >
+              {displayDate(state)}
+            </span>
           </div>
         </div>
       </main>
 
-      <footer className="space-crew-row">
-        <div className="space-crew-card space-crew-teacher">
-          <span className="space-crew-role">
+      {/* Signatures */}
+      <footer className="space-signatures">
+        <div className="space-sig-block space-sig-teacher">
+          <span className="space-sig-title">
             {roleLabel(state, 'المعلم/ة', 'Teacher')}
           </span>
+
           {state.teacherSig && (
             <img
               {...element(
@@ -313,11 +352,12 @@ export default function SpaceExplorerTemplate({ state, render }) {
                 {
                   className: 'cert-sig cert-sig-teacher',
                   src: state.teacherSig,
-                  alt: 'توقيع المعلم',
+                  alt: showEn && !showAr ? 'Teacher signature' : 'توقيع المعلم',
                 },
               )}
             />
           )}
+
           <div
             {...element(
               teacherPrimaryId,
@@ -328,7 +368,7 @@ export default function SpaceExplorerTemplate({ state, render }) {
                 locale: primaryLocale,
                 occurrenceId: teacherPrimaryId,
               },
-              { className: 'space-crew-name' },
+              { className: 'space-sig-name' },
             )}
           >
             {primaryDisplayName(
@@ -337,6 +377,7 @@ export default function SpaceExplorerTemplate({ state, render }) {
               state.teacherNameEn,
             )}
           </div>
+
           {showAr && showEn && (
             <div
               {...element(
@@ -346,7 +387,7 @@ export default function SpaceExplorerTemplate({ state, render }) {
                   locale: 'en',
                   occurrenceId: `${PREFIX}-teacher-name-en`,
                 },
-                { className: 'space-crew-name-en' },
+                { className: 'space-sig-name-en' },
               )}
             >
               {state.teacherNameEn || '—'}
@@ -359,10 +400,11 @@ export default function SpaceExplorerTemplate({ state, render }) {
           <span className="space-insignia-orbit" />
         </div>
 
-        <div className="space-crew-card space-crew-principal">
-          <span className="space-crew-role">
+        <div className="space-sig-block space-sig-principal">
+          <span className="space-sig-title">
             {roleLabel(state, 'المدير/ة', 'Principal')}
           </span>
+
           {state.principalSig && (
             <img
               {...element(
@@ -374,11 +416,12 @@ export default function SpaceExplorerTemplate({ state, render }) {
                 {
                   className: 'cert-sig cert-sig-principal',
                   src: state.principalSig,
-                  alt: 'توقيع المدير',
+                  alt: showEn && !showAr ? 'Principal signature' : 'توقيع المدير',
                 },
               )}
             />
           )}
+
           <div
             {...element(
               principalPrimaryId,
@@ -389,7 +432,7 @@ export default function SpaceExplorerTemplate({ state, render }) {
                 locale: primaryLocale,
                 occurrenceId: principalPrimaryId,
               },
-              { className: 'space-crew-name' },
+              { className: 'space-sig-name' },
             )}
           >
             {primaryDisplayName(
@@ -398,6 +441,7 @@ export default function SpaceExplorerTemplate({ state, render }) {
               state.principalNameEn,
             )}
           </div>
+
           {showAr && showEn && (
             <div
               {...element(
@@ -407,7 +451,7 @@ export default function SpaceExplorerTemplate({ state, render }) {
                   locale: 'en',
                   occurrenceId: `${PREFIX}-principal-name-en`,
                 },
-                { className: 'space-crew-name-en' },
+                { className: 'space-sig-name-en' },
               )}
             >
               {state.principalNameEn || '—'}

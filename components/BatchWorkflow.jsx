@@ -4,7 +4,7 @@ import { Field, Section } from './FormControls.jsx';
 import TemplateGallery from './TemplateGallery.jsx';
 import Certificate from './Certificate.jsx';
 import { CERTIFICATE_TYPES, getCertificateType, getGenderAwareMessage } from '../src/context/certificateTypes.js';
-import { GRADE_LEVELS, LANGUAGE_MODES, SUBJECTS } from '../src/context/data.js';
+import { BEHAVIORS, GRADE_LEVELS, LANGUAGE_MODES, SUBJECTS } from '../src/context/data.js';
 import { dateInputValue, formatDateAr } from '../src/context/helpers.js';
 import { validateBatchSelection } from '../src/services/certificateValidator.js';
 import { resolveTemplateId } from '../src/certificate-templates/templateUtils.js';
@@ -23,12 +23,12 @@ export default function BatchWorkflow({
   const [step, setStep] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [gradeFilter, setGradeFilter] = useState('');
-  const [selectedSerials, setSelectedSerials] = useState(() => {
-    return state.batchStudents?.map(s => s.serial) || [];
+  const [selectedRowIds, setSelectedRowIds] = useState(() => {
+    return state.batchStudents?.map(s => s.rowId).filter(Boolean) || [];
   });
   const [previewIndex, setPreviewIndex] = useState(0);
 
-  const primaryGrades = ['KG1', 'KG2', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7'];
+  const primaryGrades = GRADE_LEVELS;
 
   // Filter students by search and grade
   const filteredStudents = useMemo(() => {
@@ -40,29 +40,32 @@ export default function BatchWorkflow({
   }, [state.batchStudents, searchTerm, gradeFilter]);
 
   const selectedStudents = useMemo(() => {
-    const serialSet = new Set(selectedSerials);
-    return (state.batchStudents || []).filter(s => serialSet.has(s.serial));
-  }, [state.batchStudents, selectedSerials]);
+    const rowIdSet = new Set(selectedRowIds);
+    return (state.batchStudents || []).filter(s => rowIdSet.has(s.rowId));
+  }, [state.batchStudents, selectedRowIds]);
 
   const toggleSelectAll = () => {
-    if (selectedSerials.length === filteredStudents.length && filteredStudents.length > 0) {
-      setSelectedSerials([]);
+    const filteredIds = filteredStudents.map(student => student.rowId).filter(Boolean);
+    const allFilteredSelected = filteredIds.length > 0
+      && filteredIds.every(rowId => selectedRowIds.includes(rowId));
+    if (allFilteredSelected) {
+      setSelectedRowIds(previous => previous.filter(rowId => !filteredIds.includes(rowId)));
     } else {
-      setSelectedSerials(filteredStudents.map(s => s.serial));
+      setSelectedRowIds(previous => [...new Set([...previous, ...filteredIds])]);
     }
   };
 
-  const toggleSelectStudent = (serial) => {
-    setSelectedSerials(prev => {
-      if (prev.includes(serial)) {
-        return prev.filter(s => s !== serial);
+  const toggleSelectStudent = (rowId) => {
+    setSelectedRowIds(prev => {
+      if (prev.includes(rowId)) {
+        return prev.filter(id => id !== rowId);
       }
-      return [...prev, serial];
+      return [...prev, rowId];
     });
   };
 
-  const handleRemoveFromBatch = (serial) => {
-    setSelectedSerials(prev => prev.filter(s => s !== serial));
+  const handleRemoveFromBatch = (rowId) => {
+    setSelectedRowIds(prev => prev.filter(id => id !== rowId));
     if (previewIndex >= selectedStudents.length - 1) {
       setPreviewIndex(Math.max(0, selectedStudents.length - 2));
     }
@@ -87,10 +90,21 @@ export default function BatchWorkflow({
       grade: currentPreviewStudent.grade || state.grade,
       subject: currentPreviewStudent.subject || state.subject,
       behavior: currentPreviewStudent.behavior || state.behavior,
+      achievementAr: currentPreviewStudent.achievementAr || state.achievementAr,
+      achievementEn: currentPreviewStudent.achievementEn || state.achievementEn,
       customMessage: currentPreviewStudent.customMessage || state.customMessage || suggestedMsg,
       serial: currentPreviewStudent.serial || state.serial,
     };
   }, [state, currentPreviewStudent]);
+
+  const handleAchievementPresetSelect = (behaviorId) => {
+    const behavior = BEHAVIORS.find(item => item.id === behaviorId) || BEHAVIORS[0];
+    updateState({
+      behavior: behavior.id,
+      achievementAr: behavior.ar,
+      achievementEn: behavior.en,
+    });
+  };
 
   return (
     <div className="batch-workflow-container">
@@ -165,14 +179,14 @@ export default function BatchWorkflow({
               <label className="select-all-label">
                 <input
                   type="checkbox"
-                  checked={selectedSerials.length > 0 && selectedSerials.length === filteredStudents.length}
+                  checked={filteredStudents.length > 0 && filteredStudents.every(student => selectedRowIds.includes(student.rowId))}
                   onChange={toggleSelectAll}
                 />
                 <span>تحديد الكل ({filteredStudents.length} طالب)</span>
               </label>
 
               <span className="selected-count-badge">
-                تم تحديد <strong>{selectedSerials.length}</strong> من أصل {state.batchStudents?.length || 0} طالب
+                تم تحديد <strong>{selectedRowIds.length}</strong> من أصل {state.batchStudents?.length || 0} طالب
               </span>
             </div>
 
@@ -184,17 +198,17 @@ export default function BatchWorkflow({
             ) : (
               <div className="batch-students-grid">
                 {filteredStudents.map(student => {
-                  const isSelected = selectedSerials.includes(student.serial);
+                  const isSelected = selectedRowIds.includes(student.rowId);
                   return (
-                    <div
-                      key={student.serial}
+                    <label
+                      key={student.rowId}
                       className={`batch-student-card ${isSelected ? 'selected' : ''}`}
-                      onClick={() => toggleSelectStudent(student.serial)}
                     >
                       <input
                         type="checkbox"
                         checked={isSelected}
-                        onChange={() => {}}
+                        onChange={() => toggleSelectStudent(student.rowId)}
+                        aria-label={`تحديد ${student.studentNameAr || student.studentNameEn || 'الطالب'}`}
                       />
                       <div className="student-card-info">
                         <span className="student-name-ar">{student.studentNameAr || student.studentNameEn}</span>
@@ -204,7 +218,7 @@ export default function BatchWorkflow({
                           {student.gender === 'female' && <span className="gender-tag female">طالبة</span>}
                         </div>
                       </div>
-                    </div>
+                    </label>
                   );
                 })}
               </div>
@@ -251,13 +265,40 @@ export default function BatchWorkflow({
                   </select>
                 </Field>
 
+                <Field label="نوع التميّز">
+                  <select
+                    className="field-input"
+                    value={state.behavior}
+                    onChange={e => handleAchievementPresetSelect(e.target.value)}
+                  >
+                    {BEHAVIORS.map(item => <option key={item.id} value={item.id}>{item.ar}</option>)}
+                  </select>
+                </Field>
+
+                <Field label="نص التميّز">
+                  <div className="grid-2">
+                    <input
+                      className="field-input ar"
+                      value={state.achievementAr || ''}
+                      onChange={e => updateState({ achievementAr: e.target.value })}
+                      dir="rtl"
+                    />
+                    <input
+                      className="field-input en"
+                      value={state.achievementEn || ''}
+                      onChange={e => updateState({ achievementEn: e.target.value })}
+                      dir="ltr"
+                    />
+                  </div>
+                </Field>
+
                 <Field label="التاريخ والعام الدراسي">
                   <div className="grid-2">
                     <input
                       type="date"
                       className="field-input en"
                       value={dateInputValue(state.date)}
-                      onChange={e => updateState({ date: new Date(e.target.value + 'T12:00:00').toISOString() })}
+                      onChange={e => updateState({ date: e.target.value ? new Date(e.target.value + 'T12:00:00').toISOString() : '' })}
                     />
                     <input
                       type="text"
@@ -274,7 +315,7 @@ export default function BatchWorkflow({
                   <TemplateGallery
                     selected={resolveTemplateId(state.template)}
                     onSelect={template => updateState({ template })}
-                    direction={state.languageMode === 'ar' ? 'rtl' : 'ltr'}
+                    direction={state.languageMode === 'en' ? 'ltr' : 'rtl'}
                   />
                 </Field>
 
@@ -306,7 +347,7 @@ export default function BatchWorkflow({
           <div className="batch-step-panel">
             {/* Validation Alerts */}
             {validation.warnings.length > 0 && (
-              <div className="validation-alert alert-warning">
+              <div className="validation-alert alert-warning" role="status" aria-live="polite">
                 <Icon name="Info" size={16} />
                 <div>
                   <strong>تنبيهات المراجعة:</strong>
@@ -367,7 +408,7 @@ export default function BatchWorkflow({
                         <span>الصف: {currentPreviewStudent.grade}</span>
                         <button
                           className="btn-remove-batch"
-                          onClick={() => handleRemoveFromBatch(currentPreviewStudent.serial)}
+                          onClick={() => handleRemoveFromBatch(currentPreviewStudent.rowId)}
                         >
                           <Icon name="Trash2" size={14} /> استبعاد هذا الطالب من هذه الدفعة
                         </button>

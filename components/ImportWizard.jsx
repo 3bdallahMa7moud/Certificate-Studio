@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import Icon from './Icon.jsx';
+import Dialog from './Dialog.jsx';
 import { IMPORTABLE_COLUMNS } from '../src/services/importValidator.js';
 import { WIZARD_STEPS } from '../src/hooks/useImportWizard.js';
 import { GRADE_LEVELS, SUBJECTS, BEHAVIORS } from '../src/context/data.js';
@@ -56,23 +57,22 @@ function StepFile({ wiz, selectFile }) {
   return (
     <div className="wiz-body">
       <p className="wiz-desc">اختر ملف CSV أو Excel يحتوي على بيانات الطلاب.</p>
-      <div
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".csv,.xlsx,.xls,.tsv"
+        hidden
+        onChange={e => { if (e.target.files?.[0]) selectFile(e.target.files[0]); e.target.value = ''; }}
+      />
+      <button
+        type="button"
         className={`wiz-drop-zone ${dragging ? 'dragging' : ''}`}
         onDragOver={e => { e.preventDefault(); setDragging(true); }}
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
-        role="button"
-        tabIndex={0}
-        onKeyDown={e => e.key === 'Enter' && inputRef.current?.click()}
+        aria-label="اختيار ملف طلاب بصيغة CSV أو Excel"
       >
-        <input
-          ref={inputRef}
-          type="file"
-          accept=".csv,.xlsx,.xls,.tsv"
-          hidden
-          onChange={e => { if (e.target.files?.[0]) selectFile(e.target.files[0]); e.target.value = ''; }}
-        />
         {wiz.parsing ? (
           <>
             <div className="wiz-drop-icon spinning"><Icon name="RefreshCw" size={36} /></div>
@@ -85,9 +85,9 @@ function StepFile({ wiz, selectFile }) {
             <div className="wiz-drop-hint">CSV، TSV، XLSX، XLS — حد أقصى 10 ميجابايت</div>
           </>
         )}
-      </div>
+      </button>
       {wiz.fileError && (
-        <div className="wiz-error-box"><Icon name="AlertTriangle" size={14} /><span>{wiz.fileError}</span></div>
+        <div className="wiz-error-box" role="alert"><Icon name="AlertTriangle" size={14} /><span>{wiz.fileError}</span></div>
       )}
       {wiz.file && !wiz.fileError && (
         <div className="wiz-file-name"><Icon name="File" size={13} />{wiz.file.name}</div>
@@ -138,9 +138,18 @@ function StepHeaders({ wiz, setHeaderRow, confirmHeaders, back }) {
               <tr
                 key={i}
                 className={`wiz-table-row ${i === wiz.headerRowIndex ? 'header-selected' : ''}`}
-                onClick={() => setHeaderRow(i)}
               >
-                <td className="wiz-row-num">{i === wiz.headerRowIndex ? <Icon name="Check" size={12} /> : i + 1}</td>
+                <td className="wiz-row-num">
+                  <button
+                    type="button"
+                    className="wiz-row-select"
+                    aria-pressed={i === wiz.headerRowIndex}
+                    aria-label={`اختيار الصف ${i + 1} كصف عناوين`}
+                    onClick={() => setHeaderRow(i)}
+                  >
+                    {i === wiz.headerRowIndex ? <Icon name="Check" size={12} /> : i + 1}
+                  </button>
+                </td>
                 {row.slice(0, 6).map((cell, ci) => (
                   <td key={ci} className="wiz-cell">{String(cell || '—')}</td>
                 ))}
@@ -186,6 +195,7 @@ function StepMapping({ wiz, setColumnMapping, confirmMapping, back }) {
               <select
                 className="wiz-col-select"
                 value={currentField}
+                aria-label={`ربط العمود ${header || colIdx + 1} بحقل في الشهادة`}
                 onChange={e => {
                   const newMapping = { ...wiz.columnMapping };
                   Object.keys(newMapping).forEach(k => {
@@ -241,7 +251,7 @@ function StepValidation({ wiz, confirmValidation, back }) {
       </div>
 
       {hasBlockingErrors && (
-        <div className="wiz-error-box">
+        <div className="wiz-error-box" role="alert">
           <Icon name="AlertTriangle" size={14} />
           <span>الصفوف ذات الخطأ لن يتم استيرادها. يمكنك المتابعة لاستيراد الصفوف الصالحة فقط.</span>
         </div>
@@ -340,24 +350,28 @@ export default function ImportWizard({ wiz, handlers }) {
   };
 
   const hasMultiSheet = wiz.sheetNames.length > 1;
+  const hasUnfinishedWork = Boolean(wiz.file) || wiz.step !== WIZARD_STEPS.FILE;
+  const confirmWizardClose = () => !hasUnfinishedWork
+    || window.confirm('سيتم إلغاء الاستيراد الحالي وفقد التعديلات غير المكتملة. هل تريد الإغلاق؟');
+  const handleClose = () => {
+    if (confirmWizardClose()) close();
+  };
 
   return (
-    <div
-      className="wiz-overlay"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="wiz-modal-title"
-      tabIndex={-1}
-      onKeyDown={e => { if (e.key === 'Escape') close(); }}
-      onClick={e => { if (e.target === e.currentTarget) close(); }}
+    <Dialog
+      open={wiz.open}
+      overlayClassName="wiz-overlay"
+      className="wiz-modal"
+      labelledBy="wiz-modal-title"
+      onClose={close}
+      confirmClose={confirmWizardClose}
     >
-      <div className="wiz-modal" dir="rtl">
         <div className="wiz-header">
           <div className="wiz-title">
             <Icon name="FileSpreadsheet" size={18} />
             <span id="wiz-modal-title">معالج استيراد الطلاب</span>
           </div>
-          <button className="wiz-close" onClick={close} title="إغلاق المعالج" aria-label="إغلاق المعالج">
+          <button type="button" className="wiz-close" onClick={handleClose} title="إغلاق المعالج" aria-label="إغلاق المعالج">
             <Icon name="X" size={16} />
           </button>
         </div>
@@ -382,7 +396,6 @@ export default function ImportWizard({ wiz, handlers }) {
         {wiz.step === WIZARD_STEPS.CONFIRM && (
           <StepConfirm wiz={wiz} confirmImport={confirmImport} back={back} />
         )}
-      </div>
-    </div>
+    </Dialog>
   );
 }

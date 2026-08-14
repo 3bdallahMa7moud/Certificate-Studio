@@ -1,6 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import StudentManager from '../components/StudentManager.jsx';
-import TemplateManager from '../components/TemplateManager.jsx';
+import React, { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Certificate from '../components/Certificate.jsx';
 import {
   BoundInput,
@@ -14,13 +12,9 @@ import {
 import Icon from '../components/Icon.jsx';
 import Logo from '../components/Logo.jsx';
 import TemplateGallery from '../components/TemplateGallery.jsx';
-import EditorToolbar from '../components/CertificateEditor/EditorToolbar.jsx';
-import ElementInspector from '../components/CertificateEditor/ElementInspector.jsx';
 import HomeScreen from '../components/HomeScreen.jsx';
 import SetupWizard from '../components/SetupWizard.jsx';
-import TeacherSettings from '../components/TeacherSettings.jsx';
-import IndividualCertificateFlow from '../components/IndividualCertificateFlow.jsx';
-import BatchWorkflow from '../components/BatchWorkflow.jsx';
+import Dialog from '../components/Dialog.jsx';
 import {
   BEHAVIORS,
   FONT_STYLES,
@@ -29,14 +23,15 @@ import {
   LEGACY_SETTINGS_KEY,
   MESSAGE_TEMPLATES,
   PAPER_SIZES,
-  QUICK_SETTINGS_KEY,
   SUBJECTS,
   TERMS,
   THEMES,
+  genRowId,
   genSerial,
   getDefaultState,
 } from '../src/context/data.js';
 import {
+  createStudentRenderPatch,
   dateInputValue,
 } from '../src/context/helpers.js';
 import { useAutoSave } from '../src/hooks/useAutoSave.js';
@@ -54,45 +49,266 @@ import {
   loadInitialState,
   loadInitialStateAsync,
   persistImageAssets,
+  persistStateAsync,
 } from '../src/services/storage.js';
-import ImportWizard from '../components/ImportWizard.jsx';
 import { resolveTemplateId } from '../src/certificate-templates/templateUtils.js';
 import { useCertificateHistory } from '../src/hooks/useCertificateHistory.js';
-import CertificateHistory from '../components/CertificateHistory.jsx';
+import { isOutputSuccess } from '../src/services/outputResult.js';
+
+const StudentManager = lazy(() => import('../components/StudentManager.jsx'));
+const TemplateManager = lazy(() => import('../components/TemplateManager.jsx'));
+const TeacherSettings = lazy(() => import('../components/TeacherSettings.jsx'));
+const IndividualCertificateFlow = lazy(() => import('../components/IndividualCertificateFlow.jsx'));
+const BatchWorkflow = lazy(() => import('../components/BatchWorkflow.jsx'));
+const EditorToolbar = lazy(() => import('../components/CertificateEditor/EditorToolbar.jsx'));
+const ElementInspector = lazy(() => import('../components/CertificateEditor/ElementInspector.jsx'));
+const ImportWizard = lazy(() => import('../components/ImportWizard.jsx'));
+const CertificateHistory = lazy(() => import('../components/CertificateHistory.jsx'));
+const BackupRestoreModal = lazy(() => import('../components/BackupRestoreModal.jsx'));
+
+function ViewFallback({ label = 'جاري تجهيز الصفحة…' }) {
+  return (
+    <div className="view-loading" role="status" aria-live="polite">
+      <Icon name="RefreshCw" size={18} className="spin" />
+      <span>{label}</span>
+    </div>
+  );
+}
+
+const PRIMARY_NAV = [
+  { id: 'home', icon: 'Home', label: 'الرئيسية', target: 'home' },
+  {
+    id: 'create', icon: 'Award', label: 'إنشاء',
+    children: [
+      { target: 'single', icon: 'Award', label: 'شهادة فردية' },
+      { target: 'batch', icon: 'FolderArchive', label: 'شهادات دفعات' },
+    ],
+  },
+  {
+    id: 'library', icon: 'FileText', label: 'المكتبة',
+    children: [
+      { target: 'certificates', icon: 'FileText', label: 'الشهادات' },
+      { target: 'students', icon: 'Users', label: 'الطلاب' },
+    ],
+  },
+  { id: 'templates', icon: 'Layers', label: 'التصاميم', target: 'templates' },
+  { id: 'settings', icon: 'Sliders', label: 'الإعدادات', target: 'settings' },
+];
+
+const MAIN_ROUTE_IDS = new Set([
+  'home',
+  'single',
+  'batch',
+  'editor',
+  'certificates',
+  'students',
+  'templates',
+  'settings',
+]);
+
+const ROUTE_ALIASES = {
+  create: 'single',
+  library: 'certificates',
+};
+
+function normalizeMainRoute(value) {
+  const route = String(value || '').trim().replace(/^#?\/?/, '').replace(/\/+$/, '');
+  const normalized = ROUTE_ALIASES[route] || route || 'home';
+  return MAIN_ROUTE_IDS.has(normalized) ? normalized : 'home';
+}
+
+function readMainRouteFromLocation() {
+  if (typeof window === 'undefined') return 'home';
+  const hashRoute = window.location.hash.replace(/^#\/?/, '');
+  if (hashRoute) return normalizeMainRoute(hashRoute);
+  const pathRoute = window.location.pathname.split('/').filter(Boolean).pop();
+  return normalizeMainRoute(pathRoute);
+}
+
+function mainRouteHash(route) {
+  const normalized = normalizeMainRoute(route);
+  return normalized === 'home' ? '#/' : `#/${normalized}`;
+}
+
+function activePrimarySection(mainNav) {
+  if (['single', 'batch', 'editor'].includes(mainNav)) return 'create';
+  if (['certificates', 'students'].includes(mainNav)) return 'library';
+  return mainNav;
+}
+
+function PrimaryNavigation({ mainNav, onNavigate }) {
+  const [openMenu, setOpenMenu] = useState(null);
+  const navRef = useRef(null);
+  const activeSection = activePrimarySection(mainNav);
+
+  useEffect(() => {
+    const closeOnOutsidePointer = event => {
+      if (!navRef.current?.contains(event.target)) setOpenMenu(null);
+    };
+    const closeOnEscape = event => {
+      if (event.key === 'Escape') setOpenMenu(null);
+    };
+    document.addEventListener('pointerdown', closeOnOutsidePointer);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsidePointer);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, []);
+
+  const navigate = target => {
+    setOpenMenu(null);
+    onNavigate(target);
+  };
+
+  return (
+    <nav ref={navRef} className="topbar-nav" aria-label="أقسام التطبيق الرئيسية">
+      {PRIMARY_NAV.map(item => {
+        const isActive = activeSection === item.id;
+        if (!item.children) {
+          return (
+            <button
+              key={item.id}
+              type="button"
+              className={`topbar-nav-btn ${isActive ? 'active' : ''}`}
+              onClick={() => navigate(item.target)}
+              aria-current={isActive ? 'page' : undefined}
+            >
+              <Icon name={item.icon} size={18} />
+              <span>{item.label}</span>
+            </button>
+          );
+        }
+
+        const expanded = openMenu === item.id;
+        return (
+          <div className={`nav-cluster ${isActive ? 'active' : ''}`} key={item.id}>
+            <button
+              type="button"
+              className={`topbar-nav-btn ${isActive ? 'active' : ''}`}
+              aria-expanded={expanded}
+              aria-haspopup="menu"
+              onClick={() => setOpenMenu(current => current === item.id ? null : item.id)}
+            >
+              <Icon name={item.icon} size={18} />
+              <span>{item.label}</span>
+              <Icon name="ChevronDown" size={13} className="nav-chevron" />
+            </button>
+            {expanded && (
+              <div className="nav-popover" role="menu" aria-label={item.label}>
+                {item.children.map(child => (
+                  <button
+                    key={child.target}
+                    type="button"
+                    role="menuitem"
+                    className={mainNav === child.target || (child.target === 'single' && mainNav === 'editor') ? 'active' : ''}
+                    onClick={() => navigate(child.target)}
+                  >
+                    <Icon name={child.icon} size={17} />
+                    <span>{child.label}</span>
+                    {(mainNav === child.target || (child.target === 'single' && mainNav === 'editor')) && (
+                      <Icon name="Check" size={14} className="nav-menu-check" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </nav>
+  );
+}
 
 function StudioPage() {
   const [state, setState] = useState(loadInitialState);
-  const [mainNav, setMainNav] = useState('home');
+  const [isHydrated, setIsHydrated] = useState(
+    () => typeof window === 'undefined',
+  );
+  const [mainNav, setMainNav] = useState(readMainRouteFromLocation);
   const [tab, setTab] = useState('design');
   const [isSetupOpen, setIsSetupOpen] = useState(false);
+  const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
   const [toast, showToast] = useToast();
   const [messageTemplateId, setMessageTemplateId] = useState('general');
   const [zoomLevel, setZoomLevel] = useState(1);
   const [isFullscreenPreview, setIsFullscreenPreview] = useState(false);
   const [isPrintPending, setIsPrintPending] = useState(false);
+  const [advancedEditingAvailable, setAdvancedEditingAvailable] = useState(
+    () => typeof window === 'undefined' ? true : window.matchMedia('(min-width: 1024px)').matches,
+  );
   const previewCertificateRef = useRef(null);
   const staticCertificateRef = useRef(null);
   const staticExportHostRef = useRef(null);
   const editorRef = useRef(null);
 
+  const navigateMain = useCallback((target, { replace = false } = {}) => {
+    const next = normalizeMainRoute(target);
+    setMainNav(next);
+    if (typeof window === 'undefined') return;
+    const nextHash = mainRouteHash(next);
+    if (window.location.hash === nextHash) return;
+    const historyMethod = replace ? 'replaceState' : 'pushState';
+    window.history[historyMethod]({ mainNav: next }, '', nextHash);
+  }, []);
+
   useEffect(() => {
-    loadInitialStateAsync().then(asyncState => {
-      if (asyncState.logo || asyncState.teacherSig || asyncState.principalSig) {
-        setState(prev => ({
-          ...prev,
-          ...(asyncState.logo ? { logo: asyncState.logo } : {}),
-          ...(asyncState.teacherSig ? { teacherSig: asyncState.teacherSig } : {}),
-          ...(asyncState.principalSig ? { principalSig: asyncState.principalSig } : {}),
-        }));
-      }
-    });
+    const syncRoute = () => setMainNav(readMainRouteFromLocation());
+    window.addEventListener('popstate', syncRoute);
+    window.addEventListener('hashchange', syncRoute);
+    if (!window.location.hash) navigateMain(readMainRouteFromLocation(), { replace: true });
+    return () => {
+      window.removeEventListener('popstate', syncRoute);
+      window.removeEventListener('hashchange', syncRoute);
+    };
+  }, [navigateMain]);
+
+  useEffect(() => {
+    let active = true;
+    loadInitialStateAsync()
+      .then(asyncState => {
+        if (!active) return;
+        if (asyncState) {
+          if (asyncState.paperOrientationMigrated) {
+            const acknowledgedState = {
+              ...asyncState,
+              paperOrientationMigrated: false,
+            };
+            setState(acknowledgedState);
+            showToast('تم تحويل المشروع القديم إلى مقاس أفقي متوافق مع القوالب الحالية.');
+            void persistStateAsync(
+              acknowledgedState,
+              extractImageAssets(asyncState),
+            ).catch(() => {
+              showToast('تم التحويل في الذاكرة، لكن تعذّر تأكيد حفظ المقاس الجديد في IndexedDB.');
+            });
+          } else {
+            setState(asyncState);
+          }
+        }
+        setIsHydrated(true);
+      })
+      .catch(() => {
+        if (active) {
+          showToast('تعذّر فتح IndexedDB؛ سيبقى التطبيق على نسخة الاسترداد المحلية حتى المحاولة التالية.');
+          setIsHydrated(true);
+        }
+      });
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    const query = window.matchMedia('(min-width: 1024px)');
+    const updateAvailability = event => setAdvancedEditingAvailable(event.matches);
+    setAdvancedEditingAvailable(query.matches);
+    query.addEventListener?.('change', updateAvailability);
+    return () => query.removeEventListener?.('change', updateAvailability);
   }, []);
 
   const paper = useMemo(() => PAPER_SIZES.find(item => item.id === state.paperSize) || PAPER_SIZES[0], [state.paperSize]);
-  const fontStyle = useMemo(() => FONT_STYLES.find(f => f.id === state.fontStyle) || FONT_STYLES[0], [state.fontStyle]);
   const theme = useMemo(() => THEMES.find(t => t.id === state.theme) || THEMES[0], [state.theme]);
 
-  const saveStatus = useAutoSave(state, showToast);
+  const saveStatus = useAutoSave(state, showToast, isHydrated);
 
   const TAB_IDS = ['design', 'content', 'batch', 'output'];
   const handleTabKeyDown = (e, currentId) => {
@@ -132,21 +348,12 @@ function StudioPage() {
 
   const {
     printStudents,
+    printStateSnapshot,
     setPrintStudents,
     isPrinting,
     printCurrent,
     printBatch,
   } = usePrintManager(paper, state, showToast);
-  const printCycleStartedRef = useRef(false);
-
-  useEffect(() => {
-    if (isPrinting) {
-      printCycleStartedRef.current = true;
-    } else if (printCycleStartedRef.current) {
-      printCycleStartedRef.current = false;
-      setIsPrintPending(false);
-    }
-  }, [isPrinting]);
 
   const history = useCertificateHistory(showToast);
 
@@ -157,24 +364,48 @@ function StudioPage() {
     } catch {}
   };
 
-  const beginPrintCurrent = () => {
+  const confirmPrintCompletion = () => typeof window.confirm === 'function'
+    && window.confirm('هل اكتملت الطباعة أو حفظ PDF بنجاح؟');
+
+  const beginPrintCurrent = async (snapshot = state) => {
     setIsPrintPending(true);
-    printCurrent();
-    history.markAsIssued(state).then(saved => {
-      if (saved) updateState({ currentRecordId: saved.id });
-    }).catch(() => {});
+    try {
+      const result = await printCurrent(snapshot, {
+        isDirectEditing: editor.isDirectEditing,
+        isInteracting: editor.isInteracting,
+      });
+      if (isOutputSuccess(result) && confirmPrintCompletion()) {
+        const saved = await history.markAsIssued(snapshot);
+        if (saved) updateState({ currentRecordId: saved.id });
+      }
+      return result;
+    } catch {
+      return null;
+    } finally {
+      setIsPrintPending(false);
+    }
   };
 
-  const beginPrintBatch = (customStudents = null) => {
-    const listToPrint = customStudents || state.batchStudents;
-    if (!listToPrint?.length) {
-      printBatch();
-      return;
-    }
+  const beginPrintBatch = async (customStudents = null, snapshot = state) => {
+    const selectedRows = state.batchStudents.filter(student =>
+      studentManager.selectedRowIds?.has(student.rowId)
+    );
+    const listToPrint = customStudents || (selectedRows.length ? selectedRows : state.batchStudents);
     setIsPrintPending(true);
-    setPrintStudents(listToPrint);
-    printBatch();
-    history.markBatchAsIssued(listToPrint, state).catch(() => {});
+    try {
+      const result = await printBatch(listToPrint, snapshot, {
+        isDirectEditing: editor.isDirectEditing,
+        isInteracting: editor.isInteracting,
+      });
+      if (isOutputSuccess(result) && confirmPrintCompletion()) {
+        await history.markBatchAsIssued(listToPrint, snapshot);
+      }
+      return result;
+    } catch {
+      return null;
+    } finally {
+      setIsPrintPending(false);
+    }
   };
 
   const updateState = patch => setState(prev => ({ ...prev, ...patch }));
@@ -193,18 +424,30 @@ function StudioPage() {
   );
 
   const doExportPng = async () => {
-    await baseDoExportPng();
-    try {
+    const result = await baseDoExportPng({
+      isDirectEditing: editor.isDirectEditing,
+      isInteracting: editor.isInteracting,
+    });
+    if (isOutputSuccess(result)) try {
       const saved = await history.markAsIssued(state);
       if (saved) updateState({ currentRecordId: saved.id });
     } catch {}
+    return result;
   };
 
-  const doExportBatchZip = async (students) => {
-    await baseDoExportBatchZip(students);
-    try {
-      await history.markBatchAsIssued(students, state);
+  const doExportBatchZip = async (students = null) => {
+    const selectedRows = state.batchStudents.filter(student =>
+      studentManager.selectedRowIds?.has(student.rowId)
+    );
+    const listToExport = students || (selectedRows.length ? selectedRows : state.batchStudents);
+    const result = await baseDoExportBatchZip(listToExport, {
+      isDirectEditing: editor.isDirectEditing,
+      isInteracting: editor.isInteracting,
+    });
+    if (isOutputSuccess(result)) try {
+      await history.markBatchAsIssued(listToExport, state);
     } catch {}
+    return result;
   };
 
   const {
@@ -215,8 +458,6 @@ function StudioPage() {
     addCurrentToBatch,
     clearBatchStudents,
     downloadCsvTemplate,
-    exportProject,
-    importProjectFile,
   } = useStudentImport(
     state,
     updateState,
@@ -241,28 +482,6 @@ function StudioPage() {
     patchWiz: importWizard.patchWiz,
   };
 
-  const cssVars = {
-    '--paper-ratio': paper.ratio,
-    '--student-font-ar': fontStyle.ar,
-    '--student-font-en': fontStyle.en,
-    '--logo-scale': state.logoSize / 100,
-    '--logo-x': `${state.logoX / 10}cqw`,
-    '--logo-y': `${state.logoY / 10}cqw`,
-    '--teacher-sig-scale': state.teacherSigSize / 100,
-    '--principal-sig-scale': state.principalSigSize / 100,
-    ...(state.customPrimary ? { '--primary': state.customPrimary } : {}),
-    ...(state.customAccent ? { '--accent': state.customAccent } : {}),
-  };
-
-  useEffect(() => {
-    document.body.setAttribute('data-theme', state.theme);
-    document.body.setAttribute('data-paper', paper.id);
-    document.body.setAttribute('data-language', state.languageMode);
-    Object.entries(cssVars).forEach(([key, value]) => document.body.style.setProperty(key, value));
-    if (!state.customPrimary) document.body.style.removeProperty('--primary');
-    if (!state.customAccent) document.body.style.removeProperty('--accent');
-  }, [state.theme, state.languageMode, state.customPrimary, state.customAccent, state.logoSize, state.logoX, state.logoY, state.teacherSigSize, state.principalSigSize, fontStyle.id, paper.id]);
-
   useEffect(() => {
     const subjectTemplate = MESSAGE_TEMPLATES.find(item => item.subject === state.subject);
     setMessageTemplateId(subjectTemplate ? subjectTemplate.id : 'general');
@@ -276,28 +495,28 @@ function StudioPage() {
   const duplicateStudent = (index) => {
     const original = state.batchStudents[index];
     if (!original) return;
-    const copy = { ...original, serial: genSerial() };
+    const copy = { ...original, rowId: genRowId(), serial: genSerial() };
     const next = [...state.batchStudents];
     next.splice(index + 1, 0, copy);
     updateState({ batchStudents: next });
     showToast('تم تكرار السجل');
   };
 
-  const bulkDelete = (serials) => {
-    const serialSet = new Set(serials);
-    updateState({ batchStudents: state.batchStudents.filter(s => !serialSet.has(s.serial)) });
-    showToast(`تم حذف ${serials.length} طالب`);
+  const bulkDelete = (rowIds) => {
+    const rowIdSet = new Set(rowIds);
+    updateState({ batchStudents: state.batchStudents.filter(student => !rowIdSet.has(student.rowId)) });
+    showToast(`تم حذف ${rowIds.length} طالب`);
   };
 
-  const bulkEditFields = (serials, patch) => {
-    const serialSet = new Set(serials);
+  const bulkEditFields = (rowIds, patch) => {
+    const rowIdSet = new Set(rowIds);
     setState(prev => ({
       ...prev,
       batchStudents: prev.batchStudents.map(s =>
-        serialSet.has(s.serial) ? { ...s, ...patch } : s
+        rowIdSet.has(s.rowId) ? { ...s, ...patch } : s
       ),
     }));
-    showToast(`تم تعديل ${serials.length} طالب`);
+    showToast(`تم تعديل ${rowIds.length} طالب`);
   };
 
   const studentManager = useStudentManager(state.batchStudents);
@@ -311,17 +530,21 @@ function StudioPage() {
         extractImageAssets(state),
       );
       updateState({ [key]: dataUrl });
-    } catch {
-      showToast('تعذّر رفع الصورة. جرّب ملف صورة آخر.');
+    } catch (err) {
+      showToast(`تعذّر رفع الصورة: ${err.message || 'جرّب ملف صورة آخر.'}`);
     }
   };
 
   const clearImage = async key => {
-    await persistImageAssets(
-      { ...state, [key]: null },
-      extractImageAssets(state),
-    );
-    updateState({ [key]: null });
+    try {
+      await persistImageAssets(
+        { ...state, [key]: null },
+        extractImageAssets(state),
+      );
+      updateState({ [key]: null });
+    } catch (error) {
+      showToast(error.message || 'تعذّر حذف الصورة من قاعدة البيانات المحلية.');
+    }
   };
 
   const editor = useCertificateEditor({
@@ -334,8 +557,9 @@ function StudioPage() {
   });
   editorRef.current = editor;
 
-  const editorDisabled = state.paperSize === 'a4-portrait';
   const outputBusy = isPrintPending || isPrinting || isExporting;
+  const editorInteractionDisabled = outputBusy || !advancedEditingAvailable;
+  const editorModeActive = mainNav === 'editor' && !editorInteractionDisabled;
   const busy = outputBusy || editor.isInteracting;
 
   const previewStudent = student => {
@@ -346,26 +570,36 @@ function StudioPage() {
       grade: student.grade || state.grade,
       subject: student.subject || state.subject,
       behavior: student.behavior || state.behavior,
-      customMessage: student.customMessage || state.customMessage,
+      achievementAr: student.achievementAr || state.achievementAr,
+      achievementEn: student.achievementEn || state.achievementEn,
+      customMessageAr: student.customMessageAr || student.customMessage || state.customMessageAr || state.customMessage,
+      customMessageEn: student.customMessageEn || state.customMessageEn,
       serial: student.serial || genSerial(),
     });
-    setMainNav('single');
+    navigateMain('single');
     showToast(`جاري معاينة وإصدار شهادة: ${student.studentNameAr || student.studentNameEn || 'الطالب'}`);
   };
 
   const resetSettings = async () => {
     if (window.confirm && !window.confirm('هل أنت تأكد من إعادة ضبط كافة الإعدادات إلى الوضع الافتراضي؟')) return;
     const nextState = getDefaultState();
-    await persistImageAssets(nextState, extractImageAssets(state));
-    localStorage.removeItem(QUICK_SETTINGS_KEY);
-    localStorage.removeItem(LEGACY_SETTINGS_KEY);
-    editor.clearHistory();
-    setState(nextState);
-    showToast('تمت إعادة الضبط');
+    try {
+      await persistStateAsync(nextState, extractImageAssets(state));
+      localStorage.removeItem(LEGACY_SETTINGS_KEY);
+      editor.clearHistory();
+      setState(nextState);
+      showToast('تمت إعادة الضبط');
+    } catch {
+      showToast('تعذّرت إعادة الضبط لأن قاعدة البيانات المحلية لم تؤكد الحفظ.');
+    }
   };
 
   // Determine whether to show setup wizard automatically
   const shouldShowSetup = isSetupOpen || (!state.isSetupCompleted && (!state.teacherNameAr || !state.schoolNameAr));
+
+  if (!isHydrated) {
+    return <ViewFallback label="جاري تحميل مساحة العمل المحلية…" />;
+  }
 
   return (
     <>
@@ -375,72 +609,65 @@ function StudioPage() {
             <Logo size={42} />
           </div>
 
-          {/* Centered Segmented Navigation Track */}
-          <nav className="topbar-nav" role="tablist" aria-label="أقسام التطبيق الرئيسية">
-            {[
-              ['home', 'Home', 'الرئيسية'],
-              ['single', 'Award', 'إنشاء شهادة'],
-              ['batch', 'FolderArchive', 'شهادات جماعية'],
-              ['certificates', 'FileText', 'الشهادات'],
-              ['students', 'Users', 'الطلاب'],
-              ['templates', 'Layers', 'القوالب'],
-              ['settings', 'Sliders', 'الإعدادات'],
-              ['editor', 'Edit3', 'المحرر المتقدم'],
-            ].map(([navId, icon, label]) => (
-              <button
-                key={navId}
-                className={`topbar-nav-btn ${mainNav === navId ? 'active' : ''} ${navId === 'editor' ? 'editor-mode-btn' : ''}`}
-                onClick={() => setMainNav(navId)}
-              >
-                <Icon name={icon} size={15} />
-                <span>{label}</span>
-              </button>
-            ))}
-          </nav>
+          <PrimaryNavigation mainNav={mainNav} onNavigate={navigateMain} />
 
           <div className="topbar-actions">
             <button
               className="btn btn-ghost"
-              onClick={() => updateState({ serial: genSerial() })}
+              onClick={() => setIsBackupModalOpen(true)}
               disabled={busy}
-              title="توليد رقم تسلسلي جديد"
-              aria-label="توليد رقم تسلسلي جديد"
+              title="النسخ الاحتياطي والاستعادة"
+              aria-label="النسخ الاحتياطي والاستعادة"
             >
-              <Icon name="RefreshCw" size={14} /><span className="btn-label-desktop">رقم تسلسلي</span>
+              <Icon name="Database" size={14} /><span className="btn-label-desktop">النسخ الاحتياطي</span>
             </button>
+            {['single', 'editor'].includes(mainNav) && (
+              <>
+                <button
+                  className="btn btn-ghost"
+                  onClick={() => updateState({ serial: genSerial() })}
+                  disabled={busy}
+                  title="توليد رقم تسلسلي جديد"
+                  aria-label="توليد رقم تسلسلي جديد"
+                >
+                  <Icon name="RefreshCw" size={14} /><span className="btn-label-desktop">رقم تسلسلي</span>
+                </button>
 
-            <button
-              className="btn btn-ghost"
-              onClick={doExportPng}
-              disabled={busy}
-              title="تصدير الشهادة الحالية كصورة PNG"
-              aria-label="تصدير الشهادة الحالية كصورة PNG"
-            >
-              <Icon name="Image" size={14} /><span className="btn-label-desktop">تصدير PNG</span>
-            </button>
+                <button
+                  className="btn btn-ghost"
+                  onClick={doExportPng}
+                  disabled={busy}
+                  title="تصدير الشهادة الحالية كصورة PNG"
+                  aria-label="تصدير الشهادة الحالية كصورة PNG"
+                >
+                  <Icon name="Image" size={14} /><span className="btn-label-desktop">تصدير PNG</span>
+                </button>
 
-            <button
-              className="btn btn-primary topbar-cta-btn"
-              onClick={beginPrintCurrent}
-              disabled={busy}
-              title="طباعة أو حفظ الشهادة كـ PDF"
-              aria-label="طباعة أو حفظ الشهادة كـ PDF"
-            >
-              {isPrinting ? <Icon name="RefreshCw" size={14} className="spin" /> : <Icon name="Printer" size={14} />}
-              <span className="btn-label-desktop">طباعة / PDF</span>
-            </button>
+                <button
+                  className="btn btn-primary topbar-cta-btn"
+                  onClick={beginPrintCurrent}
+                  disabled={busy}
+                  title="طباعة أو حفظ الشهادة كـ PDF"
+                  aria-label="طباعة أو حفظ الشهادة كـ PDF"
+                >
+                  {isPrinting ? <Icon name="RefreshCw" size={14} className="spin" /> : <Icon name="Printer" size={14} />}
+                  <span className="btn-label-desktop">طباعة / PDF</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
 
       {/* Main View Router */}
+      <Suspense fallback={<ViewFallback />}>
       {mainNav === 'home' && (
         <main className="full-page-view no-print" inert={outputBusy ? '' : undefined} aria-busy={outputBusy}>
           <HomeScreen
             state={state}
-            onNavigate={tabName => setMainNav(tabName)}
+            onNavigate={tabName => navigateMain(tabName)}
             onReopenSetup={() => setIsSetupOpen(true)}
-            selectedCount={studentManager.selectedSerials?.size || 0}
+            selectedCount={studentManager.selectedRowIds?.size || 0}
           />
         </main>
       )}
@@ -453,7 +680,7 @@ function StudioPage() {
               state={state}
               onOpenEditor={patch => {
                 updateState(patch);
-                setMainNav('single');
+                navigateMain('single');
                 showToast('تم فتح الشهادة في المحرر');
               }}
               onRestoreState={nextState => {
@@ -464,8 +691,8 @@ function StudioPage() {
               onReprintRecord={record => {
                 const patch = history.getRecordEditorState(record);
                 updateState(patch);
-                setMainNav('single');
-                setTimeout(() => beginPrintCurrent(), 300);
+                navigateMain('single');
+                void beginPrintCurrent({ ...state, ...patch });
               }}
             />
           </div>
@@ -536,6 +763,7 @@ function StudioPage() {
                 selected={resolveTemplateId(state.template)}
                 onSelect={template => updateState({ template })}
                 direction={state.languageMode === 'ar' ? 'rtl' : 'ltr'}
+                showFilters
               />
               <div style={{ marginTop: '24px' }}>
                 <TemplateManager presetManager={presetManager} />
@@ -596,7 +824,15 @@ function StudioPage() {
                   <div className="serial-display"><span>SERIAL</span><span className="num">{state.serial}</span></div>
                 </div>
               </div>
-              <EditorToolbar editor={editor} disabled={editorDisabled || outputBusy} />
+              {mainNav === 'editor' && advancedEditingAvailable && (
+                <EditorToolbar editor={editor} disabled={outputBusy} />
+              )}
+              {mainNav === 'editor' && !advancedEditingAvailable && (
+                <div className="editor-mobile-notice" role="status">
+                  <Icon name="Info" size={17} />
+                  <span>المحرر المتقدم متاح على الشاشات بعرض 1024 بكسل فأكثر. تبقى المعاينة وحقول المحتوى والطباعة والتصدير متاحة هنا.</span>
+                </div>
+              )}
               <div className="cert-wrap-outer">
                 <div
                   className="cert-wrap"
@@ -605,11 +841,11 @@ function StudioPage() {
                   <div
                     ref={previewCertificateRef}
                     className={`cert${editor.isInteracting ? ' certificate-editor-interacting' : ''}`}
-                    {...(!editorDisabled ? editor.canvasProps : {})}
+                    {...(editorModeActive ? editor.canvasProps : {})}
                   >
                     <Certificate
                       state={editor.previewState}
-                      editor={editorDisabled || outputBusy ? undefined : editor}
+                      editor={editorModeActive ? editor : undefined}
                     />
                   </div>
                 </div>
@@ -621,7 +857,7 @@ function StudioPage() {
                 <IndividualCertificateFlow
                   state={state}
                   updateState={updateState}
-                  onOpenAdvancedEditor={() => setMainNav('editor')}
+                  onOpenAdvancedEditor={() => navigateMain('editor')}
                   onPrint={beginPrintCurrent}
                   onExportPng={doExportPng}
                   isPrinting={isPrinting}
@@ -633,7 +869,7 @@ function StudioPage() {
                 />
               ) : (
                 <div className="settings-card">
-                  <ElementInspector editor={editor} disabled={editorDisabled || outputBusy} />
+                  <ElementInspector editor={editor} disabled={editorInteractionDisabled} />
                   <nav className="tabs" role="tablist" aria-label="أقسام الإعدادات">
                     {[
                       ['design', 'Palette', 'التصميم'],
@@ -677,22 +913,37 @@ function StudioPage() {
                       </Field>
                     </Section>
                     <Section title="الباليت اللوني" sub="COLOR THEME">
-                      <div className="grid-2">
-                        {THEMES.map(item => (
-                          <button key={item.id} className={`theme-tile ${state.theme === item.id && !state.customPrimary && !state.customAccent ? 'selected' : ''}`} onClick={() => updateState({ theme:item.id, customPrimary:'', customAccent:'' })}>
-                            <div className="theme-dots">
-                              <span className="theme-dot" style={{ background:item.primary }} />
-                              <span className="theme-dot" style={{ background:item.accent }} />
-                            </div>
-                            <div className="theme-tile-name">{item.name}</div>
-                          </button>
-                        ))}
+                      <div className="palette-mode-toggle" style={{ display: 'flex', gap: '16px', marginBottom: '16px', background: '#f8f9fa', padding: '12px', borderRadius: '8px', border: '1px solid #eee' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: state.paletteMode === 'template' ? 'bold' : 'normal' }}>
+                          <input type="radio" name="paletteMode" value="template" checked={state.paletteMode === 'template'} onChange={() => updateState({ paletteMode: 'template' })} />
+                          ألوان القالب
+                        </label>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: state.paletteMode === 'custom' ? 'bold' : 'normal' }}>
+                          <input type="radio" name="paletteMode" value="custom" checked={state.paletteMode === 'custom'} onChange={() => updateState({ paletteMode: 'custom' })} />
+                          ألوان مخصصة
+                        </label>
                       </div>
-                      <div className="color-row">
-                        <label className="color-control"><span>الأساسي</span><input type="color" value={state.customPrimary || theme.primary} onChange={e => updateState({ customPrimary:e.target.value })} /></label>
-                        <label className="color-control"><span>التمييز</span><input type="color" value={state.customAccent || theme.accent} onChange={e => updateState({ customAccent:e.target.value })} /></label>
-                        <button className="btn-save" onClick={() => updateState({ customPrimary:'', customAccent:'' })}><Icon name="RotateCcw" /> ألوان القالب</button>
-                      </div>
+
+                      {state.paletteMode === 'custom' && (
+                        <>
+                          <div className="grid-2">
+                            {THEMES.map(item => (
+                              <button key={item.id} className={`theme-tile ${state.theme === item.id && !state.customPrimary && !state.customAccent ? 'selected' : ''}`} onClick={() => updateState({ theme:item.id, customPrimary:'', customAccent:'' })}>
+                                <div className="theme-dots">
+                                  <span className="theme-dot" style={{ background:item.primary }} />
+                                  <span className="theme-dot" style={{ background:item.accent }} />
+                                </div>
+                                <div className="theme-tile-name">{item.name}</div>
+                              </button>
+                            ))}
+                          </div>
+                          <div className="color-row">
+                            <label className="color-control"><span>الأساسي</span><input type="color" value={state.customPrimary || theme.primary} onChange={e => updateState({ customPrimary:e.target.value })} /></label>
+                            <label className="color-control"><span>التمييز</span><input type="color" value={state.customAccent || theme.accent} onChange={e => updateState({ customAccent:e.target.value })} /></label>
+                            <button className="btn-save" onClick={() => updateState({ paletteMode:'template', customPrimary:'', customAccent:'' })}><Icon name="RotateCcw" /> ألوان التصميم</button>
+                          </div>
+                        </>
+                      )}
                     </Section>
                     <Section title="لغة الشهادة" sub="LANGUAGE">
                       <TileGrid items={LANGUAGE_MODES} selected={state.languageMode} onSelect={languageMode => updateState({ languageMode })} compact />
@@ -709,7 +960,7 @@ function StudioPage() {
                     <Section title="نوع التميز" sub="ACHIEVEMENT">
                       <div className="grid-2">
                         {BEHAVIORS.map(item => (
-                          <button key={item.id} className={`behavior-tile ${state.behavior === item.id ? 'selected' : ''}`} onClick={() => updateState({ behavior:item.id })}>
+                          <button key={item.id} className={`behavior-tile ${state.behavior === item.id ? 'selected' : ''}`} onClick={() => updateState({ behavior:item.id, achievementAr:item.ar, achievementEn:item.en })}>
                             <Icon name={item.icon} size={14} /><span>{item.ar}</span>
                           </button>
                         ))}
@@ -751,9 +1002,17 @@ function StudioPage() {
                       </Field>
                     </Section>
                     <Section title="المدرسة" sub="SCHOOL">
-                      <BoundInput label="اسم المدرسة بالعربية" value={state.schoolNameAr} onChange={schoolNameAr => updateState({ schoolNameAr })} ar />
-                      <BoundInput label="School Name in English" value={state.schoolNameEn} onChange={schoolNameEn => updateState({ schoolNameEn })} en />
+                      <div className="field">
+                        <label className="field-label">اسم المدرسة</label>
+                        <div className="field-input ar" style={{ background: '#f5f5f5', color: '#888', cursor: 'not-allowed' }}>
+                          {state.schoolNameAr || 'أم الفضل بنت الحارث ح ٢'}
+                        </div>
+                      </div>
                       <UploadField label="شعار المدرسة (اختياري)" stateKey="logo" preview={state.logo} onFile={handleImage} onClear={clearImage} />
+                    </Section>
+                    <Section title="التميّز والإنجاز" sub="ACHIEVEMENT">
+                      <BoundInput label="نص التميّز بالعربية" value={state.achievementAr || ''} onChange={achievementAr => updateState({ achievementAr })} ar />
+                      <BoundInput label="Achievement in English" value={state.achievementEn || ''} onChange={achievementEn => updateState({ achievementEn })} en />
                     </Section>
                     <Section title="المعلم/ة والمدير/ة" sub="STAFF">
                       <BoundInput label="اسم المعلم/المعلمة" value={state.teacherNameAr} onChange={teacherNameAr => updateState({ teacherNameAr })} ar />
@@ -764,7 +1023,7 @@ function StudioPage() {
                       <UploadField label="توقيع المدير/ة (اختياري)" stateKey="principalSig" preview={state.principalSig} onFile={handleImage} onClear={clearImage} />
                     </Section>
                     <Section title="التاريخ والعام الدراسي" sub="DATE">
-                      <Field><input type="date" className="field-input en" value={dateInputValue(state.date)} onChange={e => updateState({ date:new Date(e.target.value + 'T12:00:00').toISOString() })} /></Field>
+                      <Field label="تاريخ الإصدار"><input type="date" className="field-input en" value={dateInputValue(state.date)} onChange={e => updateState({ date: e.target.value ? new Date(e.target.value + 'T12:00:00').toISOString() : '' })} /></Field>
                       <BoundInput label="العام الدراسي" value={state.academicYear} onChange={academicYear => updateState({ academicYear })} en />
                       <Field label="الفصل الدراسي">
                         <select className="field-input" value={state.term} onChange={e => updateState({ term:e.target.value })}>
@@ -781,11 +1040,12 @@ function StudioPage() {
                           </select>
                           <button className="btn-save" onClick={() => {
                             const template = MESSAGE_TEMPLATES.find(item => item.id === messageTemplateId);
-                            if (template) updateState({ customMessage:template.text });
+                            if (template) updateState({ customMessageAr:template.text });
                           }}><Icon name="WandSparkles" /> تطبيق</button>
                         </div>
                       </div>
-                      <Field><textarea className="field-textarea ar" value={state.customMessage} rows={4} onChange={e => updateState({ customMessage:e.target.value })} /></Field>
+                      <Field label="نص عربي"><textarea className="field-textarea ar" value={state.customMessageAr ?? state.customMessage ?? ''} rows={3} onChange={e => updateState({ customMessageAr:e.target.value })} dir="rtl" /></Field>
+                      <Field label="نص إنجليزي"><textarea className="field-textarea en" value={state.customMessageEn || ''} rows={3} onChange={e => updateState({ customMessageEn:e.target.value })} dir="ltr" /></Field>
                     </Section>
                   </div>
 
@@ -863,7 +1123,7 @@ function StudioPage() {
                       <div className="save-row" style={{ marginTop: '8px' }}>
                         <button
                           className="btn-save full"
-                          onClick={() => doExportBatchZip(state.batchStudents)}
+                          onClick={() => doExportBatchZip()}
                           disabled={busy || !state.batchStudents.length}
                           title={!state.batchStudents.length ? 'أضف طلاباً في تبويب جماعي أولاً' : `تصدير ${state.batchStudents.length} شهادة كصور ZIP`}
                         >
@@ -871,18 +1131,6 @@ function StudioPage() {
                             ? <><Icon name="RefreshCw" size={14} /> جاري التصدير…</>
                             : <><Icon name="FolderArchive" size={14} /> تصدير ZIP جماعي ({state.batchStudents.length} شهادة)</>}
                         </button>
-                      </div>
-                      <div className="save-row" style={{ marginTop: '8px' }}>
-                        <button className="btn-save" onClick={exportProject} disabled={busy}><Icon name="FileDown" /> تصدير مشروع (JSON)</button>
-                      </div>
-                      <div className="save-row" style={{ marginTop: '8px' }}>
-                        <label className={`btn-save import-label full${busy ? ' disabled-label' : ''}`}>
-                          <Icon name="FolderOpen" /> استيراد ملف مشروع (JSON)
-                          <input type="file" accept=".json" hidden onChange={e => {
-                            importProjectFile(e.target.files?.[0]);
-                            e.target.value = '';
-                          }} />
-                        </label>
                       </div>
                     </Section>
                     <Section title="قوالب التصميم المحفوظة" sub="TEMPLATES & PRESETS">
@@ -902,6 +1150,7 @@ function StudioPage() {
             </aside>
         </main>
       )}
+      </Suspense>
 
       <div
         ref={staticExportHostRef}
@@ -909,55 +1158,82 @@ function StudioPage() {
         aria-hidden="true"
       >
         <div ref={staticCertificateRef} className="cert">
-          <Certificate state={state} />
+          <Certificate mode="export" state={state} />
         </div>
       </div>
 
       <div className="print-only">
         {printStudents ? printStudents.map(student => (
-          <div className="print-page" key={student.serial}>
+          <div className="print-page" key={student.rowId || student.serial}>
             <div className="cert">
-              <Certificate state={{ ...state, ...student, customMessage: student.customMessage || state.customMessage }} />
+              <Certificate
+                mode={isExporting ? 'export' : 'print'}
+                state={{
+                  ...(printStateSnapshot || state),
+                  ...createStudentRenderPatch(
+                    student,
+                    printStateSnapshot || state,
+                  ),
+                }}
+              />
             </div>
           </div>
         )) : (
-          <div className="cert" id="cert-print"><Certificate state={state} /></div>
+          <div className="cert" id="cert-print">
+            <Certificate mode={isExporting ? 'export' : 'print'} state={printStateSnapshot || state} />
+          </div>
         )}
       </div>
 
       {isFullscreenPreview && (
-        <div
-          className="fullscreen-preview-overlay"
-          role="dialog"
-          aria-modal="true"
-          aria-label="معاينة الشهادة الشاملة"
-          onClick={() => setIsFullscreenPreview(false)}
-          onKeyDown={e => { if (e.key === 'Escape') setIsFullscreenPreview(false); }}
+        <Dialog
+          open
+          onClose={() => setIsFullscreenPreview(false)}
+          ariaLabel="معاينة الشهادة الشاملة"
+          overlayClassName="fullscreen-preview-overlay"
+          className="fullscreen-preview-modal"
         >
-          <div className="fullscreen-preview-modal" onClick={e => e.stopPropagation()}>
-            <div className="fullscreen-preview-header">
-              <div className="fullscreen-preview-title">
-                <Icon name="Eye" size={18} />
-                <span>معاينة الشهادة الشاملة</span>
-              </div>
-              <button
-                className="fullscreen-preview-close"
-                onClick={() => setIsFullscreenPreview(false)}
-                title="إغلاق المعاينة"
-                aria-label="إغلاق المعاينة"
-              >
-                <Icon name="X" size={18} />
-              </button>
+          <div className="fullscreen-preview-header">
+            <div className="fullscreen-preview-title">
+              <Icon name="Eye" size={18} />
+              <span>معاينة الشهادة الشاملة</span>
             </div>
-            <div className="fullscreen-preview-body">
-              <div className="cert-wrap fullscreen-cert">
-                <div className="cert">
-                  <Certificate state={state} />
-                </div>
+            <button
+              type="button"
+              className="fullscreen-preview-close"
+              onClick={() => setIsFullscreenPreview(false)}
+              title="إغلاق المعاينة"
+              aria-label="إغلاق المعاينة"
+              data-dialog-initial-focus
+            >
+              <Icon name="X" size={18} />
+            </button>
+          </div>
+          <div className="fullscreen-preview-body">
+            <div className="cert-wrap fullscreen-cert">
+              <div className="cert">
+                <Certificate mode="fullscreen" state={state} />
               </div>
             </div>
           </div>
-        </div>
+        </Dialog>
+      )}
+
+      {isBackupModalOpen && (
+        <Suspense fallback={null}>
+          <BackupRestoreModal
+            isOpen
+            onClose={() => setIsBackupModalOpen(false)}
+            state={state}
+            onRestoreSuccess={(newState) => {
+              const restoredState = newState?.nextState || newState;
+              if (restoredState) setState(restoredState);
+              void history.refreshRecords();
+              void presetManager.refreshPresets?.();
+            }}
+            showToast={showToast}
+          />
+        </Suspense>
       )}
 
       {/* Setup Wizard Overlay */}
@@ -973,7 +1249,11 @@ function StudioPage() {
       )}
 
       <div className={`toast ${toast ? 'show' : ''}`} role="status" aria-live="polite">{toast}</div>
-      <ImportWizard wiz={importWizard.wiz} handlers={wizardHandlers} />
+      {importWizard.wiz.open && (
+        <Suspense fallback={null}>
+          <ImportWizard wiz={importWizard.wiz} handlers={wizardHandlers} />
+        </Suspense>
+      )}
       <div className="page-footer no-print">Designed by: Fatma Elalem</div>
     </>
   );

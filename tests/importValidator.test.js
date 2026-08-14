@@ -31,6 +31,16 @@ test('autoDetectColumns maps Arabic headers correctly', () => {
   assert.equal(mapping.behavior, 4);
 });
 
+test('autoDetectColumns preserves a valid zero-index match', () => {
+  const headers = ['subject', 'student name ar', 'student name en', 'grade', 'subject details'];
+  const mapping = autoDetectColumns(headers);
+
+  assert.equal(mapping.subject, 0);
+  assert.equal(mapping.studentNameAr, 1);
+  assert.equal(mapping.studentNameEn, 2);
+  assert.equal(mapping.grade, 3);
+});
+
 // ── validateImportRows ───────────────────────────────────────────────
 
 const defaults = { grade: 'Grade 7', subject: 'science', behavior: 'creativity' };
@@ -57,6 +67,20 @@ test('validateImportRows marks valid rows correctly', () => {
   assert.equal(result.rows[0].status, 'valid');
   assert.equal(result.rows[0].student.studentNameAr, 'محمد أحمد');
   assert.equal(result.rows[0].student.subject, 'math');
+  assert.match(result.rows[0].student.rowId, /^ROW-/);
+});
+
+test('validateImportRows assigns a unique stable identity field to every imported row', () => {
+  const rows = [
+    ['سارة', 'Sara'],
+    ['ليان', 'Lian'],
+  ];
+  const mapping = { studentNameAr: 0, studentNameEn: 1 };
+  const result = validateImportRows(rows, mapping, defaults);
+  const rowIds = result.rows.map(row => row.student.rowId);
+
+  assert.equal(new Set(rowIds).size, rows.length);
+  assert.ok(rowIds.every(rowId => /^ROW-/.test(rowId)));
 });
 
 test('validateImportRows warns on unknown subject but does not block import', () => {
