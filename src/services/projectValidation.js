@@ -206,9 +206,17 @@ export function extractDesignPreset(state) {
 
   for (const key of [
     'customPrimary', 'customAccent', 'subject', 'behavior', 'achievementAr', 'achievementEn', 'category',
-    'customMessage', 'customMessageAr', 'customMessageEn', 'paletteMode',
+    'customMessageAr', 'customMessageEn', 'paletteMode',
   ]) {
     copyString(preset, source, key);
+  }
+
+  const stringVal = v => (typeof v === 'string' ? v.trim() : (v ? String(v).trim() : ''));
+  const legacyPresetMsg = stringVal(source.customMessage);
+  if (legacyPresetMsg) {
+    const isAr = /[\u0600-\u06ff]/.test(legacyPresetMsg);
+    if (isAr && !preset.customMessageAr) preset.customMessageAr = legacyPresetMsg;
+    if (!isAr && !preset.customMessageEn) preset.customMessageEn = legacyPresetMsg;
   }
   for (const key of [
     'nameFontSize',
@@ -263,6 +271,16 @@ export function extractProjectDraft(state) {
   delete designPreset.templateCustomizationVersion;
   delete designPreset.templateCustomizations;
 
+  const stringVal = v => (typeof v === 'string' ? v.trim() : (v ? String(v).trim() : ''));
+  const legacyMsg = stringVal(state.customMessage);
+  const legacyAr = legacyMsg && /[\u0600-\u06ff]/.test(legacyMsg) ? legacyMsg : '';
+  const legacyEn = legacyMsg && !/[\u0600-\u06ff]/.test(legacyMsg) ? legacyMsg : '';
+
+  const customMessageAr = stringVal(state.customMessageAr) || legacyAr || '';
+  const customMessageEn = stringVal(state.customMessageEn) || legacyEn || '';
+
+  delete source.customMessage;
+
   return {
     ...source,
     ...designPreset,
@@ -274,7 +292,8 @@ export function extractProjectDraft(state) {
     achievementEn: state.achievementEn || '',
     academicYear: normalizeAcademicYear(state.academicYear),
     term: state.term,
-    customMessage: state.customMessage || '',
+    customMessageAr,
+    customMessageEn,
     serial: state.serial,
     date: state.date,
     batchStudents: ensureStudentRowIds(state.batchStudents, 'project-export'),

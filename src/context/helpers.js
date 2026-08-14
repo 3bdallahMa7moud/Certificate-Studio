@@ -181,7 +181,6 @@ export function normalizeStudentData(
     achievementAr,
     achievementEn,
     certificateType: stringValue(source.certificateType || fallback.certificateType),
-    customMessage: genericMessage || customMessageAr || customMessageEn,
     customMessageAr,
     customMessageEn,
     serial: generatedSerial,
@@ -203,14 +202,25 @@ export function createStudentRenderPatch(student = {}, state = {}) {
   const behavior = student.behavior || state.behavior;
   const hasStudentBehavior = Boolean(student.behavior);
   const achievementFallback = defaultAchievementPair(behavior || 'creativity');
-  const customMessageAr = student.customMessageAr
-    ?? student.customMessage
-    ?? state.customMessageAr
-    ?? state.customMessage
-    ?? '';
-  const customMessageEn = student.customMessageEn
-    ?? state.customMessageEn
-    ?? '';
+  const stringValue = value => (typeof value === 'string' ? value.trim() : (value ? String(value).trim() : ''));
+  const studentGeneric = stringValue(student.customMessage);
+  const stateGeneric = stringValue(state.customMessage);
+  const studentGenericAr = studentGeneric && /[\u0600-\u06ff]/u.test(studentGeneric) ? studentGeneric : '';
+  const studentGenericEn = studentGeneric && !/[\u0600-\u06ff]/u.test(studentGeneric) ? studentGeneric : '';
+  const stateGenericAr = stateGeneric && /[\u0600-\u06ff]/u.test(stateGeneric) ? stateGeneric : '';
+  const stateGenericEn = stateGeneric && !/[\u0600-\u06ff]/u.test(stateGeneric) ? stateGeneric : '';
+
+  const customMessageAr = stringValue(student.customMessageAr)
+    || studentGenericAr
+    || stringValue(state.customMessageAr)
+    || stateGenericAr
+    || '';
+  const customMessageEn = stringValue(student.customMessageEn)
+    || studentGenericEn
+    || stringValue(state.customMessageEn)
+    || stateGenericEn
+    || '';
+
   return {
     studentNameAr: student.studentNameAr ?? '',
     studentNameEn: student.studentNameEn ?? '',
@@ -228,7 +238,6 @@ export function createStudentRenderPatch(student = {}, state = {}) {
     certificateType: student.certificateType || state.certificateType,
     customMessageAr,
     customMessageEn,
-    customMessage: student.customMessage || customMessageAr || customMessageEn,
     serial: student.serial || state.serial,
     studentRowId: student.rowId || student.studentRowId || null,
     date: student.date ?? state.date,

@@ -147,24 +147,18 @@ export function CertificateMessage({
     if (arabic) parts.push({ locale: 'ar', value: arabic });
     if (english) parts.push({ locale: 'en', value: english });
   } else if (showEn) {
-    const english = messages.customMessageEn
-      || fallbackEn
-      || messages.customMessageAr
-      || fallbackAr;
+    const english = messages.customMessageEn || fallbackEn;
     if (english) {
       parts.push({
-        locale: messages.customMessageEn || fallbackEn ? 'en' : 'ar',
+        locale: 'en',
         value: english,
       });
     }
-  } else {
-    const arabic = messages.customMessageAr
-      || fallbackAr
-      || messages.customMessageEn
-      || fallbackEn;
+  } else if (showAr) {
+    const arabic = messages.customMessageAr || fallbackAr;
     if (arabic) {
       parts.push({
-        locale: messages.customMessageAr || fallbackAr ? 'ar' : 'en',
+        locale: 'ar',
         value: arabic,
       });
     }

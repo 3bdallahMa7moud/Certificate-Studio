@@ -64,7 +64,8 @@ test('student render patches cannot override shared design or asset fields', () 
 
   assert.equal(patch.studentNameAr, 'ليان');
   assert.equal(patch.studentRowId, 'ROW-1');
-  assert.equal(patch.customMessage, 'Well done');
+  assert.equal(patch.customMessageEn, 'Well done');
+  assert.equal(patch.customMessageAr, '');
   assert.equal('template' in patch, false);
   assert.equal('paperSize' in patch, false);
   assert.equal('logo' in patch, false);

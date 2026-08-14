@@ -94,7 +94,6 @@ function customizedState() {
   state.customText = '#17202a';
   state.customMessageAr = 'رسالة عربية ثابتة';
   state.customMessageEn = 'A fixed English message';
-  state.customMessage = state.customMessageAr;
   state.logoSize = 117;
   state.logoX = 13;
   state.logoY = -7;

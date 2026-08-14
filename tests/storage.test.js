@@ -234,14 +234,15 @@ test('preset persistence preserves category, custom message, and active customiz
       Example: {
         ...state,
         category: 'achievement',
-        customMessage: '',
+        customMessageAr: '',
+        customMessageEn: '',
       },
     });
 
     const raw = JSON.parse(values.get(PRESETS_KEY)).Example;
     const loaded = loadPresets().Example;
     assert.equal(raw.category, 'achievement');
-    assert.equal(raw.customMessage, '');
+    assert.equal(raw.customMessageAr, '');
     assert.deepEqual(Object.keys(raw.templateCustomizations), ['editorial']);
     assert.deepEqual(loaded, raw);
   });

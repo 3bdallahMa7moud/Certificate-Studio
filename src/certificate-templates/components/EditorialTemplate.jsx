@@ -18,6 +18,7 @@ import {
 } from '../templateUtils.js';
 import {
   AchievementText,
+  CertificateMessage,
   StudentName,
   mergeStaticProps,
 } from './TemplatePrimitives.jsx';
@@ -32,7 +33,8 @@ export default function EditorialTemplate({ state, render }) {
     render?.text?.(elementId, locale, fallback) ?? fallback;
   const subject = getSubject(state.subject);
   const behavior = getBehavior(state.behavior);
-  const messageClass = textFlowClass(state.customMessage);
+  const messageText = state.customMessageAr || state.customMessageEn || state.customMessage || '';
+  const messageClass = textFlowClass(messageText);
   const [sealTop, sealBottom] = sealLines(state, behavior);
   const sealClass = shouldShowEn(state) && !shouldShowAr(state) ? 'seal-en' : 'seal-ar';
   const termText = displayTerm(state);
@@ -177,11 +179,11 @@ export default function EditorialTemplate({ state, render }) {
               },
               {
                 className: `message ${messageClass}`,
-                dir: textDirection(state.customMessage),
+                dir: textDirection(messageText),
               },
             )}
           >
-            {state.customMessage}
+            <CertificateMessage state={state} />
           </div>
         </div>
 

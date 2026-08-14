@@ -83,7 +83,8 @@ export const BUILTIN_PRESETS = {
     subject: 'math',
     behavior: 'creativity',
     nameFontSize: 105,
-    customMessage: 'تقديراً لتفوقها الباهر وحصولها على درجات متميزة، متمنين لها دوام التوفيق والنجاح.',
+    customMessageAr: 'تقديراً لتفوقها الباهر وحصولها على درجات متميزة، متمنين لها دوام التوفيق والنجاح.',
+    customMessageEn: '',
   },
   'شهادة الحضور والمواظبة': {
     category: 'attendance',
@@ -94,7 +95,8 @@ export const BUILTIN_PRESETS = {
     subject: 'arabic',
     behavior: 'discipline',
     nameFontSize: 100,
-    customMessage: 'تقديراً لالتزامها الكامل بالحضور والمواظبة اليومية والانضباط المتميز طوال الفصل الدراسي.',
+    customMessageAr: 'تقديراً لالتزامها الكامل بالحضور والمواظبة اليومية والانضباط المتميز طوال الفصل الدراسي.',
+    customMessageEn: '',
   },
   'شهادة الشكر والتقدير': {
     category: 'appreciation',
@@ -105,7 +107,8 @@ export const BUILTIN_PRESETS = {
     subject: 'science',
     behavior: 'kindness',
     nameFontSize: 110,
-    customMessage: 'يعبر هذا الخطاب عن خالص الشكر والتقدير لجهودها المتميزة والمثمرة في إنجاح الفعاليات.',
+    customMessageAr: 'يعبر هذا الخطاب عن خالص الشكر والتقدير لجهودها المتميزة والمثمرة في إنجاح الفعاليات.',
+    customMessageEn: '',
   },
   'شهادة إتمام الدورة التدريبية': {
     category: 'course_completion',
@@ -116,7 +119,8 @@ export const BUILTIN_PRESETS = {
     subject: 'tech',
     behavior: 'activities',
     nameFontSize: 100,
-    customMessage: 'نشهد بأن الطالبة قد أتمت بنجاح الدورة التدريبية المتقدمة واستوفت كافة المتطلبات بنجاح.',
+    customMessageAr: 'نشهد بأن الطالبة قد أتمت بنجاح الدورة التدريبية المتقدمة واستوفت كافة المتطلبات بنجاح.',
+    customMessageEn: '',
   },
   'شهادة المشاركة الفعالة': {
     category: 'participation',
@@ -127,7 +131,8 @@ export const BUILTIN_PRESETS = {
     subject: 'social_studies',
     behavior: 'cooperation',
     nameFontSize: 100,
-    customMessage: 'تقديراً لمشاركتها الفعالة وإسهاماتها القيمة في المعارض والفعاليات المدرسية.',
+    customMessageAr: 'تقديراً لمشاركتها الفعالة وإسهاماتها القيمة في المعارض والفعاليات المدرسية.',
+    customMessageEn: '',
   },
   'شهادة الفوز بالمسابقة': {
     category: 'competition',
@@ -138,7 +143,8 @@ export const BUILTIN_PRESETS = {
     subject: 'art',
     behavior: 'leadership',
     nameFontSize: 105,
-    customMessage: 'فوز مستحق في المسابقة المدرسية وحصولها على المركز الأول بفضل إبداعها وتميزها.',
+    customMessageAr: 'فوز مستحق في المسابقة المدرسية وحصولها على المركز الأول بفضل إبداعها وتميزها.',
+    customMessageEn: '',
   },
   'شهادة البطولة الرياضية': {
     category: 'competition',
@@ -149,7 +155,8 @@ export const BUILTIN_PRESETS = {
     subject: 'sport',
     behavior: 'leadership',
     nameFontSize: 105,
-    customMessage: 'تقديراً للروح الرياضية العالية، واللياقة البدنية المتميزة، والإنجاز الرائع في البطولة.',
+    customMessageAr: 'تقديراً للروح الرياضية العالية، واللياقة البدنية المتميزة، والإنجاز الرائع في البطولة.',
+    customMessageEn: '',
   },
   'شهادة التميز والتراث الإسلامي': {
     category: 'achievement',
@@ -160,7 +167,8 @@ export const BUILTIN_PRESETS = {
     subject: 'arabic',
     behavior: 'discipline',
     nameFontSize: 105,
-    customMessage: 'قد تميز/ت بالجهد المبارك، والسلوك القويم، وحسن الخُلق، مع أطيب الأومنيات بدوام التوفيق والنجاح.',
+    customMessageAr: 'قد تميز/ت بالجهد المبارك، والسلوك القويم، وحسن الخُلق، مع أطيب الأومنيات بدوام التوفيق والنجاح.',
+    customMessageEn: '',
   },
   'وسام التخرج الأكاديمي': {
     category: 'course_completion',
@@ -171,7 +179,8 @@ export const BUILTIN_PRESETS = {
     subject: 'science',
     behavior: 'creativity',
     nameFontSize: 105,
-    customMessage: 'قد أتمـ/ـت كافة المتطلبات الأكاديمية بنجاح واقتدار، واجتاز/ت مرحلة التخرج بتفوق متميز.',
+    customMessageAr: 'قد أتمـ/ـت كافة المتطلبات الأكاديمية بنجاح واقتدار، واجتاز/ت مرحلة التخرج بتفوق متميز.',
+    customMessageEn: '',
   },
   'شهادة الأنشطة والإبداع الفني': {
     category: 'participation',
@@ -182,7 +191,8 @@ export const BUILTIN_PRESETS = {
     subject: 'art',
     behavior: 'creativity',
     nameFontSize: 105,
-    customMessage: 'تقديراً للحس الفني الراقي، واللمسات الإبداعية المتميزة، والمشاركة الفعالة في الأنشطة المدرسية.',
+    customMessageAr: 'تقديراً للحس الفني الراقي، واللمسات الإبداعية المتميزة، والمشاركة الفعالة في الأنشطة المدرسية.',
+    customMessageEn: '',
   },
 };
 
@@ -321,7 +331,6 @@ export function getDefaultState() {
     principalTitleEn: FIXED_CERTIFICATE_IDENTITY.principalTitleEn,
     academicYear: ACADEMIC_YEAR,
     term: 'الفصل الدراسي الثاني',
-    customMessage: MESSAGE_TEMPLATES[0].text,
     customMessageAr: MESSAGE_TEMPLATES[0].text,
     customMessageEn: '',
     paletteMode: 'template',

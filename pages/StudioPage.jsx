@@ -563,6 +563,25 @@ function StudioPage() {
   const busy = outputBusy || editor.isInteracting;
 
   const previewStudent = student => {
+    const stringVal = v => (typeof v === 'string' ? v.trim() : (v ? String(v).trim() : ''));
+    const studentLegacy = stringVal(student.customMessage);
+    const stateLegacy = stringVal(state.customMessage);
+    const studentLegacyAr = studentLegacy && /[\u0600-\u06ff]/u.test(studentLegacy) ? studentLegacy : '';
+    const studentLegacyEn = studentLegacy && !/[\u0600-\u06ff]/u.test(studentLegacy) ? studentLegacy : '';
+    const stateLegacyAr = stateLegacy && /[\u0600-\u06ff]/u.test(stateLegacy) ? stateLegacy : '';
+    const stateLegacyEn = stateLegacy && !/[\u0600-\u06ff]/u.test(stateLegacy) ? stateLegacy : '';
+
+    const customMessageAr = stringVal(student.customMessageAr)
+      || studentLegacyAr
+      || stringVal(state.customMessageAr)
+      || stateLegacyAr
+      || '';
+    const customMessageEn = stringVal(student.customMessageEn)
+      || studentLegacyEn
+      || stringVal(state.customMessageEn)
+      || stateLegacyEn
+      || '';
+
     updateState({
       studentNameAr: student.studentNameAr || state.studentNameAr,
       studentNameEn: student.studentNameEn || state.studentNameEn,
@@ -572,8 +591,8 @@ function StudioPage() {
       behavior: student.behavior || state.behavior,
       achievementAr: student.achievementAr || state.achievementAr,
       achievementEn: student.achievementEn || state.achievementEn,
-      customMessageAr: student.customMessageAr || student.customMessage || state.customMessageAr || state.customMessage,
-      customMessageEn: student.customMessageEn || state.customMessageEn,
+      customMessageAr,
+      customMessageEn,
       serial: student.serial || genSerial(),
     });
     navigateMain('single');

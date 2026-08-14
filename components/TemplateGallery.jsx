@@ -32,7 +32,6 @@ const THUMBNAIL_BASE_STATE = Object.freeze({
   certificateType: 'academic_excellence',
   academicYear: getCurrentAcademicYear(),
   date: '2026-06-15T12:00:00.000Z',
-  customMessage: 'In recognition of excellent effort and achievement.',
   customMessageAr: '',
   customMessageEn: 'In recognition of excellent effort and achievement.',
   templateCustomizations: {},

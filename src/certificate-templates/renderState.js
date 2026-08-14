@@ -142,21 +142,17 @@ export function resolveCertificateMessages(source = {}) {
   let customMessageAr = textValue(source.customMessageAr);
   let customMessageEn = textValue(source.customMessageEn);
 
-  if (legacyMessage && legacyMessage !== customMessageAr && legacyMessage !== customMessageEn) {
-    if (inferLegacyMessageLocale(legacyMessage) === 'en') {
-      customMessageEn = legacyMessage;
-    } else {
+  if (legacyMessage) {
+    if (!customMessageAr && !customMessageEn) {
+      if (inferLegacyMessageLocale(legacyMessage) === 'en') {
+        customMessageEn = legacyMessage;
+      } else {
+        customMessageAr = legacyMessage;
+      }
+    } else if (!customMessageAr && inferLegacyMessageLocale(legacyMessage) === 'ar') {
       customMessageAr = legacyMessage;
-    }
-  }
-
-  if (!hasOwn(source, 'customMessageAr') && !hasOwn(source, 'customMessageEn')) {
-    if (inferLegacyMessageLocale(legacyMessage) === 'en') {
+    } else if (!customMessageEn && inferLegacyMessageLocale(legacyMessage) === 'en') {
       customMessageEn = legacyMessage;
-      customMessageAr = '';
-    } else {
-      customMessageAr = legacyMessage;
-      customMessageEn = '';
     }
   }
 
@@ -165,7 +161,8 @@ export function resolveCertificateMessages(source = {}) {
 
 export function messageForLanguage(state, languageMode = state?.languageMode) {
   const { customMessageAr, customMessageEn } = resolveCertificateMessages(state);
-  if (languageMode === 'en') return customMessageEn || customMessageAr;
+  if (languageMode === 'en') return customMessageEn;
+  if (languageMode === 'ar') return customMessageAr;
   return customMessageAr || customMessageEn;
 }
 
@@ -183,8 +180,11 @@ export function normalizeCertificateRenderState(input = {}) {
     ? migrateEditorialCustomizations(source.templateCustomizations)
     : source.templateCustomizations;
 
+  const nextSource = { ...source };
+  delete nextSource.customMessage;
+
   return {
-    ...source,
+    ...nextSource,
     template: resolveTemplateId(source.template),
     paperSize: paper.id,
     requestedPaperSize: paper.requested,
@@ -193,7 +193,6 @@ export function normalizeCertificateRenderState(input = {}) {
     languageMode,
     paletteMode: source.paletteMode === 'custom' ? 'custom' : 'template',
     ...messages,
-    customMessage: messageForLanguage(messages, languageMode),
     ...(templateCustomizations
       ? { templateCustomizations }
       : {}),

@@ -14,6 +14,7 @@ import {
 } from '../templateUtils.js';
 import {
   AchievementText,
+  CertificateMessage,
   StudentName,
   TemplateLogo,
   mergeStaticProps,
@@ -28,7 +29,8 @@ export default function MinimalTemplate({ state, render }) {
   const templateText = (elementId, locale, fallback) =>
     render?.text?.(elementId, locale, fallback) ?? fallback;
   const subject = getSubject(state.subject);
-  const messageClass = textFlowClass(state.customMessage);
+  const messageText = state.customMessageAr || state.customMessageEn || state.customMessage || '';
+  const messageClass = textFlowClass(messageText);
   const termText = displayTerm(state);
   const termClass = termFlowClass(state);
   const primaryLocale = shouldShowEn(state) && !shouldShowAr(state) ? 'en' : 'ar';
@@ -170,11 +172,11 @@ export default function MinimalTemplate({ state, render }) {
             },
             {
               className: `message ${messageClass}`,
-              dir: textDirection(state.customMessage),
+              dir: textDirection(messageText),
             },
           )}
         >
-          {state.customMessage}
+          <CertificateMessage state={state} />
         </div>
       </div>
 

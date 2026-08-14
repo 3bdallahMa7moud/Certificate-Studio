@@ -82,8 +82,31 @@ export default function BatchWorkflow({
     const gender = currentPreviewStudent.gender || state.gender || '';
     const suggestedMsg = getGenderAwareMessage(state.certificateType || 'academic_excellence', 'formal', gender);
 
+    const stringVal = v => (typeof v === 'string' ? v.trim() : (v ? String(v).trim() : ''));
+    const studentLegacy = stringVal(currentPreviewStudent.customMessage);
+    const stateLegacy = stringVal(state.customMessage);
+    const studentLegacyAr = studentLegacy && /[\u0600-\u06ff]/u.test(studentLegacy) ? studentLegacy : '';
+    const studentLegacyEn = studentLegacy && !/[\u0600-\u06ff]/u.test(studentLegacy) ? studentLegacy : '';
+    const stateLegacyAr = stateLegacy && /[\u0600-\u06ff]/u.test(stateLegacy) ? stateLegacy : '';
+    const stateLegacyEn = stateLegacy && !/[\u0600-\u06ff]/u.test(stateLegacy) ? stateLegacy : '';
+
+    const customMessageAr = stringVal(currentPreviewStudent.customMessageAr)
+      || studentLegacyAr
+      || stringVal(state.customMessageAr)
+      || stateLegacyAr
+      || suggestedMsg;
+
+    const customMessageEn = stringVal(currentPreviewStudent.customMessageEn)
+      || studentLegacyEn
+      || stringVal(state.customMessageEn)
+      || stateLegacyEn
+      || '';
+
+    const nextState = { ...state };
+    delete nextState.customMessage;
+
     return {
-      ...state,
+      ...nextState,
       studentNameAr: currentPreviewStudent.studentNameAr || state.studentNameAr,
       studentNameEn: currentPreviewStudent.studentNameEn || state.studentNameEn,
       gender: gender,
@@ -92,7 +115,8 @@ export default function BatchWorkflow({
       behavior: currentPreviewStudent.behavior || state.behavior,
       achievementAr: currentPreviewStudent.achievementAr || state.achievementAr,
       achievementEn: currentPreviewStudent.achievementEn || state.achievementEn,
-      customMessage: currentPreviewStudent.customMessage || state.customMessage || suggestedMsg,
+      customMessageAr,
+      customMessageEn,
       serial: currentPreviewStudent.serial || state.serial,
     };
   }, [state, currentPreviewStudent]);
@@ -248,7 +272,7 @@ export default function BatchWorkflow({
                     onChange={e => {
                       const typeId = e.target.value;
                       const msg = getGenderAwareMessage(typeId, 'formal', state.gender);
-                      updateState({ certificateType: typeId, customMessage: msg });
+                      updateState({ certificateType: typeId, customMessageAr: msg });
                     }}
                   >
                     {CERTIFICATE_TYPES.map(t => <option key={t.id} value={t.id}>{t.ar}</option>)}

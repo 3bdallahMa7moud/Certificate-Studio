@@ -190,7 +190,8 @@ test('design presets include only the active template customization bucket', () 
   const state = getDefaultState();
   state.template = 'geometric';
   state.category = 'achievement';
-  state.customMessage = '';
+  state.customMessageAr = '';
+  state.customMessageEn = '';
   state.templateCustomizations.editorial.elements['editorial-student-name'] = { x: 2 };
   state.templateCustomizations.geometric.elements['geometric-student-name'] = { x: 7 };
 
@@ -203,7 +204,8 @@ test('design presets include only the active template customization bucket', () 
     7,
   );
   assert.equal(preset.category, 'achievement');
-  assert.equal(preset.customMessage, '');
+  assert.equal(preset.customMessageAr, '');
+  assert.equal(preset.customMessageEn, '');
 });
 
 test('new templates round-trip through projects and active-bucket presets', () => {

@@ -32,7 +32,7 @@ test('savePreset creates clean design configuration without student data', () =>
   const presetData = {
     ...extractDesignPreset(fullState),
     category: 'achievement',
-    customMessage: fullState.customMessage,
+    customMessageAr: fullState.customMessageAr,
   };
 
   assert.equal(presetData.template, 'geometric');
@@ -111,12 +111,13 @@ test('legacy presets omit customization data and preserve category/message metad
     template: 'minimal',
     theme: 'burgundy',
     category: 'appreciation',
-    customMessage: '',
+    customMessage: 'رسالة تقدير قديمة',
   };
 
   const clean = extractDesignPreset(legacy);
 
   assert.equal(clean.category, 'appreciation');
-  assert.equal(clean.customMessage, '');
+  assert.equal(clean.customMessageAr, 'رسالة تقدير قديمة');
+  assert.equal(clean.customMessage, undefined);
   assert.equal(clean.templateCustomizations, undefined);
 });
