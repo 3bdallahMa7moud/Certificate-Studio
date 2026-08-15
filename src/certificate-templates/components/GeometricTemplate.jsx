@@ -171,8 +171,9 @@ export default function GeometricTemplate({ state, render }) {
           {...element(
             'geometric-message',
             {
-              contentKey: 'customMessage',
-              occurrenceId: 'geometric-message',
+              contentKey: primaryLocale === 'en' ? 'customMessageEn' : 'customMessageAr',
+              occurrenceId: primaryLocale === 'en' ? 'geometric-message-en' : 'geometric-message',
+              locale: primaryLocale,
             },
             {
               className: `message ${messageClass}`,

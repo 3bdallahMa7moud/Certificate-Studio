@@ -173,8 +173,9 @@ export default function CreativeArtsTemplate({ state, render }) {
           {...element(
             `${PREFIX}-message`,
             {
-              contentKey: 'customMessage',
-              occurrenceId: `${PREFIX}-message`,
+              contentKey: primaryLocale === 'en' ? 'customMessageEn' : 'customMessageAr',
+              occurrenceId: primaryLocale === 'en' ? `${PREFIX}-message-en` : `${PREFIX}-message`,
+              locale: primaryLocale,
             },
             {
               className: `arts-message ${textFlowClass(state.customMessageAr || state.customMessageEn || '')}`,

@@ -174,8 +174,9 @@ export default function EditorialTemplate({ state, render }) {
             {...element(
               'editorial-message',
               {
-                contentKey: 'customMessage',
-                occurrenceId: 'editorial-message',
+                contentKey: primaryLocale === 'en' ? 'customMessageEn' : 'customMessageAr',
+                occurrenceId: primaryLocale === 'en' ? 'editorial-message-en' : 'editorial-message',
+                locale: primaryLocale,
               },
               {
                 className: `message ${messageClass}`,

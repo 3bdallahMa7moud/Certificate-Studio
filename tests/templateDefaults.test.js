@@ -288,7 +288,7 @@ test('element definition factory validates type and returns serializable metadat
     type: ELEMENT_TYPES.TEXT,
     labelEn: 'Test',
     labelAr: 'اختبار',
-    contentKeys: ['customMessage'],
+    contentKeys: ['customMessageAr', 'customMessageEn'],
   });
 
   assert.ok(Object.isFrozen(element));
@@ -296,7 +296,7 @@ test('element definition factory validates type and returns serializable metadat
   assert.ok(Object.isFrozen(element.binding));
   assert.ok(Object.isFrozen(element.capabilities));
   assert.ok(Object.isFrozen(element.occurrences));
-  assert.equal(element.contentKey, 'customMessage');
+  assert.equal(element.contentKey, 'customMessageAr');
   assert.equal(element.binding.type, 'domain-text');
   assert.equal(element.selectable, true);
   assert.doesNotThrow(() => JSON.stringify(element));

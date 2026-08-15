@@ -178,8 +178,9 @@ export default function RainbowStarsTemplate({ state, render }) {
           {...element(
             `${PREFIX}-message`,
             {
-              contentKey: 'customMessage',
-              occurrenceId: `${PREFIX}-message`,
+              contentKey: primaryLocale === 'en' ? 'customMessageEn' : 'customMessageAr',
+              occurrenceId: primaryLocale === 'en' ? `${PREFIX}-message-en` : `${PREFIX}-message`,
+              locale: primaryLocale,
             },
             {
               className: `rainbow-message ${textFlowClass(state.customMessageAr || state.customMessageEn || '')}`,

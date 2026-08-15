@@ -288,3 +288,105 @@ test('8. Project draft export and import compatibility', () => {
   });
   assert.equal(normalizedStorage.customMessageAr, 'رسالة تخزين قديمة');
 });
+
+test('9. Advanced Certificate Editor message bindings for Editorial, Geometric, and Minimal templates', async () => {
+  const {
+    getTemplateDefaults,
+  } = await server.ssrLoadModule('/src/certificate-templates/templateDefaults.js');
+  const {
+    getDomainBindingValue,
+    updateDomainBindingValue,
+  } = await server.ssrLoadModule('/src/certificate-editor/customizationModel.js');
+
+  const templatesToTest = [
+    { templateId: 'editorial', messageElementId: 'editorial-message' },
+    { templateId: 'geometric', messageElementId: 'geometric-message' },
+    { templateId: 'minimal', messageElementId: 'minimal-message' },
+  ];
+
+  for (const { templateId, messageElementId } of templatesToTest) {
+    const defaults = getTemplateDefaults(templateId);
+    const definition = defaults.elements.find(e => e.id === messageElementId);
+    assert.ok(definition, `Definition must exist for ${messageElementId} in ${templateId}`);
+
+    // 1. ContentKeys and binding keys must use canonical customMessageAr and customMessageEn only
+    assert.deepEqual(
+      definition.contentKeys,
+      ['customMessageAr', 'customMessageEn'],
+      `${messageElementId} contentKeys must be ['customMessageAr', 'customMessageEn']`,
+    );
+    assert.deepEqual(
+      definition.binding.keys,
+      ['customMessageAr', 'customMessageEn'],
+      `${messageElementId} binding keys must be ['customMessageAr', 'customMessageEn']`,
+    );
+    assert.equal('customMessage' in definition.contentKeys, false);
+
+    // 2. Occurrences must map to ar and en locales
+    assert.equal(definition.occurrences.length, 2);
+    const occurrenceAr = definition.occurrences.find(o => o.locale === 'ar');
+    const occurrenceEn = definition.occurrences.find(o => o.locale === 'en');
+    assert.ok(occurrenceAr, `Arabic occurrence must exist for ${messageElementId}`);
+    assert.ok(occurrenceEn, `English occurrence must exist for ${messageElementId}`);
+    assert.equal(occurrenceAr.contentKey, 'customMessageAr');
+    assert.equal(occurrenceEn.contentKey, 'customMessageEn');
+
+    const initialState = {
+      ...getDefaultState(),
+      template: templateId,
+      customMessageAr: 'نص عربي أصلي',
+      customMessageEn: 'Original English message',
+    };
+    assert.equal('customMessage' in initialState, false);
+
+    // 3. Read binding values for each locale
+    assert.equal(
+      getDomainBindingValue(initialState, definition.binding, 'ar', occurrenceAr),
+      'نص عربي أصلي',
+    );
+    assert.equal(
+      getDomainBindingValue(initialState, definition.binding, 'en', occurrenceEn),
+      'Original English message',
+    );
+
+    // 4. Arabic editor update changes ONLY customMessageAr and preserves customMessageEn
+    const updatedAr = updateDomainBindingValue(
+      initialState,
+      definition.binding,
+      'نص عربي معدل عبر المحرر المتقدم',
+      'ar',
+      occurrenceAr,
+      { multiline: true },
+    );
+    assert.equal(updatedAr.customMessageAr, 'نص عربي معدل عبر المحرر المتقدم');
+    assert.equal(updatedAr.customMessageEn, 'Original English message');
+    assert.equal('customMessage' in updatedAr, false, `${templateId} Arabic update must not create customMessage`);
+
+    // 5. English editor update changes ONLY customMessageEn and preserves customMessageAr
+    const updatedEn = updateDomainBindingValue(
+      initialState,
+      definition.binding,
+      'Updated English message via editor',
+      'en',
+      occurrenceEn,
+      { multiline: true },
+    );
+    assert.equal(updatedEn.customMessageEn, 'Updated English message via editor');
+    assert.equal(updatedEn.customMessageAr, 'نص عربي أصلي');
+    assert.equal('customMessage' in updatedEn, false, `${templateId} English update must not create customMessage`);
+
+    // 6. Sequential bilingual editing preserves both messages independently
+    const bilingualEdit = updateDomainBindingValue(
+      updatedAr,
+      definition.binding,
+      'Final bilingual English message',
+      'en',
+      occurrenceEn,
+      { multiline: true },
+    );
+    assert.equal(bilingualEdit.customMessageAr, 'نص عربي معدل عبر المحرر المتقدم');
+    assert.equal(bilingualEdit.customMessageEn, 'Final bilingual English message');
+    assert.equal('customMessage' in bilingualEdit, false, `${templateId} Bilingual edits must not create customMessage`);
+  }
+});
+

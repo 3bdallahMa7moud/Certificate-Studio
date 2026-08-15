@@ -254,8 +254,9 @@ export default function OceanAdventureTemplate({ state, render }) {
           {...element(
             `${PREFIX}-message`,
             {
-              contentKey: 'customMessage',
-              occurrenceId: `${PREFIX}-message`,
+              contentKey: primaryLocale === 'en' ? 'customMessageEn' : 'customMessageAr',
+              occurrenceId: primaryLocale === 'en' ? `${PREFIX}-message-en` : `${PREFIX}-message`,
+              locale: primaryLocale,
             },
             {
               className: `ocean-message ${textFlowClass(state.customMessageAr || state.customMessageEn || '')}`,

@@ -159,8 +159,9 @@ export default function IslamicHeritageTemplate({ state, render }) {
           {...element(
             `${PREFIX}-message`,
             {
-              contentKey: 'customMessage',
-              occurrenceId: `${PREFIX}-message`,
+              contentKey: primaryLocale === 'en' ? 'customMessageEn' : 'customMessageAr',
+              occurrenceId: primaryLocale === 'en' ? `${PREFIX}-message-en` : `${PREFIX}-message`,
+              locale: primaryLocale,
             },
             {
               className: `islamic-message ${textFlowClass(state.customMessageAr || state.customMessageEn || '')}`,

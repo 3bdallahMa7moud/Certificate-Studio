@@ -206,8 +206,9 @@ export default function SpaceExplorerTemplate({ state, render }) {
           {...element(
             `${PREFIX}-message`,
             {
-              contentKey: 'customMessage',
-              occurrenceId: `${PREFIX}-message`,
+              contentKey: primaryLocale === 'en' ? 'customMessageEn' : 'customMessageAr',
+              occurrenceId: primaryLocale === 'en' ? `${PREFIX}-message-en` : `${PREFIX}-message`,
+              locale: primaryLocale,
             },
             {
               className: `space-message ${textFlowClass(messageText)}`,

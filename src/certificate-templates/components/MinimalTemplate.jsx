@@ -167,8 +167,9 @@ export default function MinimalTemplate({ state, render }) {
           {...element(
             'minimal-message',
             {
-              contentKey: 'customMessage',
-              occurrenceId: 'minimal-message',
+              contentKey: primaryLocale === 'en' ? 'customMessageEn' : 'customMessageAr',
+              occurrenceId: primaryLocale === 'en' ? 'minimal-message-en' : 'minimal-message',
+              locale: primaryLocale,
             },
             {
               className: `message ${messageClass}`,
