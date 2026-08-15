@@ -134,7 +134,13 @@ export default function IslamicHeritageTemplate({ state, render }) {
 
       <main className="islamic-recipient-zone">
         <p className="islamic-award-intro">
-          {showAr ? 'تشهد إدارة المدرسة بأن الطالبـ/ـة المباركـ/ـة:' : 'This Certificate is Granted to:'}
+          {showAr
+            ? (state.gender === 'female'
+                ? 'تشهد إدارة المدرسة بأن الطالبة المباركة:'
+                : (state.gender === 'male'
+                    ? 'تشهد إدارة المدرسة بأن الطالب المبارك:'
+                    : 'تُمنح هذه الشهادة بكل فخر واعتزاز إلى:'))
+            : 'This Certificate is Granted to:'}
         </p>
 
         <StudentName
@@ -169,7 +175,7 @@ export default function IslamicHeritageTemplate({ state, render }) {
             },
           )}
         >
-          <CertificateMessage state={state} fallbackAr="قد تميز/ت بالجهد المبارك، والسلوك القويم، وحسن الخُلق، مع أطيب الأمنيات بدوام التوفيق والنجاح." fallbackEn="Has distinguished themself with blessed effort, upright behavior, and good character, with our best wishes for continued success." />
+          <CertificateMessage state={state} fallbackAr="تقديراً للجهد المبارك، والسلوك القويم، وحسن الخُلق، مع أطيب الأمنيات بدوام التوفيق والنجاح." fallbackEn="In recognition of blessed effort, upright behavior, and good character, with best wishes for continued success." />
         </div>
       </main>
 

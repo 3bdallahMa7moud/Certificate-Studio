@@ -264,7 +264,7 @@ export default function OceanAdventureTemplate({ state, render }) {
             },
           )}
         >
-          <CertificateMessage state={state} fallbackAr="لاكتشافه/ا آفاقاً جديدة في التعلم والتميز بمجهود ملحوظ." fallbackEn="For exploring new horizons in learning and shining brightly." />
+          <CertificateMessage state={state} fallbackAr="لاكتشاف آفاق جديدة في التعلم والتميز بمجهود ملحوظ." fallbackEn="For exploring new horizons in learning and shining brightly." />
         </div>
       </main>
 

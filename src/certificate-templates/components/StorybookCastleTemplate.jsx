@@ -272,7 +272,7 @@ export default function StorybookCastleTemplate({ state, render }) {
             },
           )}
         >
-          <CertificateMessage state={state} fallbackAr="لتميزه/ا في القراءة والاطلاع، وبناء قصة نجاح ملهمة." fallbackEn="For excellence in reading, learning, and writing an inspiring success story." />
+          <CertificateMessage state={state} fallbackAr="للتميز في القراءة والاطلاع، وبناء قصة نجاح ملهمة." fallbackEn="For excellence in reading, learning, and writing an inspiring success story." />
         </div>
       </main>
 

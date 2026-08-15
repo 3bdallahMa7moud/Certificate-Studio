@@ -183,7 +183,7 @@ export default function CreativeArtsTemplate({ state, render }) {
             },
           )}
         >
-          <CertificateMessage state={state} fallbackAr="تقديراً لموهبته/ا الفنية وإبداعه/ا المتميز في مجالات الفنون." fallbackEn="In recognition of artistic talent and outstanding creativity in the arts." />
+          <CertificateMessage state={state} fallbackAr="تقديراً للموهبة الفنية والإبداع المتميز في مجالات الفنون." fallbackEn="In recognition of artistic talent and outstanding creativity in the arts." />
         </div>
       </main>
 

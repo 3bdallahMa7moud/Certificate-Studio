@@ -167,7 +167,7 @@ export const BUILTIN_PRESETS = {
     subject: 'arabic',
     behavior: 'discipline',
     nameFontSize: 105,
-    customMessageAr: 'قد تميز/ت بالجهد المبارك، والسلوك القويم، وحسن الخُلق، مع أطيب الأومنيات بدوام التوفيق والنجاح.',
+    customMessageAr: 'تقديراً للجهد المبارك، والسلوك القويم، وحسن الخُلق، مع أطيب الأمنيات بدوام التوفيق والنجاح.',
     customMessageEn: '',
   },
   'وسام التخرج الأكاديمي': {
@@ -179,7 +179,7 @@ export const BUILTIN_PRESETS = {
     subject: 'science',
     behavior: 'creativity',
     nameFontSize: 105,
-    customMessageAr: 'قد أتمـ/ـت كافة المتطلبات الأكاديمية بنجاح واقتدار، واجتاز/ت مرحلة التخرج بتفوق متميز.',
+    customMessageAr: 'بمناسبة إتمام كافة المتطلبات الأكاديمية بنجاح واقتدار، واجتياز مرحلة التخرج بتفوق متميز.',
     customMessageEn: '',
   },
   'شهادة الأنشطة والإبداع الفني': {

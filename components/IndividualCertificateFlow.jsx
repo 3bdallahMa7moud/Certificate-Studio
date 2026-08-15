@@ -7,6 +7,7 @@ import {
   MESSAGE_STYLES,
   getCertificateType,
   getGenderAwareMessage,
+  getGenderAwareMessages,
 } from '../src/context/certificateTypes.js';
 import {
   BEHAVIORS,
@@ -33,7 +34,8 @@ export default function IndividualCertificateFlow({
 }) {
   const [selectedStudentIndex, setSelectedStudentIndex] = useState('');
   const [messageStyle, setMessageStyle] = useState('formal');
-  const [userHasCustomizedMessage, setUserHasCustomizedMessage] = useState(false);
+  const [userHasCustomizedMessageAr, setUserHasCustomizedMessageAr] = useState(false);
+  const [userHasCustomizedMessageEn, setUserHasCustomizedMessageEn] = useState(false);
   const [validationResult, setValidationResult] = useState(null);
 
   // Grades list as required by Section 8
@@ -78,7 +80,8 @@ export default function IndividualCertificateFlow({
         customMessageEn,
         serial: student.serial || genSerial(),
       });
-      setUserHasCustomizedMessage(Boolean(student.customMessageAr || student.customMessageEn || student.customMessage));
+      setUserHasCustomizedMessageAr(Boolean(stringVal(student.customMessageAr) || studentLegacyAr));
+      setUserHasCustomizedMessageEn(Boolean(stringVal(student.customMessageEn) || studentLegacyEn));
     }
   };
 
@@ -92,44 +95,72 @@ export default function IndividualCertificateFlow({
   };
 
   const handleTypeSelect = (typeId) => {
-    const certType = getCertificateType(typeId);
-    const suggestedMsg = getGenderAwareMessage(typeId, messageStyle, state.gender);
+    const suggestedMsgs = getGenderAwareMessages(typeId, messageStyle, state.gender);
 
-    if (userHasCustomizedMessage && (state.customMessageAr || state.customMessage)) {
+    const isCustomizedAr = userHasCustomizedMessageAr && Boolean(state.customMessageAr || state.customMessage);
+    const isCustomizedEn = userHasCustomizedMessageEn && Boolean(state.customMessageEn);
+
+    if (isCustomizedAr || isCustomizedEn) {
       if (window.confirm('لقد قمتِ بتعديل نص الشهادة سابقاً. هل ترغبين في استبدال النص بالنص المقترح لهذا النوع؟')) {
         updateState({
           certificateType: typeId,
-          customMessageAr: suggestedMsg,
+          customMessageAr: suggestedMsgs.ar,
+          customMessageEn: suggestedMsgs.en,
         });
-        setUserHasCustomizedMessage(false);
+        setUserHasCustomizedMessageAr(false);
+        setUserHasCustomizedMessageEn(false);
       } else {
-        updateState({ certificateType: typeId });
+        const patch = { certificateType: typeId };
+        if (!userHasCustomizedMessageAr) {
+          patch.customMessageAr = suggestedMsgs.ar;
+        }
+        if (!userHasCustomizedMessageEn) {
+          patch.customMessageEn = suggestedMsgs.en;
+        }
+        updateState(patch);
       }
     } else {
       updateState({
         certificateType: typeId,
-        customMessageAr: suggestedMsg,
+        customMessageAr: suggestedMsgs.ar,
+        customMessageEn: suggestedMsgs.en,
       });
     }
   };
 
   const handleStyleSelect = (styleId) => {
     setMessageStyle(styleId);
-    const suggestedMsg = getGenderAwareMessage(state.certificateType || 'academic_excellence', styleId, state.gender);
-    updateState({ customMessageAr: suggestedMsg });
-    setUserHasCustomizedMessage(false);
+    const suggestedMsgs = getGenderAwareMessages(
+      state.certificateType || 'academic_excellence',
+      styleId,
+      state.gender,
+    );
+    const patch = {};
+    if (!userHasCustomizedMessageAr) {
+      patch.customMessageAr = suggestedMsgs.ar;
+    }
+    if (!userHasCustomizedMessageEn) {
+      patch.customMessageEn = suggestedMsgs.en;
+    }
+    if (Object.keys(patch).length > 0) {
+      updateState(patch);
+    }
   };
 
   const handleGenderChange = (genderValue) => {
-    updateState({ gender: genderValue });
-    if (!userHasCustomizedMessage) {
-      const suggestedMsg = getGenderAwareMessage(
-        state.certificateType || 'academic_excellence',
-        messageStyle,
-        genderValue,
-      );
-      updateState({ customMessageAr: suggestedMsg });
+    const suggestedMsgs = getGenderAwareMessages(
+      state.certificateType || 'academic_excellence',
+      messageStyle,
+      genderValue,
+    );
+    const patch = { gender: genderValue };
+    if (!userHasCustomizedMessageAr) {
+      patch.customMessageAr = suggestedMsgs.ar;
     }
+    if (!userHasCustomizedMessageEn) {
+      patch.customMessageEn = suggestedMsgs.en;
+    }
+    updateState(patch);
   };
 
   const handleExportClick = () => {
@@ -398,7 +429,7 @@ export default function IndividualCertificateFlow({
               value={state.customMessageAr ?? state.customMessage ?? ''}
               onChange={e => {
                 updateState({ customMessageAr: e.target.value });
-                setUserHasCustomizedMessage(true);
+                setUserHasCustomizedMessageAr(true);
               }}
               dir="rtl"
             />
@@ -411,7 +442,7 @@ export default function IndividualCertificateFlow({
               value={state.customMessageEn || ''}
               onChange={e => {
                 updateState({ customMessageEn: e.target.value });
-                setUserHasCustomizedMessage(true);
+                setUserHasCustomizedMessageEn(true);
               }}
               dir="ltr"
             />

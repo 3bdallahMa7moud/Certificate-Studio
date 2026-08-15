@@ -3,7 +3,7 @@ import Icon from './Icon.jsx';
 import { Field, Section } from './FormControls.jsx';
 import TemplateGallery from './TemplateGallery.jsx';
 import Certificate from './Certificate.jsx';
-import { CERTIFICATE_TYPES, getCertificateType, getGenderAwareMessage } from '../src/context/certificateTypes.js';
+import { CERTIFICATE_TYPES, getCertificateType, getGenderAwareMessage, getGenderAwareMessages } from '../src/context/certificateTypes.js';
 import { BEHAVIORS, GRADE_LEVELS, LANGUAGE_MODES, SUBJECTS } from '../src/context/data.js';
 import { dateInputValue, formatDateAr } from '../src/context/helpers.js';
 import { validateBatchSelection } from '../src/services/certificateValidator.js';
@@ -80,7 +80,7 @@ export default function BatchWorkflow({
   const previewState = useMemo(() => {
     if (!currentPreviewStudent) return state;
     const gender = currentPreviewStudent.gender || state.gender || '';
-    const suggestedMsg = getGenderAwareMessage(state.certificateType || 'academic_excellence', 'formal', gender);
+    const suggestedMsgs = getGenderAwareMessages(state.certificateType || 'academic_excellence', 'formal', gender);
 
     const stringVal = v => (typeof v === 'string' ? v.trim() : (v ? String(v).trim() : ''));
     const studentLegacy = stringVal(currentPreviewStudent.customMessage);
@@ -94,13 +94,13 @@ export default function BatchWorkflow({
       || studentLegacyAr
       || stringVal(state.customMessageAr)
       || stateLegacyAr
-      || suggestedMsg;
+      || suggestedMsgs.ar;
 
     const customMessageEn = stringVal(currentPreviewStudent.customMessageEn)
       || studentLegacyEn
       || stringVal(state.customMessageEn)
       || stateLegacyEn
-      || '';
+      || suggestedMsgs.en;
 
     const nextState = { ...state };
     delete nextState.customMessage;
@@ -271,8 +271,12 @@ export default function BatchWorkflow({
                     value={state.certificateType}
                     onChange={e => {
                       const typeId = e.target.value;
-                      const msg = getGenderAwareMessage(typeId, 'formal', state.gender);
-                      updateState({ certificateType: typeId, customMessageAr: msg });
+                      const msgs = getGenderAwareMessages(typeId, 'formal', state.gender);
+                      updateState({
+                        certificateType: typeId,
+                        customMessageAr: msgs.ar,
+                        customMessageEn: state.customMessageEn || msgs.en,
+                      });
                     }}
                   >
                     {CERTIFICATE_TYPES.map(t => <option key={t.id} value={t.id}>{t.ar}</option>)}

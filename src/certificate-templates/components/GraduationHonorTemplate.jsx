@@ -239,7 +239,11 @@ export default function GraduationHonorTemplate({ state, render }) {
 
         <p className="grad-present-to">
           {showAr
-            ? 'تشهد إدارة الصرح التعليمي بأن الخريجـ/ـة الفاضلـ/ـة:'
+            ? (state.gender === 'female'
+                ? 'تشهد إدارة الصرح التعليمي بأن الخريجة الفاضلة:'
+                : (state.gender === 'male'
+                    ? 'تشهد إدارة الصرح التعليمي بأن الخريج الفاضل:'
+                    : 'تُمنح شهادة التخرج بكل فخر واعتزاز إلى:'))
             : 'THIS DIPLOMA IS PROUDLY CONFERRED UPON:'}
         </p>
 
@@ -300,8 +304,8 @@ export default function GraduationHonorTemplate({ state, render }) {
 
           <CertificateMessage
             state={state}
-            fallbackAr="قد أتمـ/ـت كافة المتطلبات الأكاديمية بنجاح واقتدار، واجتاز/ت مرحلة التخرج بتفوق متميز."
-            fallbackEn="Has successfully and competently completed all academic requirements and graduated with outstanding excellence."
+            fallbackAr="بمناسبة إتمام كافة المتطلبات الأكاديمية بنجاح واقتدار، واجتياز مرحلة التخرج بتفوق متميز."
+            fallbackEn="For successfully and competently completing all academic requirements and graduating with outstanding excellence."
           />
 
         </div>

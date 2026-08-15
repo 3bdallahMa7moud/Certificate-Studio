@@ -218,7 +218,7 @@ export default function SpaceExplorerTemplate({ state, render }) {
         >
           <CertificateMessage
             state={state}
-            fallbackAr="لتميزه/ا الاستثنائي ونجاحه/ا في إتمام المهمة التعليمية بنجاح."
+            fallbackAr="للتميز الاستثنائي والنجاح في إتمام المهمة التعليمية بنجاح."
             fallbackEn="For exceptional performance and successfully completing the educational mission."
           />
         </div>

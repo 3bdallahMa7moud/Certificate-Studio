@@ -188,7 +188,7 @@ export default function RainbowStarsTemplate({ state, render }) {
             },
           )}
         >
-          <CertificateMessage state={state} fallbackAr="تقديراً لتميزه/ا الرائع وجهوده/ا المستمرة في التعلم والمشاركة." fallbackEn="In recognition of outstanding excellence and continuous efforts in learning." />
+          <CertificateMessage state={state} fallbackAr="تقديراً للتميز الرائع والجهود المستمرة في التعلم والمشاركة." fallbackEn="In recognition of outstanding excellence and continuous efforts in learning." />
         </div>
 
         <div className="rainbow-info-chips">
