@@ -313,6 +313,10 @@ export function useCertificateEditor({
     );
   }, []);
 
+  const isSelectedLocked = Boolean(
+    selectedOverride?.locked ?? selectedDefinition?.locked,
+  );
+
   const commitElements = useCallback((beforeElements, afterElements, label, elementId) => {
     const before = sanitizeTemplateCustomizationBucket(templateId, {
       elements: beforeElements,
@@ -332,21 +336,30 @@ export function useCertificateEditor({
   }, [setState, templateId]);
 
   const commitSelectedPatch = useCallback((patch, label = 'تعديل العنصر') => {
-    if (!selected?.elementId) return;
+    if (!selected?.elementId || selected.templateId !== templateId) return;
+    const isLocked = Boolean(selectedOverride?.locked ?? selectedDefinition?.locked);
+    let effectivePatch = patch;
+    if (isLocked && !Object.hasOwn(patch, 'locked')) {
+      effectivePatch = { ...patch };
+      for (const key of ['x', 'y', 'width', 'height', 'rotation']) {
+        delete effectivePatch[key];
+      }
+      if (Object.keys(effectivePatch).length === 0) return;
+    }
     const beforeElements = elementsFor(state, templateId);
     const afterElements = applyPatchToElements(
       state,
       templateId,
       selected.elementId,
-      patch,
+      effectivePatch,
       beforeElements,
     );
     commitElements(beforeElements, afterElements, label, selected.elementId);
     setInteractionDraft(null);
-  }, [commitElements, selected, state, templateId]);
+  }, [commitElements, selected, selectedDefinition?.locked, selectedOverride?.locked, state, templateId]);
 
   const beginInspectorInteraction = useCallback((label = 'تعديل العنصر') => {
-    if (!selected?.elementId) return;
+    if (!selected?.elementId || selected.templateId !== templateId) return;
     const beforeElements = elementsFor(state, templateId);
     setInteractionDraft(previous => previous || {
       kind: 'inspector',
@@ -360,7 +373,7 @@ export function useCertificateEditor({
   }, [selected, state, templateId]);
 
   const previewSelectedPatch = useCallback((patch, label = 'تعديل العنصر') => {
-    if (!selected?.elementId) return;
+    if (!selected?.elementId || selected.templateId !== templateId) return;
     setInteractionDraft(previous => {
       const beforeElements = previous?.templateId === templateId
         && previous.elementId === selected.elementId
@@ -390,13 +403,16 @@ export function useCertificateEditor({
   }, [selected, state, templateId]);
 
   const previewSelectedGeometryPatch = useCallback((patch, label) => {
+    const isLocked = Boolean(selectedOverride?.locked ?? selectedDefinition?.locked);
     if (
       !selected?.elementId
+      || selected.templateId !== templateId
       || !selectedDefinition
-      || selectedOverride.locked
-      || !selectedMeasurement
-      || !renderedCanvasWidth
+      || isLocked
     ) {
+      return;
+    }
+    if (!selectedMeasurement || !renderedCanvasWidth) {
       previewSelectedPatch(patch, label);
       return;
     }
@@ -478,17 +494,19 @@ export function useCertificateEditor({
     selectedDefinition,
     selectedMeasurement,
     selectedOverride,
+    templateId,
   ]);
 
   const commitInspectorInteraction = useCallback(() => {
     if (!interactionDraft || interactionDraft.templateId !== templateId) return;
-    commitElements(
-      interactionDraft.beforeElements,
-      interactionDraft.nextElements,
-      interactionDraft.label,
-      interactionDraft.elementId,
-    );
+    const current = interactionDraft;
     setInteractionDraft(null);
+    commitElements(
+      current.beforeElements,
+      current.nextElements,
+      current.label,
+      current.elementId,
+    );
   }, [commitElements, interactionDraft, templateId]);
 
   const cancelInspectorInteraction = useCallback(() => {
@@ -497,7 +515,8 @@ export function useCertificateEditor({
   }, []);
 
   const beginGeometryInteraction = useCallback((kind, rect) => {
-    if (!selected?.elementId || !rect || selectedOverride.locked) return;
+    const isLocked = Boolean(selectedOverride?.locked ?? selectedDefinition?.locked);
+    if (!selected?.elementId || selected.templateId !== templateId || !rect || isLocked) return;
     const unitScale = canvasRef.current?.offsetWidth
       ? canvasRef.current.offsetWidth / defaults.canvas.width
       : 1;
@@ -513,6 +532,8 @@ export function useCertificateEditor({
       kind,
       rect,
       unitScale,
+      templateId,
+      elementId: selected.elementId,
       current: {
         x: currentX,
         y: currentY,
@@ -533,12 +554,14 @@ export function useCertificateEditor({
     canvasRef,
     defaults.canvas.width,
     selected,
+    selectedDefinition?.locked,
     selectedOverride,
+    templateId,
   ]);
 
   const geometryPatch = useCallback(nextRect => {
     const start = geometryStartRef.current;
-    if (!start || !nextRect || !selectedDefinition) return null;
+    if (!start || !nextRect || !selectedDefinition || start.templateId !== templateId) return null;
     const deltaX = (nextRect.x - start.rect.x) / start.unitScale;
     const deltaY = (nextRect.y - start.rect.y) / start.unitScale;
     const candidate = {
@@ -561,7 +584,7 @@ export function useCertificateEditor({
     return start.kind === 'resize'
       ? clamped
       : { x: clamped.x, y: clamped.y };
-  }, [defaults.canvas, selectedDefinition, selectedOverride]);
+  }, [defaults.canvas, selectedDefinition, selectedOverride, templateId]);
 
   const previewGeometry = useCallback((_, nextRect) => {
     const patch = geometryPatch(nextRect);
@@ -577,9 +600,15 @@ export function useCertificateEditor({
 
   const commitGeometry = useCallback((_, nextRect) => {
     const patch = geometryPatch(nextRect);
-    const kind = geometryStartRef.current?.kind;
+    const start = geometryStartRef.current;
+    const kind = start?.kind;
     geometryStartRef.current = null;
-    if (!patch || !selected?.elementId) {
+    if (!patch || !selected?.elementId || selected.templateId !== templateId) {
+      cancelInspectorInteraction();
+      return;
+    }
+    const isLocked = Boolean(selectedOverride?.locked ?? selectedDefinition?.locked);
+    if (isLocked) {
       cancelInspectorInteraction();
       return;
     }
@@ -604,27 +633,31 @@ export function useCertificateEditor({
     geometryPatch,
     interactionDraft,
     selected,
+    selectedDefinition?.locked,
+    selectedOverride?.locked,
     state,
     templateId,
   ]);
 
   const nudgeSelected = useCallback((key, shiftKey, rect) => {
-    if (!selected?.elementId || selectedOverride.locked) return;
+    const isLocked = Boolean(selectedOverride?.locked ?? selectedDefinition?.locked);
+    if (!selected?.elementId || selected.templateId !== templateId || isLocked) return;
     const delta = getKeyboardNudge(key, shiftKey);
     if (!delta) return;
-    const next = {
-      x: (selectedOverride.x || 0) + delta.x,
-      y: (selectedOverride.y || 0) + delta.y,
+    const currentX = selectedOverride.x || 0;
+    const currentY = selectedOverride.y || 0;
+    const targetRect = rect || selectedMeasurement?.rect;
+    let next = {
+      x: currentX + delta.x,
+      y: currentY + delta.y,
     };
-    if (rect && canvasRef.current) {
+    if (targetRect && canvasRef.current) {
       const measured = {
-        x: pxToCertificateUnits(rect.x, canvasRef.current.offsetWidth, defaults.canvas.width),
-        y: pxToCertificateUnits(rect.y, canvasRef.current.offsetWidth, defaults.canvas.width),
-        width: pxToCertificateUnits(rect.width, canvasRef.current.offsetWidth, defaults.canvas.width),
-        height: pxToCertificateUnits(rect.height, canvasRef.current.offsetWidth, defaults.canvas.width),
+        x: pxToCertificateUnits(targetRect.x, canvasRef.current.offsetWidth, defaults.canvas.width),
+        y: pxToCertificateUnits(targetRect.y, canvasRef.current.offsetWidth, defaults.canvas.width),
+        width: pxToCertificateUnits(targetRect.width, canvasRef.current.offsetWidth, defaults.canvas.width),
+        height: pxToCertificateUnits(targetRect.height, canvasRef.current.offsetWidth, defaults.canvas.width),
       };
-      const currentX = selectedOverride.x || 0;
-      const currentY = selectedOverride.y || 0;
       const clamped = clampGeometry({
         ...next,
         width: selectedOverride.width || measured.width,
@@ -653,7 +686,9 @@ export function useCertificateEditor({
     previewSelectedPatch,
     selected,
     selectedDefinition,
+    selectedMeasurement,
     selectedOverride,
+    templateId,
   ]);
 
   const buildEdit = useCallback(target => {
@@ -687,6 +722,7 @@ export function useCertificateEditor({
     }
 
     return {
+      templateId,
       elementId: target.elementId,
       occurrenceId: target.occurrenceId || occurrence?.id || '',
       binding,
@@ -716,29 +752,30 @@ export function useCertificateEditor({
   }, []);
 
   const commitDirectEdit = useCallback(() => {
-    if (!directEdit) return;
-    if (directEdit.bindingType === ELEMENT_BINDING_TYPES.TEMPLATE_TEXT) {
-      const locale = directEdit.locale || 'ar';
+    if (!directEdit || directEdit.templateId !== templateId) return;
+    const current = directEdit;
+    setDirectEdit(null);
+    if (current.bindingType === ELEMENT_BINDING_TYPES.TEMPLATE_TEXT) {
+      const locale = current.locale || 'ar';
       commitSelectedPatch({
-        contentOverride: { [locale]: directEdit.draftValue },
+        contentOverride: { [locale]: current.draftValue },
       }, 'تعديل عنوان الشهادة');
     } else {
-      let value = directEdit.draftValue;
-      if (directEdit.controlKind === 'date' && value) {
+      let value = current.draftValue;
+      if (current.controlKind === 'date' && value) {
         value = new Date(`${value}T12:00:00`).toISOString();
       }
       setState(previous => updateDomainBindingValue(
         previous,
-        directEdit.binding,
+        current.binding,
         value,
-        directEdit.locale,
-        directEdit.occurrence,
-        { multiline: directEdit.multiline },
+        current.locale,
+        current.occurrence,
+        { multiline: current.multiline },
       ));
     }
-    setDirectEdit(null);
     setMeasurementKey(value => value + 1);
-  }, [commitSelectedPatch, directEdit, setState]);
+  }, [commitSelectedPatch, directEdit, setState, templateId]);
 
   const cancelDirectEdit = useCallback(() => {
     setDirectEdit(null);
@@ -746,8 +783,9 @@ export function useCertificateEditor({
   }, []);
 
   const beginContentInteraction = useCallback(() => {
-    if (!selectedDefinition || !selected) return;
+    if (!selectedDefinition || !selected || selected.templateId !== templateId) return;
     setContentInteraction({
+      templateId,
       elementId: selected.elementId,
       binding: selectedBinding,
       bindingType: selectedBinding?.type,
@@ -764,16 +802,19 @@ export function useCertificateEditor({
     selectedBinding,
     selectedDefinition,
     selectedOccurrence,
+    templateId,
   ]);
 
   const previewSelectedContent = useCallback(value => {
+    if (!selected?.elementId || selected.templateId !== templateId) return;
     setContentInteraction(previous => {
-      const base = previous || {
-        elementId: selected?.elementId,
+      const base = (previous && previous.templateId === templateId) ? previous : {
+        templateId,
+        elementId: selected.elementId,
         binding: selectedBinding,
         bindingType: selectedBinding?.type,
         occurrence: selectedOccurrence,
-        locale: selected?.locale,
+        locale: selected.locale,
         multiline: selectedDefinition?.multiline,
         originalValue: getCommittedContentValue(),
       };
@@ -790,28 +831,30 @@ export function useCertificateEditor({
     selectedBinding,
     selectedDefinition,
     selectedOccurrence,
+    templateId,
   ]);
 
   const commitContentInteraction = useCallback(() => {
-    if (!contentInteraction) return;
-    if (contentInteraction.bindingType === ELEMENT_BINDING_TYPES.TEMPLATE_TEXT) {
+    if (!contentInteraction || contentInteraction.templateId !== templateId) return;
+    const current = contentInteraction;
+    setContentInteraction(null);
+    if (current.bindingType === ELEMENT_BINDING_TYPES.TEMPLATE_TEXT) {
       commitSelectedPatch({
         contentOverride: {
-          [contentInteraction.locale || 'ar']: contentInteraction.draftValue,
+          [current.locale || 'ar']: current.draftValue,
         },
       }, 'تعديل عنوان الشهادة');
     } else {
       setState(previous => updateDomainBindingValue(
         previous,
-        contentInteraction.binding,
-        contentInteraction.draftValue,
-        contentInteraction.locale,
-        contentInteraction.occurrence,
-        { multiline: contentInteraction.multiline },
+        current.binding,
+        current.draftValue,
+        current.locale,
+        current.occurrence,
+        { multiline: current.multiline },
       ));
     }
-    setContentInteraction(null);
-  }, [commitSelectedPatch, contentInteraction, setState]);
+  }, [commitSelectedPatch, contentInteraction, setState, templateId]);
 
   const cancelContentInteraction = useCallback(() => {
     setContentInteraction(null);
@@ -819,7 +862,7 @@ export function useCertificateEditor({
   }, []);
 
   const commitSelectedContent = useCallback(value => {
-    if (!selectedDefinition || !selectedBinding) return;
+    if (!selectedDefinition || !selectedBinding || selected?.templateId !== templateId) return;
     if (selectedBinding.type === ELEMENT_BINDING_TYPES.TEMPLATE_TEXT) {
       commitSelectedPatch({
         contentOverride: { [selected?.locale || 'ar']: value },
@@ -845,10 +888,11 @@ export function useCertificateEditor({
     selectedDefinition,
     selectedOccurrence,
     setState,
+    templateId,
   ]);
 
   const resetSelectedGeometry = useCallback(() => {
-    if (!selected?.elementId) return;
+    if (!selected?.elementId || selected.templateId !== templateId) return;
     const beforeElements = elementsFor(state, templateId);
     const after = resetElementGeometry(
       state.templateCustomizations,
@@ -859,7 +903,7 @@ export function useCertificateEditor({
   }, [commitElements, selected, state, templateId]);
 
   const resetSelectedElement = useCallback(() => {
-    if (!selected?.elementId) return;
+    if (!selected?.elementId || selected.templateId !== templateId) return;
     const beforeElements = elementsFor(state, templateId);
     const after = removeElementOverride(
       state.templateCustomizations,
@@ -890,6 +934,7 @@ export function useCertificateEditor({
     setState(previous => replaceTemplateElements(previous, templateId, result.elements));
     setInteractionDraft(null);
     setDirectEdit(null);
+    setContentInteraction(null);
     setMeasurementKey(value => value + 1);
   }, [history, setState, templateId]);
 
@@ -900,6 +945,7 @@ export function useCertificateEditor({
     setState(previous => replaceTemplateElements(previous, templateId, result.elements));
     setInteractionDraft(null);
     setDirectEdit(null);
+    setContentInteraction(null);
     setMeasurementKey(value => value + 1);
   }, [history, setState, templateId]);
 
@@ -920,29 +966,42 @@ export function useCertificateEditor({
     setContentInteraction(null);
     setInteractionDraft(null);
     setMeasurements({});
+    geometryStartRef.current = null;
   }, [templateId]);
 
   useEffect(() => {
     const onKeyDown = event => {
       if (isFormControl(event.target)) return;
       const modifier = event.ctrlKey || event.metaKey;
-      if (!modifier) return;
-      const key = event.key.toLowerCase();
-      if (key === 'z' && event.shiftKey) {
+      if (modifier) {
+        const key = event.key.toLowerCase();
+        if (key === 'z' && event.shiftKey) {
+          event.preventDefault();
+          redo();
+        } else if (key === 'z') {
+          event.preventDefault();
+          undo();
+        } else if (key === 'y') {
+          event.preventDefault();
+          redo();
+        }
+        return;
+      }
+      if (
+        event.key.startsWith('Arrow')
+        && selected?.elementId
+        && selected.templateId === templateId
+        && !directEdit
+      ) {
         event.preventDefault();
-        redo();
-      } else if (key === 'z') {
-        event.preventDefault();
-        undo();
-      } else if (key === 'y') {
-        event.preventDefault();
-        redo();
+        nudgeSelected(event.key, event.shiftKey, selectedMeasurement?.rect);
       }
     };
     const onKeyUp = event => {
       if (
         event.key.startsWith('Arrow')
         && interactionDraft?.kind === 'keyboard'
+        && interactionDraft.templateId === templateId
       ) {
         commitInspectorInteraction();
       }
@@ -953,7 +1012,19 @@ export function useCertificateEditor({
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('keyup', onKeyUp);
     };
-  }, [commitInspectorInteraction, interactionDraft?.kind, redo, undo]);
+  }, [
+    commitInspectorInteraction,
+    directEdit,
+    interactionDraft?.kind,
+    interactionDraft?.templateId,
+    nudgeSelected,
+    redo,
+    selected?.elementId,
+    selected?.templateId,
+    selectedMeasurement?.rect,
+    templateId,
+    undo,
+  ]);
 
   const selectedAssetValue = selectedBinding?.type === ELEMENT_BINDING_TYPES.ASSET
     ? state[selectedBinding.key]

@@ -257,14 +257,32 @@ export function clampGeometry(
 
   const rotation = normalizeRotation(geometry?.rotation);
   const radians = rotation * Math.PI / 180;
-  const halfRotatedWidth = (
+  let halfRotatedWidth = (
     Math.abs(width * Math.cos(radians))
     + Math.abs(height * Math.sin(radians))
   ) / 2;
-  const halfRotatedHeight = (
+  let halfRotatedHeight = (
     Math.abs(width * Math.sin(radians))
     + Math.abs(height * Math.cos(radians))
   ) / 2;
+
+  const rotatedFitScale = Math.min(
+    canvas.width / (halfRotatedWidth * 2 || 1),
+    canvas.height / (halfRotatedHeight * 2 || 1),
+    1,
+  );
+  if (rotatedFitScale < 1) {
+    width = Math.max(1, width * rotatedFitScale);
+    height = Math.max(1, height * rotatedFitScale);
+    halfRotatedWidth = (
+      Math.abs(width * Math.cos(radians))
+      + Math.abs(height * Math.sin(radians))
+    ) / 2;
+    halfRotatedHeight = (
+      Math.abs(width * Math.sin(radians))
+      + Math.abs(height * Math.cos(radians))
+    ) / 2;
+  }
 
   let centerX = (
     baseRect.x
@@ -277,25 +295,16 @@ export function clampGeometry(
     + height / 2
   );
 
-  if (halfRotatedWidth * 2 <= canvas.width) {
-    centerX = clamp(
-      centerX,
-      halfRotatedWidth,
-      canvas.width - halfRotatedWidth,
-    );
-  } else {
-    centerX = canvas.width / 2;
-  }
-
-  if (halfRotatedHeight * 2 <= canvas.height) {
-    centerY = clamp(
-      centerY,
-      halfRotatedHeight,
-      canvas.height - halfRotatedHeight,
-    );
-  } else {
-    centerY = canvas.height / 2;
-  }
+  centerX = clamp(
+    centerX,
+    halfRotatedWidth,
+    canvas.width - halfRotatedWidth,
+  );
+  centerY = clamp(
+    centerY,
+    halfRotatedHeight,
+    canvas.height - halfRotatedHeight,
+  );
 
   return {
     x: roundCustomizationNumber(centerX - width / 2 - baseRect.x),
