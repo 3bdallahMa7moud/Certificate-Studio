@@ -183,7 +183,7 @@ export default function MinimalTemplate({ state, render }) {
 
       <div className="footer">
         <div className="col">
-          <div className="lab">{roleLabel(state, 'المعلم/ة', 'Teacher')}</div>
+          <div className="lab">{roleLabel(state, 'المعلم', 'Teacher')}</div>
           {state.teacherSig && (
             <img
               {...element(
@@ -285,7 +285,7 @@ export default function MinimalTemplate({ state, render }) {
           </div>
         </div>
         <div className="col">
-          <div className="lab">{roleLabel(state, 'المدير/ة', 'Principal')}</div>
+          <div className="lab">{roleLabel(state, 'مدير المدرسة', 'Principal')}</div>
           {state.principalSig && (
             <img
               {...element(

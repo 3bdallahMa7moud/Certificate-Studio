@@ -280,7 +280,7 @@ export default function SportsChampionTemplate({ state, render }) {
               }, { className: 'sports-sig-img cert-sig cert-sig-teacher' })}
             />
           )}
-          <span className="sports-sign-title">{roleLabel(state, 'المعلم / المدرب', 'Coach')}</span>
+          <span className="sports-sign-title">{roleLabel(state, 'المدرب الرياضي', 'Coach')}</span>
           <span className="sports-sign-name">
             {primaryDisplayName(state, state.teacherNameAr, state.teacherNameEn, '—')}
           </span>

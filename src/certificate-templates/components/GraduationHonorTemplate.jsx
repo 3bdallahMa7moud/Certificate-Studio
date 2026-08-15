@@ -484,7 +484,7 @@ export default function GraduationHonorTemplate({ state, render }) {
           <span className="grad-sign-title">
             {roleLabel(
               state,
-              'عميد الخريجين / رائد الصف',
+              'رائد الصف ومسؤول الخريجين',
               'Class Advisor',
             )}
           </span>

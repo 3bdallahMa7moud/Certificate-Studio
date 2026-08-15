@@ -31,7 +31,7 @@ export function validateCertificateState(state = {}, editorStatus = {}) {
 
   const hasTeacherName = Boolean((state.teacherNameAr && state.teacherNameAr.trim()) || (state.teacherNameEn && state.teacherNameEn.trim()));
   if (!hasTeacherName) {
-    errors.push('اسم المعلم/ة مطلوب.');
+    errors.push('اسم المعلم مطلوب.');
   }
 
   const templateEntry = TEMPLATE_REGISTRY.find(t => t.id === state.template);
@@ -42,7 +42,7 @@ export function validateCertificateState(state = {}, editorStatus = {}) {
   // Check if principal name is required for this template (if template displays principal)
   const hasPrincipalName = Boolean((state.principalNameAr && state.principalNameAr.trim()) || (state.principalNameEn && state.principalNameEn.trim()));
   if (!hasPrincipalName && templateEntry && templateEntry.id !== 'minimal') {
-    errors.push('اسم المدير/ة مطلوب لهذا القالب.');
+    errors.push('اسم مدير المدرسة مطلوب لهذا القالب.');
   }
 
   if (editorStatus.isDirectEditing) {
@@ -58,10 +58,10 @@ export function validateCertificateState(state = {}, editorStatus = {}) {
     warnings.push('شعار المدرسة غير مرفق (اختياري).');
   }
   if (!state.teacherSig) {
-    warnings.push('توقيع المعلم/ة غير مرفق (اختياري).');
+    warnings.push('توقيع المعلم غير مرفق (اختياري).');
   }
   if (!state.principalSig) {
-    warnings.push('توقيع المدير/ة غير مرفق (اختياري).');
+    warnings.push('توقيع مدير المدرسة غير مرفق (اختياري).');
   }
   if (!state.gender) {
     warnings.push('جنس الطالب غير محدد (قد تستخدم الصياغة التلقائية الكلمات المحايدة).');

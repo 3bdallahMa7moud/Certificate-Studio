@@ -298,7 +298,7 @@ export default function RainbowStarsTemplate({ state, render }) {
       <footer className="rainbow-footer">
         <div className="rainbow-signature-card rainbow-signature-teacher">
           <div className="rainbow-signature-role">
-            {roleLabel(state, 'المعلم/ة', 'Teacher')}
+            {roleLabel(state, 'المعلم', 'Teacher')}
           </div>
           {state.teacherSig && (
             <img
@@ -359,7 +359,7 @@ export default function RainbowStarsTemplate({ state, render }) {
 
         <div className="rainbow-signature-card rainbow-signature-principal">
           <div className="rainbow-signature-role">
-            {roleLabel(state, 'المدير/ة', 'Principal')}
+            {roleLabel(state, 'مدير المدرسة', 'Principal')}
           </div>
           {state.principalSig && (
             <img

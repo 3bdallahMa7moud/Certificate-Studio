@@ -180,10 +180,10 @@ export default function StorybookCastleTemplate({ state, render }) {
           <span className="storybook-chapter-line" aria-hidden="true" />
           <StudentName
             state={state}
-            size={3.45}
-            fitWidth={50}
-            secondarySize={1.35}
-            secondaryFitWidth={50}
+            size={5.4}
+            fitWidth={66}
+            secondarySize={1.8}
+            secondaryFitWidth={66}
             primaryProps={element('storybook-castle-student-name', {
               contentKey: 'studentNameAr',
               locale: 'ar',
@@ -279,7 +279,7 @@ export default function StorybookCastleTemplate({ state, render }) {
       <footer className="storybook-footer">
         <div className="storybook-signature storybook-signature-teacher">
           <div className="storybook-signature-role">
-            {roleLabel(state, 'المعلم/ة', 'Teacher')}
+            {roleLabel(state, 'المعلم', 'Teacher')}
           </div>
           {state.teacherSig && (
             <img
@@ -353,7 +353,7 @@ export default function StorybookCastleTemplate({ state, render }) {
 
         <div className="storybook-signature storybook-signature-principal">
           <div className="storybook-signature-role">
-            {roleLabel(state, 'المدير/ة', 'Principal')}
+            {roleLabel(state, 'مدير المدرسة', 'Principal')}
           </div>
           {state.principalSig && (
             <img

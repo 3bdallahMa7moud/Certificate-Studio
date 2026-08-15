@@ -271,7 +271,7 @@ export default function OceanAdventureTemplate({ state, render }) {
       <footer className="ocean-footer">
         <div className="ocean-signature-card ocean-signature-teacher">
           <div className="ocean-signature-role">
-            {roleLabel(state, 'المعلم/ة', 'Teacher')}
+            {roleLabel(state, 'المعلم', 'Teacher')}
           </div>
           {state.teacherSig && (
             <img
@@ -330,7 +330,7 @@ export default function OceanAdventureTemplate({ state, render }) {
 
         <div className="ocean-signature-card ocean-signature-principal">
           <div className="ocean-signature-role">
-            {roleLabel(state, 'المدير/ة', 'Principal')}
+            {roleLabel(state, 'مدير المدرسة', 'Principal')}
           </div>
           {state.principalSig && (
             <img

@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import {
   CERTIFICATE_TYPES,
@@ -20,6 +23,9 @@ import {
   normalizeStudentData,
 } from '../src/context/helpers.js';
 import { resolveCertificateMessages } from '../src/certificate-templates/renderState.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const ALL_TYPE_IDS = [
   'academic_excellence',
@@ -93,6 +99,10 @@ test('2. Arabic quality contracts: No slash-based gender shortcuts exist in sugg
     /أنهى\/أنهت/u,
     /الطالبـ\/ـة/u,
     /الخريجـ\/ـة/u,
+    /المعلم\/ة/u,
+    /المدير\/ة/u,
+    /الطالب\/ة/u,
+    /الخريج\/ة/u,
   ];
 
   // Inspect all suggested messages
@@ -362,4 +372,79 @@ test('8. Canonical data model integrity: No customMessage field written during P
   assert.equal('customMessage' in messages, false);
   assert.equal(messages.customMessageAr, 'نص عربي');
   assert.equal(messages.customMessageEn, 'English text');
+});
+
+test('9. Certificate template regression: Zero slash-based gender role labels across all 12 templates', () => {
+  const templatesDir = path.join(__dirname, '..', 'src', 'certificate-templates', 'components');
+  const templateFiles = fs.readdirSync(templatesDir).filter(f => f.endsWith('Template.jsx'));
+
+  assert.equal(templateFiles.length, 12, 'Must inspect exactly all 12 certificate template components');
+
+  const prohibitedRolePatterns = [
+    'المعلم/ة',
+    'المدير/ة',
+    'الطالب/ة',
+    'الخريج/ة',
+    'المعلمة/المعلم',
+    'المديرة/المدير',
+    'المعلم/المعلمة',
+    'المدير/المديرة',
+    'الطالبـ/ـة',
+    'الخريجـ/ـة',
+    'المباركـ/ـة',
+    'الفاضلـ/ـة',
+  ];
+
+  const arabicGenderSlashRegex = /[\u0600-\u06FF]+[ـ]*\/[ـ]*[\u0600-\u06FF]+/gu;
+
+  for (const filename of templateFiles) {
+    const fullPath = path.join(templatesDir, filename);
+    const content = fs.readFileSync(fullPath, 'utf8');
+
+    // Check prohibited exact strings
+    for (const pattern of prohibitedRolePatterns) {
+      assert.equal(
+        content.includes(pattern),
+        false,
+        `Prohibited role pattern "${pattern}" found in template ${filename}`,
+      );
+    }
+
+    // Extract all string literals inside the file and check for Arabic slash words
+    const stringLiteralRegex = /(?:'([^'\\]*(?:\\.[^'\\]*)*)'|"([^"\\]*(?:\\.[^"\\]*)*)"|`([^`\\]*(?:\\.[^`\\]*)*)`)/g;
+    let match;
+    while ((match = stringLiteralRegex.exec(content)) !== null) {
+      const literal = match[1] || match[2] || match[3] || '';
+      // Skip imports, CSS class names, URLs, or filepaths
+      if (literal.includes('./') || literal.includes('../') || literal.includes('.css') || literal.includes('/')) {
+        const arabicSlashMatches = literal.match(arabicGenderSlashRegex);
+        if (arabicSlashMatches) {
+          assert.fail(`Prohibited Arabic slash construct "${arabicSlashMatches.join(', ')}" in ${filename}: "${literal}"`);
+        }
+      }
+    }
+  }
+});
+
+test('10. Template defaults and validator regression: No slash role labels in metadata or validation messages', () => {
+  const defaultsPath = path.join(__dirname, '..', 'src', 'certificate-templates', 'templateDefaults.js');
+  const defaultsContent = fs.readFileSync(defaultsPath, 'utf8');
+
+  const validatorPath = path.join(__dirname, '..', 'src', 'services', 'certificateValidator.js');
+  const validatorContent = fs.readFileSync(validatorPath, 'utf8');
+
+  const prohibitedPhrases = ['المعلم/ة', 'المدير/ة', 'الطالب/ة', 'الخريج/ة'];
+
+  for (const phrase of prohibitedPhrases) {
+    assert.equal(
+      defaultsContent.includes(phrase),
+      false,
+      `Prohibited phrase "${phrase}" found in templateDefaults.js`,
+    );
+    assert.equal(
+      validatorContent.includes(phrase),
+      false,
+      `Prohibited phrase "${phrase}" found in certificateValidator.js`,
+    );
+  }
 });

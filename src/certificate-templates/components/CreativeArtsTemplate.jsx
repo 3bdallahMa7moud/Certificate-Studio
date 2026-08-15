@@ -279,7 +279,7 @@ export default function CreativeArtsTemplate({ state, render }) {
               }, { className: 'arts-sig-img cert-sig cert-sig-teacher' })}
             />
           )}
-          <span className="arts-sign-title">{roleLabel(state, 'معلم النشاط / الفنون', 'Art Instructor')}</span>
+          <span className="arts-sign-title">{roleLabel(state, 'معلم الفنون والأنشطة', 'Art Instructor')}</span>
           <span className="arts-sign-name">
             {primaryDisplayName(state, state.teacherNameAr, state.teacherNameEn, '—')}
           </span>

@@ -339,7 +339,7 @@ export default function SpaceExplorerTemplate({ state, render }) {
       <footer className="space-signatures">
         <div className="space-sig-block space-sig-teacher">
           <span className="space-sig-title">
-            {roleLabel(state, 'المعلم/ة', 'Teacher')}
+            {roleLabel(state, 'المعلم', 'Teacher')}
           </span>
 
           {state.teacherSig && (
@@ -403,7 +403,7 @@ export default function SpaceExplorerTemplate({ state, render }) {
 
         <div className="space-sig-block space-sig-principal">
           <span className="space-sig-title">
-            {roleLabel(state, 'المدير/ة', 'Principal')}
+            {roleLabel(state, 'مدير المدرسة', 'Principal')}
           </span>
 
           {state.principalSig && (

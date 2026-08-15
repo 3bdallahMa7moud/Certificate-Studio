@@ -316,7 +316,7 @@ export default function JungleFriendsTemplate({ state, render }) {
         <footer className="jungle-footer">
           <div className="jungle-signature jungle-signature-teacher">
             <div className="jungle-signature-role">
-              {roleLabel(state, 'المعلم/ة', 'Teacher')}
+              {roleLabel(state, 'المعلم', 'Teacher')}
             </div>
             {state.teacherSig && (
               <img
@@ -378,7 +378,7 @@ export default function JungleFriendsTemplate({ state, render }) {
 
           <div className="jungle-signature jungle-signature-principal">
             <div className="jungle-signature-role">
-              {roleLabel(state, 'المدير/ة', 'Principal')}
+              {roleLabel(state, 'مدير المدرسة', 'Principal')}
             </div>
             {state.principalSig && (
               <img

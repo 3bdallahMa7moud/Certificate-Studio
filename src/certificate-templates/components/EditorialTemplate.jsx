@@ -190,7 +190,7 @@ export default function EditorialTemplate({ state, render }) {
 
         <div className="footer">
           <div className="sign">
-            <div className="role">{roleLabel(state, 'المعلم/ة', 'Teacher')}</div>
+            <div className="role">{roleLabel(state, 'المعلم', 'Teacher')}</div>
             {state.teacherSig && (
               <img
                 {...element(
@@ -248,7 +248,7 @@ export default function EditorialTemplate({ state, render }) {
             </div>
           </div>
           <div className="sign">
-            <div className="role">{roleLabel(state, 'المدير/ة', 'Principal')}</div>
+            <div className="role">{roleLabel(state, 'مدير المدرسة', 'Principal')}</div>
             {state.principalSig && (
               <img
                 {...element(
