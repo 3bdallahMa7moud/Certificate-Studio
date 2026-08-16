@@ -4,22 +4,63 @@ import {
   SUBJECTS,
   defaultAchievementPair,
   genRowId,
-  genSerial,
 } from './data.js';
 
 export const AR_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 
 export function toDate(value) {
-  let date;
   if (!value) {
-    date = new Date();
-  } else {
-    date = value instanceof Date ? new Date(value) : new Date(value);
-    if (isNaN(date.getTime())) date = new Date();
+    return new Date();
   }
-  date.setFullYear(Math.max(2026, new Date().getFullYear()));
-  return date;
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? new Date() : new Date(value.getTime());
+  }
+  if (typeof value === 'number') {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? new Date() : date;
+  }
+
+  const raw = String(value).trim();
+  if (!raw) return new Date();
+
+  // Try parsing YYYY-MM-DD, YYYY/MM/DD, YYYY.MM.DD (date-only)
+  const ymdMatch = raw.match(/^(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})$/);
+  if (ymdMatch) {
+    const year = Number(ymdMatch[1]);
+    const month = Number(ymdMatch[2]);
+    const day = Number(ymdMatch[3]);
+    if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+      const date = new Date(year, month - 1, day, 12, 0, 0);
+      if (!Number.isNaN(date.getTime())) return date;
+    }
+  }
+
+  // Try parsing DD/MM/YYYY, DD-MM-YYYY, DD.MM.YYYY
+  const dmyMatch = raw.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
+  if (dmyMatch) {
+    const p1 = Number(dmyMatch[1]);
+    const p2 = Number(dmyMatch[2]);
+    const year = Number(dmyMatch[3]);
+
+    let day = p1;
+    let month = p2;
+
+    // Support MM/DD/YYYY if p1 <= 12 and p2 > 12
+    if (p1 <= 12 && p2 > 12) {
+      day = p2;
+      month = p1;
+    }
+
+    if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+      const date = new Date(year, month - 1, day, 12, 0, 0);
+      if (!Number.isNaN(date.getTime())) return date;
+    }
+  }
+
+  const parsed = new Date(raw);
+  return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
 }
+
 
 export function dateInputValue(value) {
   if (!value) return '';
@@ -95,7 +136,7 @@ export function normalizeGenderValue(value) {
 
 /**
  * Canonical student normalization shared by manual entry, imports, projects,
- * backups, and history adapters. Callers may disable ID generation while
+ * and history adapters. Callers may disable ID generation while
  * migrating legacy data so a deterministic migration ID can be assigned.
  */
 export function normalizeStudentData(
@@ -103,7 +144,6 @@ export function normalizeStudentData(
   defaults = {},
   {
     rowIdFactory = genRowId,
-    serialFactory = genSerial,
   } = {},
 ) {
   const source = data && typeof data === 'object' && !Array.isArray(data) ? data : {};
@@ -161,12 +201,8 @@ export function normalizeStudentData(
     ? fallback.grade
     : GRADE_LEVELS[0];
   const rawRowId = stringValue(source.rowId || source.studentRowId);
-  const rawSerial = stringValue(source.serial || source.id);
   const generatedRowId = rawRowId || (
     typeof rowIdFactory === 'function' ? stringValue(rowIdFactory(source)) : ''
-  );
-  const generatedSerial = rawSerial || (
-    typeof serialFactory === 'function' ? stringValue(serialFactory(source)) : ''
   );
 
   return {
@@ -183,7 +219,6 @@ export function normalizeStudentData(
     certificateType: stringValue(source.certificateType || fallback.certificateType),
     customMessageAr,
     customMessageEn,
-    serial: generatedSerial,
     notes: stringValue(source.notes),
     date: stringValue(source.date || fallback.date),
   };
@@ -238,7 +273,6 @@ export function createStudentRenderPatch(student = {}, state = {}) {
     certificateType: student.certificateType || state.certificateType,
     customMessageAr,
     customMessageEn,
-    serial: student.serial || state.serial,
     studentRowId: student.rowId || student.studentRowId || null,
     date: student.date ?? state.date,
   };

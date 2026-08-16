@@ -258,12 +258,6 @@ export function getForcedDate(date = new Date()) {
   return validDate;
 }
 
-export function genSerial() {
-  const year = Math.max(2026, new Date().getFullYear());
-  const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-  return `CERT-${year}-${code}`;
-}
-
 export function normalizeAcademicYear(value = ACADEMIC_YEAR) {
   const raw = String(value || '').trim();
   if (!raw) return ACADEMIC_YEAR;
@@ -285,8 +279,7 @@ export function defaultAchievementPair(behaviorId = 'creativity') {
 }
 
 /**
- * Stable internal identity for a student row. Unlike the visible certificate
- * serial, this value is never regenerated when the serial is edited.
+ * Stable internal identity for a student row.
  */
 export function genRowId() {
   const cryptoApi = globalThis.crypto;
@@ -334,7 +327,6 @@ export function getDefaultState() {
     customMessageAr: MESSAGE_TEMPLATES[0].text,
     customMessageEn: '',
     paletteMode: 'template',
-    serial: genSerial(),
     date: getForcedDate().toISOString(),
     nameFontSize: 100,
     fontStyle: 'classic',

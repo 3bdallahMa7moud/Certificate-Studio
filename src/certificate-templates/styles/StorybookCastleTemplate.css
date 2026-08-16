@@ -1,4 +1,8 @@
-/* Storybook Castle — V3 balanced Canva-style certificate */
+/* ==========================================================
+   STORYBOOK CASTLE CERTIFICATE — ROYAL FAIRYTALE VIP EDITION
+   Arabic-first / RTL-safe Canva-inspired design
+   ========================================================== */
+
 .cert-storybook-castle {
   position: absolute;
   inset: 0;
@@ -7,12 +11,25 @@
   box-sizing: border-box;
   overflow: hidden;
   isolation: isolate;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  padding: 3.2cqw 4.8cqw 2.6cqw;
+
   background:
-    radial-gradient(circle at 50% 38%, rgba(255, 255, 255, .98) 0 27%, rgba(255, 250, 240, .97) 58%, rgba(247, 232, 205, .98) 100%),
-    linear-gradient(135deg, #fffdf8 0%, #f8ead2 100%);
+    radial-gradient(circle at 50% 35%, #ffffff 0%, #fffdf5 35%, #faf0db 75%, #f4e3c3 100%),
+    linear-gradient(135deg, #fffdf8 0%, #f7e6c9 100%);
   color: var(--text, #352747);
-  border: .72cqw solid var(--primary, #5B3B8C);
-  font-family: var(--student-font-en, "Inter"), var(--student-font-ar, "Tajawal"), sans-serif;
+  border: 0.72cqw solid #5B3B8C;
+  border-radius: 2.2cqw;
+
+  font-family: var(--student-font-ar, 'Tajawal'), var(--student-font-en, 'Inter'), sans-serif;
+  text-rendering: geometricPrecision;
+  box-shadow:
+    inset 0 0 5cqw rgba(91, 59, 140, 0.09),
+    0 1.5cqw 4cqw rgba(0, 0, 0, 0.12);
 }
 
 .cert-storybook-castle *,
@@ -21,100 +38,148 @@
   box-sizing: border-box;
 }
 
-/* Refined double frame */
+/* Outer Gold Filigree Border */
 .cert-storybook-castle::before {
-  content: "";
+  content: '';
   position: absolute;
-  inset: 1.05cqw;
+  inset: 1.1cqw;
   z-index: 0;
   pointer-events: none;
-  border: .09cqw solid var(--accent, #D8A63C);
-  border-radius: 1.4cqw;
+  border: 0.12cqw solid #D8A63C;
+  border-radius: 1.5cqw;
+  box-shadow:
+    inset 0 0 0 0.08cqw rgba(91, 59, 140, 0.15),
+    0 0 0.8cqw rgba(216, 166, 60, 0.2);
 }
 
+/* Inner Thin Royal Accent Border */
 .cert-storybook-castle::after {
-  content: "";
+  content: '';
   position: absolute;
-  inset: 1.42cqw;
+  inset: 1.5cqw;
   z-index: 0;
   pointer-events: none;
-  border: .035cqw solid rgba(91, 59, 140, .12);
-  border-radius: 1.08cqw;
+  border: 0.04cqw solid rgba(91, 59, 140, 0.25);
+  border-radius: 1.2cqw;
 }
 
-/* ========================= DECORATION ========================= */
+/* ---------- Direction & Language modes ---------- */
+.cert-storybook-castle.storybook-language-ar,
+.cert-storybook-castle.storybook-language-bilingual {
+  direction: rtl;
+}
+
+.cert-storybook-castle.storybook-language-en {
+  direction: ltr;
+}
+
+.cert-storybook-castle [dir='rtl'],
+.cert-storybook-castle [lang='ar'] {
+  unicode-bidi: isolate;
+}
+
+.cert-storybook-castle [dir='ltr'],
+.cert-storybook-castle [lang='en'] {
+  unicode-bidi: isolate;
+}
+
+/* ---------- Decorative Layer ---------- */
 .cert-storybook-castle .storybook-decoration {
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  overflow: hidden;
+}
+
+/* Royal Gold Corner Filigree Ornaments */
+.cert-storybook-castle .storybook-corner-ornament {
+  position: absolute;
+  width: 2.4cqw;
+  height: 2.4cqw;
+  border-color: #D8A63C;
+  border-style: solid;
+  z-index: 2;
+  filter: drop-shadow(0 0 0.3cqw rgba(216, 166, 60, 0.5));
+}
+
+.cert-storybook-castle .storybook-corner-tl {
+  top: 1.8cqw;
+  left: 1.8cqw;
+  border-width: 0.18cqw 0 0 0.18cqw;
+  border-top-left-radius: 0.5cqw;
+}
+
+.cert-storybook-castle .storybook-corner-tr {
+  top: 1.8cqw;
+  right: 1.8cqw;
+  border-width: 0.18cqw 0.18cqw 0 0;
+  border-top-right-radius: 0.5cqw;
+}
+
+.cert-storybook-castle .storybook-corner-bl {
+  bottom: 1.8cqw;
+  left: 1.8cqw;
+  border-width: 0 0 0.18cqw 0.18cqw;
+  border-bottom-left-radius: 0.5cqw;
+}
+
+.cert-storybook-castle .storybook-corner-br {
+  bottom: 1.8cqw;
+  right: 1.8cqw;
+  border-width: 0 0.18cqw 0.18cqw 0;
+  border-bottom-right-radius: 0.5cqw;
 }
 
 .cert-storybook-castle .storybook-ribbon {
   position: absolute;
-  height: .06cqw;
+  height: 0.08cqw;
   border-radius: 999px;
-  background: linear-gradient(90deg, transparent, var(--accent, #D8A63C), transparent);
-  opacity: .28;
+  background: linear-gradient(90deg, transparent, #D8A63C, transparent);
+  opacity: 0.45;
 }
 
 .cert-storybook-castle .storybook-ribbon-top {
-  top: 3.05cqw;
-  left: 18cqw;
-  width: 14cqw;
+  top: 3.2cqw;
+  left: 20cqw;
+  width: 16cqw;
 }
 
 .cert-storybook-castle .storybook-ribbon-bottom {
-  right: 18cqw;
-  bottom: 2.7cqw;
-  width: 14cqw;
+  right: 20cqw;
+  bottom: 2.8cqw;
+  width: 16cqw;
 }
 
 .cert-storybook-castle .storybook-star,
 .cert-storybook-castle .storybook-name-spark {
   display: block;
   aspect-ratio: 1;
-  background: var(--accent, #D8A63C);
+  background: #D8A63C;
   clip-path: polygon(50% 0%, 61% 36%, 100% 50%, 61% 64%, 50% 100%, 39% 64%, 0 50%, 39% 36%);
+  filter: drop-shadow(0 0 0.35cqw rgba(216, 166, 60, 0.7));
 }
 
 .cert-storybook-castle .storybook-star {
   position: absolute;
-  opacity: .34;
+  opacity: 0.6;
 }
 
-.cert-storybook-castle .storybook-star-one {
-  top: 8.2cqw;
-  left: 9.6cqw;
-  width: .48cqw;
-}
+.cert-storybook-castle .storybook-star-one { top: 8.5cqw; left: 10cqw; width: 0.75cqw; }
+.cert-storybook-castle .storybook-star-two { top: 13.5cqw; right: 9.5cqw; width: 0.65cqw; }
+.cert-storybook-castle .storybook-star-three { bottom: 9.5cqw; left: 15cqw; width: 0.55cqw; }
+.cert-storybook-castle .storybook-star-four { bottom: 8.5cqw; right: 15.5cqw; width: 0.7cqw; }
+.cert-storybook-castle .storybook-star-five { top: 45%; left: 8cqw; width: 0.5cqw; opacity: 0.4; }
 
-.cert-storybook-castle .storybook-star-two {
-  top: 13.5cqw;
-  right: 9.1cqw;
-  width: .5cqw;
-}
-
-.cert-storybook-castle .storybook-star-three {
-  bottom: 9.1cqw;
-  left: 15.2cqw;
-  width: .38cqw;
-}
-
-.cert-storybook-castle .storybook-star-four {
-  bottom: 8.5cqw;
-  right: 15.4cqw;
-  width: .52cqw;
-}
-
-/* Castle and book are corner watermarks */
+/* Fairytale Castle in Bottom Right */
 .cert-storybook-castle .storybook-castle-scene {
   position: absolute;
-  right: 4.25cqw;
-  bottom: 2.9cqw;
-  width: 11.4cqw;
-  height: 9.3cqw;
-  opacity: .09;
+  right: 4cqw;
+  bottom: 2.6cqw;
+  width: 12.5cqw;
+  height: 10.8cqw;
+  opacity: 0.38;
+  filter: drop-shadow(0 0 0.9cqw rgba(216, 166, 60, 0.3));
 }
 
 .cert-storybook-castle .storybook-tower,
@@ -122,59 +187,61 @@
   position: absolute;
   bottom: 0;
   display: block;
-  background: var(--primary, #5B3B8C);
+  background: linear-gradient(180deg, #5B3B8C 0%, #3e2266 100%);
 }
 
 .cert-storybook-castle .storybook-tower {
-  width: 2.85cqw;
-  border-radius: .16cqw .16cqw 0 0;
+  width: 3.2cqw;
+  border-radius: 0.2cqw 0.2cqw 0 0;
+  box-shadow: inset 0 0 0.4cqw rgba(0, 0, 0, 0.25);
 }
 
 .cert-storybook-castle .storybook-tower::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 50%;
   bottom: 100%;
   width: 0;
   height: 0;
   transform: translateX(-50%);
-  border-left: 1.62cqw solid transparent;
-  border-right: 1.62cqw solid transparent;
-  border-bottom: 1.9cqw solid var(--accent, #D8A63C);
+  border-left: 1.85cqw solid transparent;
+  border-right: 1.85cqw solid transparent;
+  border-bottom: 2.3cqw solid #D8A63C;
+  filter: drop-shadow(0 0 0.35cqw rgba(216, 166, 60, 0.5));
+}
+
+.cert-storybook-castle .storybook-tower-flag {
+  position: absolute;
+  top: -2.7cqw;
+  left: 50%;
+  width: 0.8cqw;
+  height: 0.5cqw;
+  background: #D8A63C;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  transform: translateX(-0.05cqw);
 }
 
 .cert-storybook-castle .storybook-tower i {
   position: absolute;
   top: 1.2cqw;
   left: 50%;
-  width: .6cqw;
-  height: .96cqw;
+  width: 0.7cqw;
+  height: 1.1cqw;
   transform: translateX(-50%);
-  border-radius: .34cqw .34cqw .06cqw .06cqw;
-  background: rgba(255, 251, 240, .98);
+  border-radius: 0.4cqw 0.4cqw 0 0;
+  background: #fef9ee;
+  box-shadow: 0 0 0.4cqw #fef08a;
 }
 
-.cert-storybook-castle .storybook-tower-left {
-  left: .16cqw;
-  height: 5.2cqw;
-}
-
-.cert-storybook-castle .storybook-tower-center {
-  left: 4.18cqw;
-  width: 3.08cqw;
-  height: 6.85cqw;
-}
-
-.cert-storybook-castle .storybook-tower-right {
-  right: .16cqw;
-  height: 5.05cqw;
-}
+.cert-storybook-castle .storybook-tower-left { left: 0.2cqw; height: 5.8cqw; }
+.cert-storybook-castle .storybook-tower-center { left: 4.6cqw; width: 3.4cqw; height: 7.8cqw; }
+.cert-storybook-castle .storybook-tower-right { right: 0.2cqw; height: 5.6cqw; }
 
 .cert-storybook-castle .storybook-castle-wall {
-  left: 1.82cqw;
-  width: 7.85cqw;
-  height: 3.18cqw;
-  opacity: .92;
+  left: 2cqw;
+  width: 8.6cqw;
+  height: 3.6cqw;
+  opacity: 0.95;
 }
 
 .cert-storybook-castle .storybook-castle-door {
@@ -182,21 +249,24 @@
   left: 50%;
   bottom: 0;
   z-index: 2;
-  width: 1.72cqw;
-  height: 2.25cqw;
+  width: 1.9cqw;
+  height: 2.5cqw;
   transform: translateX(-50%);
-  border-radius: .9cqw .9cqw 0 0;
-  background: #fff9ec;
+  border-radius: 1cqw 1cqw 0 0;
+  background: #fdf3d8;
+  box-shadow: inset 0 0 0.4cqw rgba(0, 0, 0, 0.15);
 }
 
+/* Open Magical Storybook in Bottom Left */
 .cert-storybook-castle .storybook-book-mark {
   position: absolute;
-  left: 4.1cqw;
-  bottom: 3.15cqw;
-  width: 6.9cqw;
-  height: 3.8cqw;
-  opacity: .045;
-  transform: rotate(-2deg);
+  left: 4cqw;
+  bottom: 2.8cqw;
+  width: 8.4cqw;
+  height: 5cqw;
+  opacity: 0.35;
+  transform: rotate(-3deg);
+  filter: drop-shadow(0 0 0.9cqw rgba(216, 166, 60, 0.35));
 }
 
 .cert-storybook-castle .storybook-book-page {
@@ -204,62 +274,66 @@
   bottom: 0;
   width: 50%;
   height: 100%;
-  border: .07cqw solid var(--primary, #5B3B8C);
-  background: rgba(255, 255, 255, .25);
+  border: 0.1cqw solid #5B3B8C;
+  background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%);
+  box-shadow: 0 0.2cqw 0.6cqw rgba(91, 59, 140, 0.15);
 }
 
 .cert-storybook-castle .storybook-book-page-left {
   left: 0;
-  border-radius: .4cqw .06cqw .15cqw .35cqw;
+  border-radius: 0.5cqw 0.08cqw 0.2cqw 0.4cqw;
   transform: skewY(4deg);
 }
 
 .cert-storybook-castle .storybook-book-page-right {
   right: 0;
-  border-radius: .06cqw .4cqw .35cqw .15cqw;
+  border-radius: 0.08cqw 0.5cqw 0.4cqw 0.2cqw;
   transform: skewY(-4deg);
 }
 
 .cert-storybook-castle .storybook-book-spine {
   position: absolute;
   left: 50%;
-  bottom: .04cqw;
-  width: .07cqw;
-  height: 3.45cqw;
+  bottom: 0;
+  width: 0.14cqw;
+  height: 4.4cqw;
   transform: translateX(-50%);
-  background: var(--accent, #D8A63C);
+  background: #D8A63C;
+  box-shadow: 0 0 0.5cqw #D8A63C;
 }
 
 /* ========================= HEADER ========================= */
 .cert-storybook-castle .storybook-header {
-  position: absolute;
-  top: 4.15%;
-  left: 6.15%;
-  right: 6.15%;
-  height: 10.5%;
+  position: relative;
   z-index: 3;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+  min-height: 5.2cqw;
+  padding: 0 0.5cqw 0.8cqw;
+  border-bottom: 0.1cqw solid rgba(216, 166, 60, 0.45);
 }
 
 .cert-storybook-castle .storybook-school-lockup {
   display: flex;
   align-items: center;
-  gap: .92cqw;
+  gap: 1cqw;
   min-width: 0;
-  max-width: 35cqw;
+  max-width: 45cqw;
 }
 
 .cert-storybook-castle .storybook-logo {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex: 0 0 auto;
-  width: 4.25cqw !important;
-  height: 4.25cqw !important;
-  max-width: 4.25cqw !important;
-  max-height: 4.25cqw !important;
-  object-fit: contain;
-  border-radius: .5cqw;
+  width: 4.6cqw;
+  height: 4.6cqw;
+  border: 0.12cqw solid #D8A63C;
+  border-radius: 0.8cqw;
+  background: #ffffff;
+  box-shadow: 0 0.2cqw 0.8cqw rgba(91, 59, 140, 0.15), inset 0 0 0.4cqw rgba(216, 166, 60, 0.1);
 }
 
 .cert-storybook-castle .storybook-logo img {
@@ -271,30 +345,25 @@
 .cert-storybook-castle .storybook-school-copy {
   display: flex;
   flex-direction: column;
-  gap: .1cqw;
+  gap: 0.15cqw;
   min-width: 0;
-  max-width: 27cqw;
 }
 
 .cert-storybook-castle .storybook-school-name {
-  max-width: 100%;
-  overflow: hidden;
-  color: var(--primary, #5B3B8C);
+  color: #4C2D75;
   font-weight: 850;
-  line-height: 1.15;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.2;
 }
 
 .cert-storybook-castle .storybook-school-name-ar {
-  font-family: var(--student-font-ar, "Tajawal"), sans-serif;
-  font-size: 1.2cqw;
+  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
+  font-size: 1.35cqw;
 }
 
 .cert-storybook-castle .storybook-school-name-en {
-  font-family: var(--student-font-en, "Inter"), sans-serif;
-  font-size: .96cqw;
-  opacity: .9;
+  font-family: var(--student-font-en, 'Inter'), sans-serif;
+  font-size: 1.02cqw;
+  opacity: 0.92;
 }
 
 .cert-storybook-castle .storybook-year-plaque {
@@ -303,89 +372,55 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-width: 11.8cqw;
-  min-height: 3.85cqw;
-  padding: .42cqw 1.12cqw;
-  border: .08cqw solid rgba(216, 166, 60, .78);
-  border-radius: .48cqw;
-  background: rgba(255, 255, 255, .34);
+  min-width: 12.5cqw;
+  min-height: 4cqw;
+  padding: 0.4cqw 1.2cqw;
+  border: 0.1cqw solid #D8A63C;
+  border-radius: 0.6cqw;
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: 0 0.2cqw 0.8cqw rgba(216, 166, 60, 0.2);
 }
 
 .cert-storybook-castle .storybook-year-plaque::before,
 .cert-storybook-castle .storybook-year-plaque::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 50%;
   width: 1.8cqw;
-  height: .05cqw;
-  background: var(--accent, #D8A63C);
-  opacity: .4;
+  height: 0.08cqw;
+  background: #D8A63C;
 }
 
-.cert-storybook-castle .storybook-year-plaque::before {
-  right: calc(100% + .7cqw);
-}
-
-.cert-storybook-castle .storybook-year-plaque::after {
-  left: calc(100% + .7cqw);
-}
+.cert-storybook-castle .storybook-year-plaque::before { right: calc(100% + 0.6cqw); }
+.cert-storybook-castle .storybook-year-plaque::after { left: calc(100% + 0.6cqw); }
 
 .cert-storybook-castle .storybook-year-label {
-  color: rgba(91, 59, 140, .7);
-  font-size: .62cqw;
-  font-weight: 750;
+  color: #6d429e;
+  font-size: 0.68cqw;
+  font-weight: 800;
   line-height: 1;
 }
 
 .cert-storybook-castle .storybook-year-value {
-  margin-top: .16cqw;
-  color: var(--primary, #5B3B8C);
-  font-size: 1.02cqw;
+  margin-top: 0.2cqw;
+  color: #4C2D75;
+  font-size: 1.05cqw;
   font-weight: 900;
   line-height: 1;
 }
 
-/* ========================= MAIN ========================= */
+/* ========================= MAIN PAGE ========================= */
 .cert-storybook-castle .storybook-page {
-  position: absolute;
-  top: 18.2%;
-  left: 50%;
-  width: 71%;
-  height: 45.5%;
+  position: relative;
   z-index: 2;
-  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: .8cqw;
-  margin: 0;
-  padding: 1.15cqw 3.8cqw 1.2cqw;
+  width: 100%;
+  margin: auto 0;
   text-align: center;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-}
-
-/* remove card look completely */
-.cert-storybook-castle .storybook-page::before {
-  content: "";
-  position: absolute;
-  left: 9%;
-  right: 9%;
-  top: 0;
-  height: .055cqw;
-  background: linear-gradient(90deg, transparent, rgba(216, 166, 60, .35), transparent);
-}
-
-.cert-storybook-castle .storybook-page::after {
-  content: "";
-  position: absolute;
-  left: 18%;
-  right: 18%;
-  bottom: 0;
-  height: .05cqw;
-  background: linear-gradient(90deg, transparent, rgba(216, 166, 60, .24), transparent);
+  gap: 0.65cqw;
 }
 
 .cert-storybook-castle .storybook-page-corner {
@@ -398,42 +433,38 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: .14cqw;
+  gap: 0.2cqw;
   width: 100%;
-  min-height: 4.2cqw;
-  margin: 0 0 .1cqw;
+  margin: 0;
 }
 
 .cert-storybook-castle .storybook-title-block::before {
-  content: "";
-  width: 2.4cqw;
-  height: .11cqw;
-  margin-bottom: .28cqw;
-  border-radius: 999px;
-  background: var(--accent, #D8A63C);
-  box-shadow:
-    -3.35cqw 0 0 -.035cqw rgba(216, 166, 60, .35),
-    3.35cqw 0 0 -.035cqw rgba(216, 166, 60, .35);
+  content: '👑';
+  font-size: 1.5cqw;
+  line-height: 1;
+  margin-bottom: 0.25cqw;
+  filter: drop-shadow(0 0.1cqw 0.3cqw rgba(216, 166, 60, 0.6));
 }
 
 .cert-storybook-castle .storybook-title {
   display: block;
   max-width: 100%;
-  color: var(--primary, #5B3B8C);
+  color: #4C2D75;
   font-weight: 900;
-  line-height: 1.02;
+  line-height: 1.08;
   text-align: center;
+  text-shadow: 0 0.15cqw 0.5cqw rgba(91, 59, 140, 0.15);
 }
 
 .cert-storybook-castle .storybook-title-ar {
-  font-family: var(--student-font-ar, "El Messiri"), var(--student-font-ar, "Tajawal"), sans-serif;
-  font-size: 3.05cqw;
+  font-family: var(--student-font-ar, 'El Messiri'), serif;
+  font-size: 3.1cqw;
 }
 
 .cert-storybook-castle .storybook-title-en {
-  font-family: Georgia, "Times New Roman", var(--student-font-en, "Inter"), serif;
-  font-size: 2.82cqw;
-  letter-spacing: .01em;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 2.85cqw;
+  letter-spacing: 0.02em;
 }
 
 .cert-storybook-castle .storybook-presented-to {
@@ -441,45 +472,43 @@
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  gap: .48cqw;
-  min-height: 1.35cqw;
-  margin: .2cqw 0 .1cqw;
-  color: rgba(53, 39, 71, .72);
-  font-size: 1cqw;
-  font-weight: 650;
+  gap: 0.5cqw;
+  color: #78350F;
+  font-size: 1.08cqw;
+  font-weight: 700;
+  font-style: italic;
   line-height: 1.2;
 }
 
 .cert-storybook-castle .storybook-presented-to i {
   display: inline-block;
-  width: .26cqw;
-  height: .26cqw;
+  width: 0.35cqw;
+  height: 0.35cqw;
   border-radius: 50%;
-  background: var(--accent, #D8A63C);
-  opacity: .58;
+  background: #D8A63C;
 }
 
 .cert-storybook-castle .storybook-name-chapter {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(5cqw, 1fr) minmax(0, 50cqw) minmax(5cqw, 1fr);
+  grid-template-columns: minmax(5cqw, 1fr) minmax(0, 52cqw) minmax(5cqw, 1fr);
   align-items: center;
   width: 100%;
-  min-height: 6.5cqw;
-  margin: .2cqw 0 .1cqw;
+  min-height: 6.8cqw;
+  margin: 0.15cqw 0;
   column-gap: 1.2cqw;
 }
 
-.cert-storybook-castle .storybook-name-chapter>.storybook-chapter-line:first-child {
+.cert-storybook-castle .storybook-name-chapter > .storybook-chapter-line:first-child {
   grid-column: 1;
 }
 
-.cert-storybook-castle .storybook-name-chapter>.storybook-chapter-line:last-child {
+.cert-storybook-castle .storybook-name-chapter > .storybook-chapter-line:last-child {
   grid-column: 3;
   transform: scaleX(-1);
 }
 
-.cert-storybook-castle .storybook-name-chapter> :not(.storybook-chapter-line):not(.storybook-name-spark) {
+.cert-storybook-castle .storybook-name-chapter > :not(.storybook-chapter-line):not(.storybook-name-spark) {
   grid-column: 2;
   grid-row: 1;
   min-width: 0;
@@ -488,153 +517,212 @@
 .cert-storybook-castle .storybook-chapter-line {
   display: block;
   width: 100%;
-  height: .06cqw;
+  height: 0.1cqw;
   border-radius: 999px;
-  background: linear-gradient(90deg, transparent, var(--accent, #D8A63C));
-  opacity: .46;
+  background: linear-gradient(90deg, transparent, #D8A63C);
+  opacity: 0.7;
 }
 
 .cert-storybook-castle .storybook-name-spark {
   position: absolute;
   top: 50%;
-  left: 11.2%;
-  width: .48cqw;
+  left: 10%;
+  width: 0.65cqw;
   transform: translateY(-50%);
-  opacity: .48;
+  opacity: 0.75;
 }
 
 .cert-storybook-castle .storybook-name-spark-right {
   left: auto;
-  right: 11.2%;
-  width: .38cqw;
-  opacity: .34;
+  right: 10%;
+  width: 0.6cqw;
+  opacity: 0.65;
 }
 
 .cert-storybook-castle .storybook-student-name,
-.cert-storybook-castle .storybook-name-chapter .cert-student-name {
+.cert-storybook-castle .storybook-name-chapter .cert-student-name,
+.cert-storybook-castle .storybook-name-chapter bdi {
   display: block;
   width: 100%;
-  max-width: 50cqw;
+  max-width: 52cqw;
   margin-inline: auto;
-  color: #6A4811;
+  color: #854D0E;
+  font-family: var(--student-font-ar, 'El Messiri'), serif;
+  font-size: 3.4cqw;
   font-weight: 900;
-  line-height: 1.14;
+  line-height: 1.15;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: clip;
-  text-shadow: 0 .06cqw 0 rgba(255, 255, 255, .9);
+  text-shadow: 0 0.1cqw 0.2cqw rgba(255, 255, 255, 0.9), 0 0.2cqw 0.8cqw rgba(180, 83, 9, 0.2);
 }
 
 .cert-storybook-castle .storybook-student-name-en {
-  font-family: Georgia, "Times New Roman", var(--student-font-en, "Inter"), serif;
-  letter-spacing: .002em;
+  font-family: Georgia, 'Times New Roman', serif;
+  letter-spacing: 0.01em;
 }
 
-.cert-storybook-castle .storybook-name-chapter .cert-student-name+* {
-  max-width: 47cqw;
-  margin-inline: auto;
-}
-
+/* ========================= 3 UNIFIED LUXURY PILLS ========================= */
 .cert-storybook-castle .storybook-achievement-strip {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: .78cqw;
-  max-width: 48cqw;
-  min-height: 2.65cqw;
-  margin-top: .28cqw;
+  flex-wrap: wrap;
+  gap: 0.85cqw;
+  width: 100%;
+  max-width: 62cqw;
+  margin: 0.25cqw auto 0;
 }
 
 .cert-storybook-castle .storybook-subject,
-.cert-storybook-castle .storybook-grade {
-  display: flex;
+.cert-storybook-castle .storybook-grade,
+.cert-storybook-castle .storybook-achievement-value {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.25cqw;
-  padding: .4cqw 1.55cqw;
+  min-height: 2.85cqw;
+  padding: 0.42cqw 1.6cqw 0.28cqw;
   border-radius: 999px;
-  font-size: .9cqw;
-  font-weight: 820;
-  line-height: 1.05;
+  font-family: var(--student-font-en, 'Inter'), var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 1.22cqw;
+  font-weight: 850;
+  line-height: 1;
+  text-align: center;
   white-space: nowrap;
 }
 
+.cert-storybook-castle .storybook-achievement-strip :is(span, bdi, .storybook-subject-value, .storybook-achievement-value, .certificate-achievement-part) {
+  font-size: 1.22cqw;
+  font-weight: 850;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 1. Subject Pill (Parchment & Gold) */
 .cert-storybook-castle .storybook-subject {
-  min-width: 15.5cqw;
-  gap: .36cqw;
-  border: .075cqw solid rgba(216, 166, 60, .78);
-  background: rgba(255, 255, 255, .34);
-  color: var(--primary, #5B3B8C);
+  min-width: 14cqw;
+  gap: 0.4cqw;
+  border: 0.1cqw solid #D8A63C;
+  background: rgba(255, 255, 255, 0.95);
+  color: #5B3B8C;
+  box-shadow: 0 0.2cqw 0.6cqw rgba(91, 59, 140, 0.1);
 }
 
 .cert-storybook-castle .storybook-subject-value {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 1.22cqw;
+  font-weight: 850;
+  line-height: 1;
 }
 
 .cert-storybook-castle .storybook-subject-divider {
-  color: var(--accent, #D8A63C);
+  color: #D8A63C;
+  font-weight: 900;
+  font-size: 1.1cqw;
+  line-height: 1;
 }
 
+/* 2. Grade Pill (Royal Purple Velvet) */
 .cert-storybook-castle .storybook-grade {
-  min-width: 10.2cqw;
-  background: var(--primary, #5B3B8C);
-  color: #fff;
-  box-shadow: inset 0 0 0 .04cqw rgba(255, 255, 255, .12);
+  min-width: 10.5cqw;
+  background: #5B3B8C;
+  border: 0.1cqw solid #4C2D75;
+  color: #ffffff;
+  box-shadow: 0 0.2cqw 0.7cqw rgba(91, 59, 140, 0.25);
 }
 
+/* 3. Achievement Pill (Royal Amber / Gold Shimmer) */
+.cert-storybook-castle .storybook-achievement-value {
+  min-width: 14cqw;
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border: 0.1cqw solid #D97706;
+  color: #78350F;
+  box-shadow: 0 0.2cqw 0.7cqw rgba(217, 119, 6, 0.22);
+}
+
+.cert-storybook-castle .certificate-achievement-part {
+  display: inline;
+  font-size: 1.22cqw;
+  font-weight: 850;
+  line-height: 1;
+}
+
+/* Certificate Message */
 .cert-storybook-castle .storybook-message {
   position: relative;
-  width: 47cqw;
-  max-width: 92%;
-  margin-top: .42cqw;
-  padding: .85cqw 1cqw 0;
-  color: rgba(53, 39, 71, .86);
-  font-family: var(--student-font-ar, "Tajawal"), var(--student-font-en, "Inter"), sans-serif;
-  font-size: .98cqw;
-  font-weight: 650;
-  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 82%;
+  margin: 0.4cqw auto 0;
+  padding-top: 0.55cqw;
+  color: #352747;
+  font-family: var(--student-font-ar, 'Tajawal'), var(--student-font-en, 'Inter'), sans-serif;
+  font-size: 1.22cqw;
+  font-weight: 600;
+  line-height: 1.7;
   text-align: center;
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
+  text-align-last: center;
+  text-wrap: balance;
 }
 
 .cert-storybook-castle .storybook-message::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 50%;
-  width: 7.4cqw;
-  height: .055cqw;
+  width: 12cqw;
+  height: 0.09cqw;
   transform: translateX(-50%);
-  background: linear-gradient(90deg, transparent, rgba(216, 166, 60, .62), transparent);
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #D8A63C, transparent);
 }
 
-.cert-storybook-castle .storybook-message[dir="rtl"] {
-  font-family: var(--student-font-ar, "Tajawal"), sans-serif;
+.cert-storybook-castle .storybook-message :is(.certificate-message-parts, .certificate-message-part, bdi, span, p) {
+  display: block;
+  width: 100%;
+  text-align: center !important;
+  text-align-last: center;
+  margin-inline: auto;
 }
 
-.cert-storybook-castle .storybook-message[dir="ltr"] {
-  font-family: var(--student-font-en, "Inter"), sans-serif;
+.cert-storybook-castle .storybook-message .certificate-message-parts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25cqw;
+  width: 100%;
+}
+
+.cert-storybook-castle .storybook-message[dir='rtl'] {
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  line-height: 1.8;
+}
+
+.cert-storybook-castle .storybook-message[dir='ltr'] {
+  font-family: var(--student-font-en, 'Inter'), sans-serif;
+  line-height: 1.65;
 }
 
 /* ========================= FOOTER ========================= */
 .cert-storybook-castle .storybook-footer {
-  position: absolute;
-  left: 50%;
-  bottom: 8.1%;
-  width: 66%;
-  height: 13.2%;
+  position: relative;
   z-index: 3;
-  transform: translateX(-50%);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 7.6cqw minmax(0, 1fr);
+  grid-template-columns: minmax(18cqw, 1fr) 8cqw minmax(18cqw, 1fr);
   align-items: end;
-  gap: 4.4cqw;
+  gap: 2.5cqw;
+  width: 100%;
+  padding: 0 1cqw 0.2cqw;
+  box-sizing: border-box;
 }
 
 .cert-storybook-castle .storybook-signature {
@@ -644,69 +732,64 @@
   align-items: center;
   justify-content: flex-end;
   min-width: 0;
-  height: 100%;
-  padding: 0 .8cqw .15cqw;
+  gap: 0.3cqw;
   text-align: center;
-}
-
-.cert-storybook-castle .storybook-signature::after {
-  content: "";
-  position: absolute;
-  left: 5%;
-  right: 5%;
-  bottom: 1.65cqw;
-  height: .065cqw;
-  background: linear-gradient(90deg, transparent, rgba(216, 166, 60, .78) 15%, rgba(216, 166, 60, .78) 85%, transparent);
+  width: 100%;
 }
 
 .cert-storybook-castle .storybook-signature-role {
-  position: absolute;
-  top: .2cqw;
-  left: 0;
-  right: 0;
-  color: var(--primary, #5B3B8C);
-  font-size: .7cqw;
+  color: #4C2D75;
+  font-size: 0.82cqw;
   font-weight: 850;
-  line-height: 1.05;
-  opacity: .82;
+  line-height: 1.1;
+  text-align: center;
 }
 
 .cert-storybook-castle .storybook-signature-image {
-  position: absolute;
-  left: 50%;
-  top: 1.1cqw;
-  z-index: 1;
   display: block;
-  width: auto;
-  max-width: 8cqw;
-  height: 1.9cqw;
-  max-height: 1.9cqw;
+  max-width: 9.5cqw;
+  max-height: 3.5cqw;
   object-fit: contain;
-  transform: translateX(-50%);
+  margin: 0 auto;
 }
 
 .cert-storybook-castle .storybook-signature-name {
   position: relative;
-  z-index: 1;
   width: 100%;
-  margin-top: auto;
-  overflow: hidden;
+  min-height: 2.2cqw;
+  box-sizing: border-box;
+  padding-top: 0.5cqw;
+  border-top: 0.1cqw solid #D8A63C;
   color: #352747;
-  font-size: .86cqw;
-  font-weight: 760;
-  line-height: 1.14;
+  font-family: var(--student-font-ar, 'El Messiri'), serif;
+  font-size: 1.12cqw;
+  font-weight: 750;
+  line-height: 1.25;
   text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+}
+
+.cert-storybook-castle .storybook-signature-name::before {
+  content: '';
+  position: absolute;
+  top: -0.16cqw;
+  left: 50%;
+  width: 32%;
+  height: 0.16cqw;
+  transform: translateX(-50%);
+  border-radius: 10cqw;
+  background: #D8A63C;
+  box-shadow: 0 0 0.5cqw rgba(216, 166, 60, 0.4);
 }
 
 .cert-storybook-castle .storybook-signature-name-en {
-  margin-top: .1cqw;
-  font-size: .65cqw;
-  font-weight: 600;
-  opacity: .7;
+  font-family: var(--student-font-en, 'Inter'), sans-serif;
+  font-size: 0.76cqw;
+  font-weight: 650;
+  color: #645377;
+  text-align: center;
 }
 
+/* Royal Golden Date Crest / Seal */
 .cert-storybook-castle .storybook-date-seal {
   position: relative;
   align-self: end;
@@ -714,83 +797,40 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 6.65cqw;
-  height: 6.65cqw;
+  width: 6.8cqw;
+  height: 6.8cqw;
   margin: 0 auto;
-  border: .095cqw solid var(--accent, #D8A63C);
+  border: 0.12cqw solid #D8A63C;
   border-radius: 50%;
-  background: rgba(255, 253, 247, .72);
-  box-shadow: inset 0 0 0 .18cqw rgba(216, 166, 60, .04);
+  background: radial-gradient(circle at 35% 35%, #ffffff, #fef9ee 60%, #faecd4 100%);
+  box-shadow:
+    0 0.3cqw 1cqw rgba(216, 166, 60, 0.35),
+    inset 0 0 0 0.18cqw rgba(216, 166, 60, 0.15);
 }
 
 .cert-storybook-castle .storybook-date-seal::before {
-  content: "";
+  content: '';
   position: absolute;
-  top: .56cqw;
-  width: .34cqw;
+  top: 0.55cqw;
+  width: 0.4cqw;
   aspect-ratio: 1;
-  background: var(--accent, #D8A63C);
+  background: #D8A63C;
   clip-path: polygon(50% 0%, 61% 36%, 100% 50%, 61% 64%, 50% 100%, 39% 64%, 0 50%, 39% 36%);
-  opacity: .5;
 }
 
 .cert-storybook-castle .storybook-date-label {
-  margin-top: .48cqw;
-  color: rgba(91, 59, 140, .68);
-  font-size: .56cqw;
+  margin-top: 0.45cqw;
+  color: #6d429e;
+  font-size: 0.62cqw;
   font-weight: 850;
   line-height: 1;
 }
 
 .cert-storybook-castle .storybook-date-value {
-  max-width: 5.55cqw;
-  margin-top: .28cqw;
-  color: var(--primary, #5B3B8C);
-  font-size: .73cqw;
+  max-width: 5.8cqw;
+  margin-top: 0.25cqw;
+  color: #4C2D75;
+  font-size: 0.78cqw;
   font-weight: 850;
-  line-height: 1.14;
   text-align: center;
-}
-
-/* ========================= LANGUAGE MODES ========================= */
-.cert-storybook-castle.storybook-language-ar .storybook-presented-to {
-  font-family: var(--student-font-ar, "Tajawal"), sans-serif;
-  font-size: 1.04cqw;
-}
-
-.cert-storybook-castle.storybook-language-en .storybook-presented-to {
-  font-family: var(--student-font-en, "Inter"), sans-serif;
-}
-
-.cert-storybook-castle.storybook-language-bilingual .storybook-title-ar {
-  font-size: 2.35cqw;
-}
-
-.cert-storybook-castle.storybook-language-bilingual .storybook-title-en {
-  margin-top: .04cqw;
-  font-size: 1.28cqw;
-  font-weight: 700;
-  letter-spacing: .03em;
-  opacity: .82;
-}
-
-.cert-storybook-castle.storybook-language-bilingual .storybook-presented-to {
-  font-size: .8cqw;
-}
-
-.cert-storybook-castle.storybook-language-bilingual .storybook-student-name,
-.cert-storybook-castle.storybook-language-bilingual .storybook-name-chapter .cert-student-name {
-  line-height: 1.16;
-}
-
-.cert-storybook-castle.storybook-language-bilingual .storybook-message {
-  font-size: .84cqw;
-  line-height: 1.36;
-}
-
-@media print {
-  .cert-storybook-castle {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
 }

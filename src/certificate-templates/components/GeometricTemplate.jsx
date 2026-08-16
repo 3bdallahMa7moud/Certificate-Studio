@@ -92,7 +92,6 @@ export default function GeometricTemplate({ state, render }) {
               </span>
             )}
           </div>
-          <div className="serial-tag">{state.serial}</div>
         </div>
 
         <div className="pill">

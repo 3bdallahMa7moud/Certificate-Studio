@@ -1,4 +1,8 @@
-/* Islamic Heritage - Professional Canva-like Design */
+/* ==========================================================================
+   ISLAMIC HERITAGE CERTIFICATE — ROYAL ANDALUSIAN VIP EDITION
+   Arabic-first / RTL-safe Luxury Islamic Masterpiece
+   ========================================================================== */
+
 .cert-islamic-heritage {
   position: absolute;
   inset: 0;
@@ -6,196 +10,739 @@
   height: 100%;
   box-sizing: border-box;
   overflow: hidden;
+  isolation: isolate;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: radial-gradient(circle at center, #FDFBF7 0%, #F5F0E1 100%);
+
+  padding: 2.8cqw 4.2cqw 2.2cqw;
+
+  /* Rich Royal Andalusian Parchment Background */
+  background:
+    radial-gradient(ellipse at 50% 28%, #FFFFFF 0%, #FAF6ED 45%, #F4EAD3 80%, #EDE0C2 100%);
   color: var(--text, #1C2833);
-  padding: 4.5cqw 5.5cqw;
-  border: 1.5cqw solid var(--primary, #0B5345);
-  box-shadow: inset 0 0 0 0.5cqw var(--accent, #D4AC0D);
+  border: 0.82cqw solid #064E3B;
+  border-radius: 2.4cqw;
+
+  font-family: var(--student-font-ar, 'El Messiri'), var(--student-font-en, 'Inter'), 'Amiri', serif;
+  text-rendering: geometricPrecision;
+  box-shadow:
+    inset 0 0 6cqw rgba(6, 78, 59, 0.14),
+    inset 0 0 1.5cqw rgba(212, 175, 55, 0.25),
+    0 1.8cqw 4.5cqw rgba(4, 44, 36, 0.35);
 }
 
-/* Islamic Pattern Background */
+.cert-islamic-heritage *,
+.cert-islamic-heritage *::before,
+.cert-islamic-heritage *::after {
+  box-sizing: border-box;
+}
+
+/* Outer Gold Filigree Accent Border */
+.cert-islamic-heritage::before {
+  content: '';
+  position: absolute;
+  inset: 1.1cqw;
+  z-index: 0;
+  pointer-events: none;
+  border: 0.16cqw solid #D4AF37;
+  border-radius: 1.6cqw;
+  box-shadow:
+    inset 0 0 0 0.08cqw rgba(6, 78, 59, 0.3),
+    0 0 1.2cqw rgba(212, 175, 55, 0.45);
+}
+
+/* Inner Thin Gold Accent Border with Beveled Spacing */
 .cert-islamic-heritage::after {
   content: '';
   position: absolute;
+  inset: 1.65cqw;
+  z-index: 0;
+  pointer-events: none;
+  border: 0.06cqw solid rgba(212, 175, 55, 0.65);
+  border-radius: 1.25cqw;
+}
+
+/* ---------- Direction & Language modes ---------- */
+.cert-islamic-heritage.islamic-layout-rtl {
+  direction: rtl;
+}
+
+.cert-islamic-heritage.islamic-layout-ltr {
+  direction: ltr;
+}
+
+.cert-islamic-heritage [dir='rtl'],
+.cert-islamic-heritage [lang='ar'] {
+  unicode-bidi: isolate;
+}
+
+.cert-islamic-heritage [dir='ltr'],
+.cert-islamic-heritage [lang='en'] {
+  unicode-bidi: isolate;
+}
+
+/* ================= BACKGROUND ART & VECTORS ================= */
+.cert-islamic-heritage .islamic-art-layer {
+  position: absolute;
   inset: 0;
-  background-image: 
-    radial-gradient(var(--accent, #D4AC0D) 1px, transparent 1px),
-    radial-gradient(var(--accent, #D4AC0D) 1px, transparent 1px);
-  background-position: 0 0, 2cqw 2cqw;
-  background-size: 4cqw 4cqw;
-  opacity: 0.15;
   pointer-events: none;
   z-index: 1;
+  overflow: hidden;
 }
 
-/* Ornate Corner Accents */
-.cert-islamic-heritage .islamic-corner {
+/* Geometric Girih Watermark Pattern */
+.cert-islamic-heritage .islamic-girih-watermark {
   position: absolute;
-  width: 8cqw;
-  height: 8cqw;
-  background: transparent;
-  border: 3px solid var(--primary, #0B5345);
-  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: #064E3B;
+  opacity: 0.12;
+  mix-blend-mode: multiply;
+}
+
+/* Top Royal Andalusian Arch & Crown Ornament */
+.cert-islamic-heritage .islamic-arch-crest {
+  position: absolute;
+  top: 1.3cqw;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 38cqw;
+  height: 4.8cqw;
+  z-index: 1;
   pointer-events: none;
 }
-.cert-islamic-heritage .islamic-corner-tl { top: 1.5cqw; left: 1.5cqw; border-right: none; border-bottom: none; }
-.cert-islamic-heritage .islamic-corner-tr { top: 1.5cqw; right: 1.5cqw; border-left: none; border-bottom: none; }
-.cert-islamic-heritage .islamic-corner-bl { bottom: 1.5cqw; left: 1.5cqw; border-right: none; border-top: none; }
-.cert-islamic-heritage .islamic-corner-br { bottom: 1.5cqw; right: 1.5cqw; border-left: none; border-top: none; }
 
+.cert-islamic-heritage .islamic-arch-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 4 Andalusian Corner Arabesque Brackets */
+.cert-islamic-heritage .islamic-corner-ornament {
+  position: absolute;
+  z-index: 2;
+  width: 6.8cqw;
+  height: 6.8cqw;
+  pointer-events: none;
+  filter: drop-shadow(0 0.2cqw 0.5cqw rgba(6, 78, 59, 0.18));
+}
+
+.cert-islamic-heritage .islamic-corner-tl { top: 1.4cqw; left: 1.4cqw; }
+.cert-islamic-heritage .islamic-corner-tr { top: 1.4cqw; right: 1.4cqw; }
+.cert-islamic-heritage .islamic-corner-bl { bottom: 1.4cqw; left: 1.4cqw; }
+.cert-islamic-heritage .islamic-corner-br { bottom: 1.4cqw; right: 1.4cqw; }
+
+.cert-islamic-heritage .islamic-corner-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ========================= HEADER ========================= */
 .cert-islamic-heritage .islamic-header {
   position: relative;
-  z-index: 3;
+  z-index: 4;
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.cert-islamic-heritage .cert-logo-islamic-heritage {
-  width: 5.5cqw;
-  height: 5.5cqw;
-  object-fit: contain;
+  width: 100%;
+  min-height: 5.6cqw;
+  padding: 0.6cqw 1.8cqw;
+  background: rgba(255, 255, 255, 0.88);
+  border: 0.14cqw solid #D4AF37;
+  border-radius: 1.5cqw;
+  box-shadow:
+    0 0.4cqw 1.5cqw rgba(6, 78, 59, 0.12),
+    inset 0 0 1cqw rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
 }
 
 .cert-islamic-heritage .islamic-school-lockup {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.cert-islamic-heritage .islamic-hijri-date {
-  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
-  color: var(--accent, #D4AC0D);
-  font-size: 1cqw;
-  font-weight: 700;
-  margin-bottom: 0.2cqw;
-}
-
-.cert-islamic-heritage .islamic-school {
-  font-family: var(--student-font-ar, 'Amiri'), serif;
-  font-size: 1.6cqw;
-  font-weight: 700;
-  color: var(--primary, #0B5345);
-}
-
-.cert-islamic-heritage .islamic-body {
-  position: relative;
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
-  margin: auto 0;
-  gap: 1.5cqw;
+  gap: 1.2cqw;
+  min-width: 0;
+  max-width: 55cqw;
 }
 
-.cert-islamic-heritage .islamic-title-banner {
-  font-family: var(--student-font-ar, 'Amiri'), serif;
-  font-size: 3.8cqw;
-  font-weight: 700;
-  color: var(--primary, #0B5345);
+.cert-islamic-heritage .islamic-logo-frame {
   position: relative;
-  display: inline-block;
-  padding: 0 2cqw;
-}
-.cert-islamic-heritage .islamic-title-banner::before,
-.cert-islamic-heritage .islamic-title-banner::after {
-  content: '❖';
-  color: var(--accent, #D4AC0D);
-  font-size: 1.5cqw;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-}
-.cert-islamic-heritage .islamic-title-banner::before { right: -1cqw; }
-.cert-islamic-heritage .islamic-title-banner::after { left: -1cqw; }
-
-.cert-islamic-heritage .islamic-student-name-wrapper {
-  width: 100%;
-  display: grid;
-  place-items: center;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid var(--accent, #D4AC0D);
-  padding: 1.5cqw 2cqw;
-  border-radius: 4px;
-  box-sizing: border-box;
-  text-align: center;
-}
-.cert-islamic-heritage .islamic-student-name-wrapper .cert-student-name {
-  color: var(--primary, #0B5345);
-}
-
-.cert-islamic-heritage .islamic-message {
-  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
-  font-size: 1.4cqw;
-  line-height: 1.8;
-  color: #2E4053;
-  max-width: 80%;
-  font-weight: 600;
-}
-
-.cert-islamic-heritage .islamic-info-grid {
   display: flex;
-  gap: 2cqw;
+  align-items: center;
   justify-content: center;
-  margin-top: 1cqw;
+  flex: 0 0 auto;
 }
 
-.cert-islamic-heritage .islamic-info-item {
+.cert-islamic-heritage .cert-logo-islamic-heritage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5.2cqw;
+  height: 5.2cqw;
+  border: 0.16cqw solid #D4AF37;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow:
+    0 0.3cqw 1cqw rgba(212, 175, 55, 0.3),
+    inset 0 0 0.5cqw rgba(212, 175, 55, 0.2);
+  overflow: hidden;
+}
+
+.cert-islamic-heritage .cert-logo-islamic-heritage img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cert-islamic-heritage .islamic-school-copy {
   display: flex;
   flex-direction: column;
+  gap: 0.15cqw;
+  min-width: 0;
+}
+
+.cert-islamic-heritage .islamic-school-name {
+  color: #064E3B;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.cert-islamic-heritage .islamic-school-name-ar {
+  font-family: var(--student-font-ar, 'El Messiri'), 'Amiri', serif;
+  font-size: 1.42cqw;
+  letter-spacing: 0.01em;
+}
+
+.cert-islamic-heritage .islamic-school-name-en {
+  font-family: var(--student-font-en, 'Inter'), sans-serif;
+  font-size: 1.05cqw;
+  opacity: 0.95;
+}
+
+/* Metadata Island: Academic Year & Date */
+.cert-islamic-heritage .islamic-meta-island {
+  display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(11, 83, 69, 0.2);
-  padding: 0.8cqw 2cqw;
-  border-radius: 4px;
+  gap: 0.9cqw;
+  padding: 0.55cqw 1.4cqw;
+  border: 0.12cqw solid #D4AF37;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(254, 243, 199, 0.85) 100%);
+  color: #064E3B;
+  font-size: 0.96cqw;
+  font-weight: 850;
+  box-shadow:
+    0 0.3cqw 1cqw rgba(212, 175, 55, 0.2),
+    inset 0 0 0.4cqw rgba(255, 255, 255, 0.8);
+  white-space: nowrap;
 }
 
-.cert-islamic-heritage .islamic-info-label {
-  color: var(--accent, #D4AC0D);
+.cert-islamic-heritage .islamic-meta-icon {
+  color: #D4AF37;
   font-size: 0.9cqw;
-  font-weight: 700;
-  margin-bottom: 0.3cqw;
+  line-height: 1;
 }
 
-.cert-islamic-heritage .islamic-info-value {
-  color: var(--primary, #0B5345);
-  font-weight: 800;
-  font-size: 1.1cqw;
+.cert-islamic-heritage .islamic-meta-divider {
+  width: 0.1cqw;
+  height: 2cqw;
+  background: linear-gradient(to bottom, transparent, #D4AF37, transparent);
 }
 
-.cert-islamic-heritage .islamic-signatures {
+.cert-islamic-heritage :where(.islamic-meta-year, .islamic-meta-date) {
+  display: inline-block;
+}
+
+/* ========================= MAIN BODY ========================= */
+.cert-islamic-heritage .islamic-main {
   position: relative;
   z-index: 3;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: auto 0;
+  text-align: center;
+  gap: 0.55cqw;
 }
 
-.cert-islamic-heritage .islamic-sig-block {
+/* Bismillah & Title Block */
+.cert-islamic-heritage .islamic-title-block {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 18cqw;
+  justify-content: center;
+  gap: 0.25cqw;
+  width: 100%;
+  margin: 0;
 }
 
-.cert-islamic-heritage .islamic-sig-title {
-  font-size: 1.1cqw;
-  font-weight: 700;
-  color: var(--primary, #0B5345);
-  margin-bottom: 0.5cqw;
+.cert-islamic-heritage .islamic-bismillah-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8cqw;
+  color: #854D0E;
+  font-family: var(--student-font-ar, 'Amiri'), 'El Messiri', serif;
+  font-size: 1.35cqw;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.1cqw;
 }
 
-.cert-islamic-heritage .islamic-sig-name {
-  font-family: var(--student-font-ar, 'Amiri'), serif;
-  font-size: 1.5cqw;
+.cert-islamic-heritage .islamic-bismillah-wing {
+  color: #D4AF37;
+  font-size: 0.95cqw;
   font-weight: 700;
-  color: #1C2833;
-  border-top: 2px solid var(--accent, #D4AC0D);
-  padding-top: 0.5cqw;
+  letter-spacing: -0.1em;
+  opacity: 0.85;
+}
+
+.cert-islamic-heritage .islamic-bismillah-text {
+  text-shadow: 0 0.1cqw 0.4cqw rgba(212, 175, 55, 0.35);
+}
+
+.cert-islamic-heritage .islamic-title {
+  display: block;
+  max-width: 100%;
+  color: #064E3B;
+  font-weight: 900;
+  line-height: 1.1;
+  text-align: center;
+  text-shadow:
+    0 0.15cqw 0.6cqw rgba(6, 78, 59, 0.18),
+    0 0 0.1cqw rgba(212, 175, 55, 0.4);
+}
+
+.cert-islamic-heritage .islamic-title-ar {
+  font-family: var(--student-font-ar, 'El Messiri'), 'Amiri', serif;
+  font-size: 3.25cqw;
+  letter-spacing: 0.01em;
+}
+
+.cert-islamic-heritage .islamic-title-en {
+  font-family: 'Marcellus', Georgia, 'Times New Roman', serif;
+  font-size: 2.9cqw;
+  letter-spacing: 0.03em;
+}
+
+/* Luxury Gilded Arch Line Divider */
+.cert-islamic-heritage .islamic-title-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6cqw;
+  width: 100%;
+  max-width: 26cqw;
+  margin: 0.2cqw auto 0;
+}
+
+.cert-islamic-heritage .islamic-divider-line {
+  flex: 1;
+  height: 0.14cqw;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #D4AF37, #F59E0B, #D4AF37, transparent);
+  box-shadow: 0 0 0.6cqw rgba(212, 175, 55, 0.5);
+}
+
+.cert-islamic-heritage .islamic-divider-diamond {
+  color: #D4AF37;
+  font-size: 0.8cqw;
+  line-height: 1;
+}
+
+.cert-islamic-heritage .islamic-divider-center-star {
+  color: #064E3B;
+  font-size: 1.4cqw;
+  line-height: 1;
+  text-shadow: 0 0 0.6cqw rgba(212, 175, 55, 0.6);
+}
+
+/* Recipient Zone */
+.cert-islamic-heritage .islamic-recipient-zone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 0.35cqw;
+}
+
+.cert-islamic-heritage .islamic-award-intro {
+  margin: 0;
+  color: #854D0E;
+  font-family: var(--student-font-ar, 'El Messiri'), 'Amiri', serif;
+  font-size: 1.28cqw;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-shadow: 0 0.05cqw 0.2cqw rgba(255, 255, 255, 0.9);
+}
+
+/* ================= ROYAL GILDED PLAQUE (STUDENT NAME STAGE) ================= */
+.cert-islamic-heritage .islamic-student-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 68cqw);
+  min-height: 7.8cqw;
+  padding: 0.8cqw 4.2cqw;
+  margin: 0.2cqw auto;
+  box-sizing: border-box;
+  border: 0.16cqw solid #D4AF37;
+  border-radius: 1.8cqw;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(254, 243, 199, 0.88) 50%, rgba(255, 255, 255, 0.96) 100%);
+  box-shadow:
+    0 1.2cqw 3.5cqw rgba(6, 78, 59, 0.16),
+    inset 0 0 2cqw rgba(255, 255, 255, 0.95),
+    inset 0 0 0.6cqw rgba(212, 175, 55, 0.35),
+    0 0 1.5cqw rgba(212, 175, 55, 0.2);
+  backdrop-filter: blur(14px);
+}
+
+/* 4 Corner Inlay Notches on Plaque */
+.cert-islamic-heritage .islamic-plaque-corner {
+  position: absolute;
+  width: 1cqw;
+  height: 1cqw;
+  border-color: #064E3B;
+  border-style: solid;
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+.cert-islamic-heritage .islamic-p-tl { top: 0.4cqw; left: 0.4cqw; border-width: 0.12cqw 0 0 0.12cqw; }
+.cert-islamic-heritage .islamic-p-tr { top: 0.4cqw; right: 0.4cqw; border-width: 0.12cqw 0.12cqw 0 0; }
+.cert-islamic-heritage .islamic-p-bl { bottom: 0.4cqw; left: 0.4cqw; border-width: 0 0 0.12cqw 0.12cqw; }
+.cert-islamic-heritage .islamic-p-br { bottom: 0.4cqw; right: 0.4cqw; border-width: 0 0.12cqw 0.12cqw 0; }
+
+.cert-islamic-heritage .islamic-student-stage > * {
   width: 100%;
   text-align: center;
+}
+
+.cert-islamic-heritage .islamic-student-name,
+.cert-islamic-heritage .islamic-student-stage .cert-student-name,
+.cert-islamic-heritage .islamic-student-stage bdi {
+  display: block;
+  width: 100%;
+  max-width: 58cqw;
+  margin-inline: auto;
+  color: #064E3B;
+  font-family: var(--student-font-ar, 'El Messiri'), 'Amiri', serif;
+  font-size: 3.6cqw;
+  font-weight: 900;
+  line-height: 1.15;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  text-shadow:
+    0 0.1cqw 0.2cqw rgba(255, 255, 255, 1),
+    0 0.25cqw 1cqw rgba(212, 175, 55, 0.35);
+}
+
+.cert-islamic-heritage .islamic-student-name-en {
+  font-family: 'Marcellus', Georgia, 'Times New Roman', serif;
+  letter-spacing: 0.02em;
+}
+
+/* ================= 3 ROYAL SHIELD MEDALLIONS ================= */
+.cert-islamic-heritage .islamic-achievement-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1cqw;
+  width: 100%;
+  max-width: 66cqw;
+  margin: 0.3cqw auto 0;
+}
+
+.cert-islamic-heritage .islamic-info-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3cqw;
+  padding: 0.45cqw 2.2cqw 0.35cqw;
+  border-radius: 999px;
+  font-family: var(--student-font-en, 'Inter'), var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 1.25cqw;
+  font-weight: 850;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.cert-islamic-heritage .islamic-info-chip :is(span, bdi, .islamic-subject-val, .islamic-achievement-value, .certificate-achievement-part) {
+  font-size: 1.25cqw;
+  font-weight: 850;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 1. Subject Medallion (Ivory Parchment & Gilded Ring) */
+.cert-islamic-heritage .islamic-subject-chip {
+  min-width: 15cqw;
+  border: 0.12cqw solid #D4AF37;
+  background: linear-gradient(135deg, #FFFFFF 0%, #FAF6EE 100%);
+  color: #064E3B;
+  box-shadow:
+    0 0.3cqw 0.8cqw rgba(6, 78, 59, 0.12),
+    inset 0 0 0.4cqw rgba(212, 175, 55, 0.2);
+}
+
+.cert-islamic-heritage .islamic-subject-val {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 1.25cqw;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.cert-islamic-heritage .islamic-chip-dot {
+  color: #D4AF37;
+  font-weight: 900;
+  font-size: 1.1cqw;
+  line-height: 1;
+}
+
+/* 2. Grade Medallion (Royal Emerald Velvet) */
+.cert-islamic-heritage .islamic-grade-chip {
+  min-width: 11.5cqw;
+  background: linear-gradient(135deg, #064E3B 0%, #042C24 100%);
+  border: 0.12cqw solid #D4AF37;
+  color: #FFFFFF;
+  box-shadow:
+    0 0.3cqw 0.9cqw rgba(6, 78, 59, 0.35),
+    inset 0 0 0.6cqw rgba(212, 175, 55, 0.25);
+  text-shadow: 0 0.1cqw 0.3cqw rgba(0, 0, 0, 0.4);
+}
+
+/* 3. Achievement Medallion (Imperial Amber / 24K Gold Shimmer) */
+.cert-islamic-heritage .islamic-achievement-chip {
+  min-width: 15cqw;
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 50%, #F59E0B 100%);
+  border: 0.12cqw solid #B45309;
+  color: #78350F;
+  box-shadow:
+    0 0.3cqw 0.9cqw rgba(180, 83, 9, 0.25),
+    inset 0 0 0.5cqw rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0.05cqw 0.2cqw rgba(255, 255, 255, 0.8);
+}
+
+.cert-islamic-heritage .certificate-achievement-part {
+  display: inline;
+  font-size: 1.25cqw;
+  font-weight: 850;
+  line-height: 1;
+}
+
+/* ================= APPRECIATION MESSAGE ================= */
+.cert-islamic-heritage .islamic-message {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 84%;
+  margin: 0.4cqw auto 0;
+  padding-top: 0.6cqw;
+  color: #1C2833;
+  font-family: var(--student-font-ar, 'Tajawal'), var(--student-font-en, 'Inter'), sans-serif;
+  font-size: 1.28cqw;
+  font-weight: 700;
+  line-height: 1.75;
+  text-align: center;
+  text-align-last: center;
+  text-wrap: balance;
+  text-shadow: 0 0.05cqw 0.2cqw rgba(255, 255, 255, 0.9);
+}
+
+.cert-islamic-heritage .islamic-message::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 16cqw;
+  height: 0.12cqw;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #D4AF37, #F59E0B, #D4AF37, transparent);
+  box-shadow: 0 0 0.5cqw rgba(212, 175, 55, 0.4);
+}
+
+.cert-islamic-heritage .islamic-message :is(.certificate-message-parts, .certificate-message-part, bdi, span, p) {
+  display: block;
+  width: 100%;
+  text-align: center !important;
+  text-align-last: center;
+  margin-inline: auto;
+}
+
+.cert-islamic-heritage .islamic-message .certificate-message-parts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25cqw;
+  width: 100%;
+}
+
+.cert-islamic-heritage .islamic-message[dir='rtl'] {
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  line-height: 1.85;
+}
+
+.cert-islamic-heritage .islamic-message[dir='ltr'] {
+  font-family: var(--student-font-en, 'Inter'), sans-serif;
+  line-height: 1.7;
+}
+
+/* ========================= FOOTER ========================= */
+.cert-islamic-heritage .islamic-footer {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: minmax(20cqw, 1fr) 9cqw minmax(20cqw, 1fr);
+  align-items: end;
+  gap: 1.8cqw;
+  width: 100%;
+  padding: 0 1.2cqw 0.2cqw;
+  box-sizing: border-box;
+}
+
+/* Signature Pedestal Cards */
+.cert-islamic-heritage .islamic-signature-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+  width: 100%;
+  max-width: 30cqw;
+  margin: 0 auto;
+  gap: 0.25cqw;
+  text-align: center;
+  padding: 0.55cqw 1.2cqw 0.45cqw;
+  border-radius: 1.3cqw;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(254, 243, 199, 0.7) 100%);
+  border: 0.12cqw solid #D4AF37;
+  box-shadow:
+    0 0.3cqw 1cqw rgba(6, 78, 59, 0.1),
+    inset 0 0 0.8cqw rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+}
+
+.cert-islamic-heritage .islamic-signature-teacher {
+  grid-column: 1;
+}
+
+.cert-islamic-heritage .islamic-signature-principal {
+  grid-column: 3;
+}
+
+.cert-islamic-heritage .islamic-signature-role {
+  color: #064E3B;
+  font-size: 0.95cqw;
+  font-weight: 850;
+  line-height: 1.15;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.cert-islamic-heritage .islamic-signature-zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.6cqw;
+  width: 100%;
+}
+
+.cert-islamic-heritage .islamic-signature-image {
+  display: block;
+  max-width: 10cqw;
+  max-height: 3.4cqw;
+  object-fit: contain;
+  margin: 0.1cqw auto;
+}
+
+.cert-islamic-heritage .islamic-signature-name {
+  position: relative;
+  width: 100%;
+  min-height: 1.8cqw;
+  box-sizing: border-box;
+  padding-top: 0.35cqw;
+  border-top: 0.1cqw solid #D4AF37;
+  color: #064E3B;
+  font-family: var(--student-font-ar, 'El Messiri'), 'Amiri', serif;
+  font-size: 1.25cqw;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* ================= ROYAL 3D OCTAGRAM STAR SEAL MEDAL ================= */
+.cert-islamic-heritage .islamic-seal-stage {
+  grid-column: 2;
+  position: relative;
+  width: 7.2cqw;
+  height: 7.2cqw;
+  margin: 0 auto -0.4cqw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dual Angled Honor Ribbons Behind Medal */
+.cert-islamic-heritage .islamic-seal-ribbon {
+  position: absolute;
+  bottom: -0.8cqw;
+  width: 1.8cqw;
+  height: 3.2cqw;
+  background: linear-gradient(135deg, #064E3B 0%, #042C24 100%);
+  border: 0.08cqw solid #D4AF37;
+  z-index: 1;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
+  box-shadow: 0 0.2cqw 0.6cqw rgba(0, 0, 0, 0.3);
+}
+
+.cert-islamic-heritage .islamic-ribbon-left {
+  left: 1.4cqw;
+  transform: rotate(24deg);
+}
+
+.cert-islamic-heritage .islamic-ribbon-right {
+  right: 1.4cqw;
+  transform: rotate(-24deg);
+}
+
+.cert-islamic-heritage .islamic-seal-outer {
+  position: relative;
+  z-index: 2;
+  width: 6.8cqw;
+  height: 6.8cqw;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cert-islamic-heritage .islamic-seal-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }

@@ -42,13 +42,18 @@ export default function OceanAdventureTemplate({ state, render }) {
   const teacherSecondaryName = secondaryEnglishName(state, state.teacherNameEn);
   const principalSecondaryName = secondaryEnglishName(state, state.principalNameEn);
 
+  const isRtl = showAr || !showEn;
+  const isBilingual = showAr && showEn;
+  const layoutClass = `cert-ocean-adventure ${isRtl ? 'ocean-layout-rtl' : 'ocean-layout-ltr'} ${isBilingual ? 'ocean-layout-bilingual' : 'ocean-layout-single-language'}`;
+
   return (
-    <div className="cert-ocean-adventure">
+    <div className={layoutClass}>
       <div className="ocean-decoration" aria-hidden="true">
         <span className="ocean-sun-glow" />
         <span className="ocean-bubble ocean-bubble-one" />
         <span className="ocean-bubble ocean-bubble-two" />
         <span className="ocean-bubble ocean-bubble-three" />
+        <span className="ocean-bubble ocean-bubble-four" />
         <span className="ocean-fish ocean-fish-one"><i /></span>
         <span className="ocean-fish ocean-fish-two"><i /></span>
         <span className="ocean-coral ocean-coral-left"><i /><i /><i /></span>
@@ -170,7 +175,6 @@ export default function OceanAdventureTemplate({ state, render }) {
         </div>
 
         <div className="ocean-student-stage">
-          <span className="ocean-name-spark ocean-name-spark-left" aria-hidden="true" />
           <StudentName
             state={state}
             size={7.2}
@@ -188,7 +192,6 @@ export default function OceanAdventureTemplate({ state, render }) {
               occurrenceId: 'ocean-adventure-student-name-en',
             }, { className: 'ocean-student-name ocean-student-name-en' })}
           />
-          <span className="ocean-name-spark ocean-name-spark-right" aria-hidden="true" />
         </div>
 
         <div className="ocean-achievement-row">
@@ -323,9 +326,9 @@ export default function OceanAdventureTemplate({ state, render }) {
           )}
         </div>
 
-        <div className="ocean-art" aria-hidden="true">
-          <div className="ocean-wave ocean-wave-1" />
-          <div className="ocean-wave ocean-wave-2" />
+        <div className="ocean-pearl-insignia" aria-hidden="true">
+          <span className="ocean-pearl-core" />
+          <span className="ocean-pearl-ring" />
         </div>
 
         <div className="ocean-signature-card ocean-signature-principal">

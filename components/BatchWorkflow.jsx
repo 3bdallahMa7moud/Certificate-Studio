@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Icon from './Icon.jsx';
 import { Field, Section } from './FormControls.jsx';
 import TemplateGallery from './TemplateGallery.jsx';
@@ -7,7 +7,15 @@ import { CERTIFICATE_TYPES, getCertificateType, getGenderAwareMessage, getGender
 import { BEHAVIORS, GRADE_LEVELS, LANGUAGE_MODES, SUBJECTS } from '../src/context/data.js';
 import { dateInputValue, formatDateAr } from '../src/context/helpers.js';
 import { validateBatchSelection } from '../src/services/certificateValidator.js';
+import {
+  areRowIdListsEqual,
+  getBatchStudentRowIds,
+  getSelectedBatchStudents,
+  reconcileBatchSelectedRowIds,
+} from '../src/services/batchSelection.js';
 import { resolveTemplateId } from '../src/certificate-templates/templateUtils.js';
+
+const EMPTY_BATCH_STUDENTS = [];
 
 export default function BatchWorkflow({
   state,
@@ -23,26 +31,34 @@ export default function BatchWorkflow({
   const [step, setStep] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [gradeFilter, setGradeFilter] = useState('');
-  const [selectedRowIds, setSelectedRowIds] = useState(() => {
-    return state.batchStudents?.map(s => s.rowId).filter(Boolean) || [];
-  });
+  const batchStudents = state.batchStudents || EMPTY_BATCH_STUDENTS;
+  const previousBatchStudentsRef = useRef(batchStudents);
+  const [selectedRowIds, setSelectedRowIds] = useState(() => getBatchStudentRowIds(batchStudents));
   const [previewIndex, setPreviewIndex] = useState(0);
 
   const primaryGrades = GRADE_LEVELS;
 
+  useEffect(() => {
+    const previousStudents = previousBatchStudentsRef.current;
+    setSelectedRowIds(previous => {
+      const next = reconcileBatchSelectedRowIds(previous, previousStudents, batchStudents);
+      return areRowIdListsEqual(previous, next) ? previous : next;
+    });
+    previousBatchStudentsRef.current = batchStudents;
+  }, [batchStudents]);
+
   // Filter students by search and grade
   const filteredStudents = useMemo(() => {
-    return (state.batchStudents || []).filter(student => {
+    return batchStudents.filter(student => {
       const nameMatch = !searchTerm || `${student.studentNameAr || ''} ${student.studentNameEn || ''}`.toLowerCase().includes(searchTerm.toLowerCase());
       const gradeMatch = !gradeFilter || student.grade === gradeFilter;
       return nameMatch && gradeMatch;
     });
-  }, [state.batchStudents, searchTerm, gradeFilter]);
+  }, [batchStudents, searchTerm, gradeFilter]);
 
   const selectedStudents = useMemo(() => {
-    const rowIdSet = new Set(selectedRowIds);
-    return (state.batchStudents || []).filter(s => rowIdSet.has(s.rowId));
-  }, [state.batchStudents, selectedRowIds]);
+    return getSelectedBatchStudents(batchStudents, selectedRowIds);
+  }, [batchStudents, selectedRowIds]);
 
   const toggleSelectAll = () => {
     const filteredIds = filteredStudents.map(student => student.rowId).filter(Boolean);
@@ -117,7 +133,6 @@ export default function BatchWorkflow({
       achievementEn: currentPreviewStudent.achievementEn || state.achievementEn,
       customMessageAr,
       customMessageEn,
-      serial: currentPreviewStudent.serial || state.serial,
     };
   }, [state, currentPreviewStudent]);
 
@@ -210,7 +225,7 @@ export default function BatchWorkflow({
               </label>
 
               <span className="selected-count-badge">
-                تم تحديد <strong>{selectedRowIds.length}</strong> من أصل {state.batchStudents?.length || 0} طالب
+                تم تحديد <strong>{selectedStudents.length}</strong> من أصل {batchStudents.length} طالب
               </span>
             </div>
 

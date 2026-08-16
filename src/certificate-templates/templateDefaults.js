@@ -43,7 +43,6 @@ const BASE_ELEMENT_DEFAULTS = Object.freeze({
 
 const NON_SELECTABLE_ROLES = new Set([
   'term',
-  'serial',
   'decoration',
 ]);
 
@@ -739,19 +738,6 @@ const GEOMETRIC_ELEMENTS = [
     zIndex: 3,
     style: { fontSize: 14 },
   }),
-  textElement({
-    id: 'geometric-serial',
-    role: 'serial',
-    labelEn: 'Certificate serial',
-    labelAr: 'الرقم التسلسلي',
-    contentKeys: ['serial'],
-    x: 219,
-    y: 14,
-    width: 55,
-    height: 12,
-    zIndex: 3,
-    style: { fontSize: 12 },
-  }),
   decorationElement({
     id: 'geometric-decoration',
     role: 'decoration',
@@ -957,19 +943,6 @@ const MINIMAL_ELEMENTS = [
     height: 13,
     zIndex: 3,
     style: { fontSize: 14 },
-  }),
-  textElement({
-    id: 'minimal-serial',
-    role: 'serial',
-    labelEn: 'Certificate serial',
-    labelAr: 'الرقم التسلسلي',
-    contentKeys: ['serial'],
-    x: 224,
-    y: 13,
-    width: 55,
-    height: 12,
-    zIndex: 3,
-    style: { fontSize: 12 },
   }),
   decorationElement({
     id: 'minimal-decoration',

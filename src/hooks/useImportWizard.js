@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { SUBJECTS, BEHAVIORS, GRADE_LEVELS, genSerial } from '../context/data.js';
+import { SUBJECTS, BEHAVIORS, GRADE_LEVELS } from '../context/data.js';
 import { parseFileToSheets, validateFileType } from '../services/spreadsheetParser.js';
 import { autoDetectColumns, validateImportRows, IMPORTABLE_COLUMNS } from '../services/importValidator.js';
 import { normalizeText } from '../context/helpers.js';

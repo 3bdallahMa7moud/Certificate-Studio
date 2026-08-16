@@ -3,7 +3,7 @@
  * Classifies every imported row as valid, warning, or error.
  * Does NOT silently replace unknown values with unrelated defaults.
  */
-import { BEHAVIORS, SUBJECTS, genRowId, genSerial } from '../context/data.js';
+import { BEHAVIORS, SUBJECTS, genRowId } from '../context/data.js';
 import {
   normalizeGradeValue,
   normalizeStudentData,
@@ -21,7 +21,6 @@ export const IMPORTABLE_COLUMNS = [
   { key: 'customMessageAr', label: 'نص الشهادة بالعربية', required: false },
   { key: 'customMessageEn', label: 'Certificate message in English', required: false },
   { key: 'customMessage', label: 'نص عام / Generic message', required: false },
-  { key: 'serial',        label: 'الرقم التسلسلي / Serial', required: false },
   { key: 'notes',         label: 'ملاحظات / Notes', required: false },
   { key: '__ignore__',    label: '— تجاهل هذا العمود —', required: false },
 ];
@@ -38,7 +37,6 @@ export function autoDetectColumns(headers) {
   const AR_MESSAGE_HINTS = ['message ar','arabic message','نص عربي','الرسالة العربية','نص الشهادة بالعربية'];
   const EN_MESSAGE_HINTS = ['message en','english message','نص انجليزي','نص إنجليزي','الرسالة الإنجليزية'];
   const MESSAGE_HINTS   = ['message','نص الشهادة','رسالة'];
-  const SERIAL_HINTS    = ['serial','رقم','تسلسلي','رقم تسلسلي'];
   const NOTES_HINTS     = ['notes','ملاحظة','ملاحظات'];
 
   const hint = (hints, col) => hints.some(h => normalizeText(col).includes(normalizeText(h)));
@@ -54,7 +52,6 @@ export function autoDetectColumns(headers) {
     if (hint(AR_MESSAGE_HINTS, header) && mapping.customMessageAr === undefined) { mapping.customMessageAr = i; return; }
     if (hint(EN_MESSAGE_HINTS, header) && mapping.customMessageEn === undefined) { mapping.customMessageEn = i; return; }
     if (hint(MESSAGE_HINTS, header) && mapping.customMessage === undefined) { mapping.customMessage = i; return; }
-    if (hint(SERIAL_HINTS,  header) && mapping.serial === undefined)         { mapping.serial = i; return; }
     if (hint(NOTES_HINTS,   header) && mapping.notes === undefined)          { mapping.notes = i; return; }
   });
 
@@ -87,10 +84,6 @@ function matchBehavior(value) {
   })) || null;
 }
 
-function isValidSerialFormat(serial) {
-  if (!serial) return true; // optional field
-  return /^CERT-\d{4}-[A-Z0-9]{6}$/i.test(serial);
-}
 
 /**
  * Validate all data rows using the provided column mapping.
@@ -131,7 +124,6 @@ export function validateImportRows(rows, columnMapping, stateDefaults) {
     const genericHasLatin = /[a-zA-Z]/.test(genericMessage);
     const rawMessageAr = explicitMessageAr || (genericMessage && genericHasArabic ? genericMessage : '');
     const rawMessageEn = explicitMessageEn || (genericMessage && genericHasLatin && !genericHasArabic ? genericMessage : '');
-    const rawSerial = get(row, 'serial');
     const rawNotes = get(row, 'notes');
 
     // Skip completely empty rows
@@ -150,14 +142,6 @@ export function validateImportRows(rows, columnMapping, stateDefaults) {
       });
     }
 
-    // Serial format check
-    if (rawSerial && !isValidSerialFormat(rawSerial)) {
-      issues.push({
-        type: 'error',
-        field: 'serial',
-        message: `الرقم التسلسلي "${rawSerial}" غير صالح`,
-      });
-    }
 
     // === Warnings ===
     const subjectMatch = matchSubject(rawSubject);
@@ -206,7 +190,6 @@ export function validateImportRows(rows, columnMapping, stateDefaults) {
       behavior: behaviorMatch ? behaviorMatch.id : stateDefaults.behavior,
       customMessageAr: rawMessageAr,
       customMessageEn: rawMessageEn,
-      serial: rawSerial || genSerial(),
       notes: rawNotes,
     }, stateDefaults);
 

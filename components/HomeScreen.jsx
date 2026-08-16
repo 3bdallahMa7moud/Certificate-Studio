@@ -129,8 +129,8 @@ export default function HomeScreen({
             <Icon name="FileText" size={28} />
           </div>
           <div className="action-btn-text">
-            <h3>سجل الشهادات والنسخ الاحتياطي</h3>
-            <p>استعراض الشهادات المحفوظة، المسودات، واستعادة البيانات</p>
+            <h3>سجل وأرشيف الشهادات</h3>
+            <p>استعراض الشهادات المحفوظة، المسودات، وإعادة طباعتها وتصديرها</p>
           </div>
           <Icon name="ChevronLeft" size={18} className="action-arrow" />
         </button>

@@ -1,5 +1,5 @@
 /* ==========================================================
-   SPACE EXPLORER CERTIFICATE
+   SPACE EXPLORER CERTIFICATE - MODERN SCI-FI VIP EDITION
    Arabic-first / RTL-safe Canva-inspired design
    ========================================================== */
 
@@ -16,22 +16,26 @@
   flex-direction: column;
   justify-content: space-between;
 
-  padding: 4.1cqw 5.2cqw 3.7cqw;
+  padding: 3.2cqw 4.8cqw 2.8cqw;
 
   color: #f8fafc;
   background:
-    radial-gradient(circle at 18% 18%, rgba(14, 165, 233, 0.22), transparent 25%),
-    radial-gradient(circle at 82% 80%, rgba(244, 185, 66, 0.14), transparent 28%),
-    radial-gradient(circle at 55% 45%, rgba(99, 102, 241, 0.12), transparent 35%),
-    linear-gradient(145deg, #172554 0%, #0f172a 48%, #020617 100%);
+    radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.28), transparent 30%),
+    radial-gradient(circle at 85% 85%, rgba(245, 158, 11, 0.18), transparent 32%),
+    radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.15), transparent 45%),
+    linear-gradient(140deg, #090e24 0%, #080d21 35%, #050814 70%, #02040a 100%);
 
-  border: 0.7cqw solid var(--primary, #0ea5e9);
-  border-radius: 2cqw;
+  border: 0.75cqw solid #0ea5e9;
+  border-radius: 2.2cqw;
+  box-shadow:
+    inset 0 0 4cqw rgba(14, 165, 233, 0.15),
+    0 2cqw 5cqw rgba(0, 0, 0, 0.6);
 
   font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
   text-rendering: geometricPrecision;
 }
 
+/* Background Cosmic Grid & Stardust */
 .cert-space-explorer::before {
   content: '';
   position: absolute;
@@ -40,25 +44,26 @@
   pointer-events: none;
 
   background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.75) 0.08cqw, transparent 0.11cqw),
-    radial-gradient(circle, rgba(125, 211, 252, 0.5) 0.06cqw, transparent 0.1cqw);
-  background-size: 8cqw 8cqw, 12cqw 12cqw;
-  background-position: 0 0, 4cqw 5cqw;
-  opacity: 0.25;
+    radial-gradient(circle, rgba(255, 255, 255, 0.8) 0.08cqw, transparent 0.12cqw),
+    radial-gradient(circle, rgba(125, 211, 252, 0.6) 0.06cqw, transparent 0.1cqw);
+  background-size: 7cqw 7cqw, 11cqw 11cqw;
+  background-position: 0 0, 3.5cqw 4.5cqw;
+  opacity: 0.3;
 }
 
+/* Neon Inner Border with Tech Glow */
 .cert-space-explorer::after {
   content: '';
   position: absolute;
-  inset: 1.2cqw;
+  inset: 1.1cqw;
   z-index: 10;
   pointer-events: none;
 
-  border: 0.14cqw solid rgba(125, 211, 252, 0.38);
-  border-radius: 1.3cqw;
+  border: 0.12cqw solid rgba(125, 211, 252, 0.4);
+  border-radius: 1.4cqw;
   box-shadow:
-    inset 0 0 0 0.14cqw rgba(244, 185, 66, 0.08),
-    inset 0 0 2cqw rgba(14, 165, 233, 0.06);
+    inset 0 0 0 0.12cqw rgba(244, 185, 66, 0.12),
+    inset 0 0 2.5cqw rgba(14, 165, 233, 0.1);
 }
 
 /* ---------- Direction / bidi safety ---------- */
@@ -81,7 +86,7 @@
   unicode-bidi: isolate;
 }
 
-/* ---------- Art ---------- */
+/* ---------- Sci-Fi Art & Celestial Objects ---------- */
 .cert-space-explorer .space-art {
   position: absolute;
   inset: 0;
@@ -90,38 +95,89 @@
   pointer-events: none;
 }
 
+/* Futuristic HUD Corner Brackets */
+.cert-space-explorer .space-hud-corner {
+  position: absolute;
+  width: 2.2cqw;
+  height: 2.2cqw;
+  border-color: rgba(56, 189, 248, 0.85);
+  border-style: solid;
+  z-index: 5;
+  filter: drop-shadow(0 0 0.5cqw rgba(56, 189, 248, 0.6));
+}
+
+.cert-space-explorer .space-hud-tl {
+  top: 1.8cqw;
+  left: 1.8cqw;
+  border-width: 0.22cqw 0 0 0.22cqw;
+  border-top-left-radius: 0.6cqw;
+}
+
+.cert-space-explorer .space-hud-tr {
+  top: 1.8cqw;
+  right: 1.8cqw;
+  border-width: 0.22cqw 0.22cqw 0 0;
+  border-top-right-radius: 0.6cqw;
+}
+
+.cert-space-explorer .space-hud-bl {
+  bottom: 1.8cqw;
+  left: 1.8cqw;
+  border-width: 0 0 0.22cqw 0.22cqw;
+  border-bottom-left-radius: 0.6cqw;
+}
+
+.cert-space-explorer .space-hud-br {
+  bottom: 1.8cqw;
+  right: 1.8cqw;
+  border-width: 0 0.22cqw 0.22cqw 0;
+  border-bottom-right-radius: 0.6cqw;
+}
+
+/* Glowing Cosmic Nebulae */
 .cert-space-explorer .space-orb {
   position: absolute;
   border-radius: 50%;
+  filter: blur(0.3cqw);
 }
 
 .cert-space-explorer .space-orb-1 {
-  top: -7cqw;
-  left: -6cqw;
-  width: 23cqw;
-  height: 23cqw;
-  background: radial-gradient(circle at 35% 30%, #bae6fd 0%, var(--primary, #0ea5e9) 25%, #0369a1 58%, #082f49 100%);
-  opacity: 0.64;
-  box-shadow: 0 0 4cqw rgba(14, 165, 233, 0.28), inset -2cqw -1cqw 3cqw rgba(2, 6, 23, 0.45);
+  top: -8cqw;
+  left: -7cqw;
+  width: 26cqw;
+  height: 26cqw;
+  background: radial-gradient(circle at 35% 30%, #7dd3fc 0%, #0284c7 35%, #0369a1 65%, transparent 100%);
+  opacity: 0.55;
+  box-shadow: 0 0 5cqw rgba(14, 165, 233, 0.35);
 }
 
 .cert-space-explorer .space-orb-2 {
-  right: -8cqw;
-  bottom: -11cqw;
-  width: 28cqw;
-  height: 28cqw;
-  background: radial-gradient(circle at 32% 28%, #fef3c7 0%, var(--accent, #f4b942) 22%, #b45309 52%, #451a03 100%);
-  opacity: 0.26;
-  filter: blur(0.2cqw);
+  right: -9cqw;
+  bottom: -12cqw;
+  width: 30cqw;
+  height: 30cqw;
+  background: radial-gradient(circle at 32% 28%, #fde68a 0%, #d97706 40%, #78350f 70%, transparent 100%);
+  opacity: 0.3;
 }
 
+.cert-space-explorer .space-orb-3 {
+  top: 40%;
+  left: 45%;
+  transform: translate(-50%, -50%);
+  width: 35cqw;
+  height: 35cqw;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+  opacity: 0.4;
+}
+
+/* Multi-Point Sparkle Stars */
 .cert-space-explorer .space-star {
   position: absolute;
-  width: 0.55cqw;
-  height: 0.55cqw;
+  width: 0.6cqw;
+  height: 0.6cqw;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 0 1.2cqw rgba(255, 255, 255, 0.75);
+  background: #ffffff;
+  box-shadow: 0 0 1.2cqw rgba(255, 255, 255, 0.9), 0 0 2cqw rgba(56, 189, 248, 0.8);
 }
 
 .cert-space-explorer .space-star::before,
@@ -129,137 +185,176 @@
   content: '';
   position: absolute;
   inset: 50% auto auto 50%;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.85);
   transform: translate(-50%, -50%);
   border-radius: 100cqw;
 }
 
 .cert-space-explorer .space-star::before {
-  width: 1.5cqw;
-  height: 0.1cqw;
+  width: 1.8cqw;
+  height: 0.12cqw;
 }
 
 .cert-space-explorer .space-star::after {
-  width: 0.1cqw;
-  height: 1.5cqw;
+  width: 0.12cqw;
+  height: 1.8cqw;
 }
 
-.space-star-one { top: 15%; left: 23%; }
-.space-star-two { top: 25%; right: 15%; transform: scale(0.7); }
-.space-star-three { top: 52%; left: 10%; transform: scale(0.5); }
-.space-star-four { top: 66%; right: 10%; transform: scale(0.8); }
-.space-star-five { bottom: 14%; left: 31%; transform: scale(0.55); }
+.space-star-one { top: 14%; left: 24%; transform: scale(0.9); }
+.space-star-two { top: 22%; right: 16%; transform: scale(0.75); }
+.space-star-three { top: 56%; left: 8%; transform: scale(0.6); }
+.space-star-four { top: 68%; right: 11%; transform: scale(0.85); }
+.space-star-five { bottom: 12%; left: 26%; transform: scale(0.65); }
+.space-star-six { top: 38%; right: 28%; transform: scale(0.5); opacity: 0.7; }
 
+/* High-Definition 3D Ringed Planet */
 .cert-space-explorer .space-planet {
   position: absolute;
-  top: 15%;
-  right: 7%;
-  width: 8cqw;
-  height: 8cqw;
+  top: 11%;
+  right: 5.5%;
+  width: 9cqw;
+  height: 9cqw;
   border-radius: 50%;
-  opacity: 0.78;
-  background: radial-gradient(circle at 32% 28%, #fde68a 0%, #f59e0b 34%, #9a3412 100%);
-  box-shadow: 0 0 2.5cqw rgba(245, 158, 11, 0.22);
+  background: radial-gradient(circle at 32% 28%, #fef08a 0%, #f59e0b 35%, #b45309 70%, #451a03 100%);
+  box-shadow:
+    0 0 3cqw rgba(245, 158, 11, 0.35),
+    inset -1.2cqw -1.2cqw 2cqw rgba(0, 0, 0, 0.6);
+  opacity: 0.92;
+}
+
+.cert-space-explorer .space-planet-atmosphere {
+  position: absolute;
+  inset: -0.3cqw;
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 65%, rgba(56, 189, 248, 0.3) 100%);
 }
 
 .cert-space-explorer .space-planet-ring {
   position: absolute;
-  width: 135%;
-  height: 34%;
-  top: 34%;
-  left: -18%;
-  border: 0.32cqw solid rgba(125, 211, 252, 0.72);
+  width: 145%;
+  height: 38%;
+  top: 31%;
+  left: -22.5%;
+  border: 0.38cqw solid rgba(224, 242, 254, 0.85);
+  border-top-color: rgba(253, 224, 71, 0.9);
   border-radius: 50%;
   transform: rotate(-18deg);
+  box-shadow: 0 0 1.5cqw rgba(56, 189, 248, 0.5);
+}
+
+.cert-space-explorer .space-planet-ring-front {
+  position: absolute;
+  width: 145%;
+  height: 38%;
+  top: 31%;
+  left: -22.5%;
+  border-bottom: 0.38cqw solid rgba(224, 242, 254, 0.85);
+  border-radius: 50%;
+  transform: rotate(-18deg);
+  clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+  z-index: 2;
 }
 
 .cert-space-explorer .space-planet-spot {
   position: absolute;
   border-radius: 50%;
-  background: rgba(120, 53, 15, 0.28);
+  background: rgba(120, 53, 15, 0.32);
 }
 
-.space-planet-spot-one { width: 1.1cqw; height: 1.1cqw; top: 24%; left: 30%; }
-.space-planet-spot-two { width: 0.7cqw; height: 0.7cqw; bottom: 25%; right: 26%; }
+.space-planet-spot-one { width: 1.3cqw; height: 1.3cqw; top: 22%; left: 28%; }
+.space-planet-spot-two { width: 0.8cqw; height: 0.8cqw; bottom: 24%; right: 24%; }
 
+/* High-Tech Explorer Rocket */
 .cert-space-explorer .space-rocket {
   position: absolute;
-  left: 8%;
-  bottom: 16%;
-  width: 5cqw;
-  height: 9cqw;
+  left: 5.5%;
+  bottom: 10%;
+  width: 5.2cqw;
+  height: 9.4cqw;
   transform: rotate(34deg);
-  opacity: 0.7;
+  opacity: 0.88;
+  filter: drop-shadow(0 0 1.2cqw rgba(56, 189, 248, 0.4));
+}
+
+.cert-space-explorer .space-rocket-glow {
+  position: absolute;
+  inset: -1cqw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.25), transparent 70%);
 }
 
 .cert-space-explorer .space-rocket-body {
   position: absolute;
-  left: 1.35cqw;
-  top: 1.6cqw;
-  width: 2.3cqw;
-  height: 5.4cqw;
-  border-radius: 50% 50% 35% 35%;
-  background: linear-gradient(90deg, #e2e8f0, #ffffff 48%, #94a3b8);
+  left: 1.4cqw;
+  top: 1.7cqw;
+  width: 2.4cqw;
+  height: 5.6cqw;
+  border-radius: 50% 50% 30% 30%;
+  background: linear-gradient(90deg, #cbd5e1, #ffffff 50%, #94a3b8);
+  box-shadow: inset 0 0 0.5cqw rgba(0, 0, 0, 0.2);
 }
 
 .cert-space-explorer .space-rocket-nose {
   position: absolute;
-  left: 1.35cqw;
+  left: 1.4cqw;
   top: 0;
-  width: 2.3cqw;
-  height: 2.8cqw;
+  width: 2.4cqw;
+  height: 3cqw;
   border-radius: 50% 50% 15% 15%;
-  background: var(--accent, #f4b942);
+  background: linear-gradient(135deg, #fde047, #f59e0b 60%, #b45309);
 }
 
 .cert-space-explorer .space-rocket-window {
   position: absolute;
-  left: 2cqw;
-  top: 2.8cqw;
+  left: 2.1cqw;
+  top: 2.9cqw;
   width: 1cqw;
   height: 1cqw;
   border-radius: 50%;
-  background: #38bdf8;
+  background: radial-gradient(circle at 35% 35%, #e0f2fe, #38bdf8 60%, #0284c7);
   border: 0.15cqw solid #0f172a;
+  box-shadow: 0 0 0.6cqw rgba(56, 189, 248, 0.8);
 }
 
 .cert-space-explorer .space-rocket-fin {
   position: absolute;
-  top: 5.6cqw;
-  width: 1.4cqw;
-  height: 2.3cqw;
-  background: #f97316;
+  top: 5.8cqw;
+  width: 1.5cqw;
+  height: 2.4cqw;
+  background: linear-gradient(180deg, #f97316, #ea580c);
 }
 
-.space-rocket-fin-start { left: 0.45cqw; transform: skewY(25deg); }
-.space-rocket-fin-end { right: 0.45cqw; transform: skewY(-25deg); }
+.space-rocket-fin-start { left: 0.4cqw; transform: skewY(25deg); }
+.space-rocket-fin-end { right: 0.4cqw; transform: skewY(-25deg); }
 
 .cert-space-explorer .space-rocket-trail {
   position: absolute;
-  top: 7cqw;
-  width: 0.6cqw;
+  top: 7.4cqw;
+  width: 0.7cqw;
   border-radius: 100cqw;
-  background: linear-gradient(#fef3c7, #fb923c, transparent);
+  background: linear-gradient(#fef08a, #fb923c 60%, transparent);
+  filter: drop-shadow(0 0 0.8cqw rgba(251, 146, 60, 0.8));
 }
 
-.space-rocket-trail-one { left: 1.65cqw; height: 3cqw; }
-.space-rocket-trail-two { right: 1.65cqw; height: 2.4cqw; }
+.space-rocket-trail-one { left: 1.65cqw; height: 3.4cqw; }
+.space-rocket-trail-two { right: 1.65cqw; height: 2.6cqw; }
 
-/* ---------- Header ---------- */
+/* ---------- Header: Mission Command Bar ---------- */
 .cert-space-explorer .space-command-bar {
   position: relative;
   z-index: 3;
-  display: grid;
-  grid-template-columns: minmax(12cqw, auto) 1fr;
+  display: flex;
   align-items: center;
-  gap: 2.2cqw;
-  min-height: 6cqw;
-  padding: 0 1cqw 1.25cqw;
+  justify-content: space-between;
+  gap: 2cqw;
+  min-height: 5.2cqw;
+  padding: 0 0.5cqw 0.8cqw;
   border-bottom: 0.12cqw solid rgba(125, 211, 252, 0.28);
+  width: 100%;
 }
 
 .cert-space-explorer .space-logo-slot {
-  min-width: 10cqw;
+  min-width: 6cqw;
   display: flex;
   align-items: center;
 }
@@ -273,16 +368,27 @@
 }
 
 .cert-space-explorer .cert-logo-space-explorer {
-  max-width: 12cqw;
-  max-height: 6cqw;
+  width: 5.6cqw;
+  height: 5.6cqw;
+  min-width: 5.6cqw;
+  border: 0.12cqw solid rgba(125, 211, 252, 0.4);
+  border-radius: 1cqw;
+  background: rgba(15, 23, 42, 0.65);
+  box-shadow: 0 0 1.4cqw rgba(14, 165, 233, 0.3), inset 0 0 0.8cqw rgba(56, 189, 248, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
 }
 
 .cert-space-explorer .space-school-lockup {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 0.25cqw;
+  gap: 0.2cqw;
   min-width: 0;
+  text-align: end;
+  align-items: flex-end;
 }
 
 .cert-space-explorer.space-layout-rtl .space-school-lockup {
@@ -295,12 +401,30 @@
   text-align: right;
 }
 
+.cert-space-explorer .space-command-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4cqw;
+  padding: 0.2cqw 0.7cqw;
+  border-radius: 100cqw;
+  background: rgba(244, 185, 66, 0.12);
+  border: 0.08cqw solid rgba(244, 185, 66, 0.3);
+}
+
+.cert-space-explorer .space-beacon-dot {
+  width: 0.45cqw;
+  height: 0.45cqw;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0.6cqw #22c55e;
+}
+
 .cert-space-explorer .space-command-label {
-  font-size: 0.78cqw;
+  font-size: 0.76cqw;
   line-height: 1.2;
   font-weight: 800;
   letter-spacing: 0.08em;
-  color: var(--accent, #f4b942);
+  color: #fbbf24;
 }
 
 .cert-space-explorer.space-layout-rtl .space-command-label {
@@ -316,10 +440,11 @@
   gap: 0.45cqw;
   max-width: 70cqw;
   font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
-  font-size: 1.45cqw;
+  font-size: 1.4cqw;
   font-weight: 700;
-  color: #fff;
+  color: #ffffff;
   line-height: 1.35;
+  text-shadow: 0 0.15cqw 0.4cqw rgba(0, 0, 0, 0.5);
 }
 
 .cert-space-explorer .space-school-name-ar {
@@ -327,19 +452,20 @@
 }
 
 .cert-space-explorer .space-school-name-en {
-  font-family: sans-serif;
-  font-size: 0.86em;
-  opacity: 0.86;
+  font-family: var(--student-font-en, 'Outfit'), sans-serif;
+  font-size: 0.88em;
+  opacity: 0.9;
 }
 
+.cert-space-explorer .space-school-separator,
 .cert-space-explorer .space-language-divider,
 .cert-space-explorer .space-inline-divider {
-  color: var(--accent, #f4b942);
-  opacity: 0.75;
+  color: #fbbf24;
+  opacity: 0.85;
   unicode-bidi: isolate;
 }
 
-/* ---------- Main body ---------- */
+/* ---------- Main Body: Central Stage ---------- */
 .cert-space-explorer .space-body {
   position: relative;
   z-index: 3;
@@ -347,10 +473,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 84%;
-  margin: auto;
+  width: 100%;
+  margin: auto 0;
   text-align: center;
-  gap: 1.05cqw;
+  gap: 0.85cqw;
 }
 
 .cert-space-explorer .space-title-orbit {
@@ -359,31 +485,36 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.35cqw;
+  gap: 0.2cqw;
   width: 100%;
   margin: 0;
   text-align: center;
 }
 
-.cert-space-explorer .space-title-line {
+.cert-space-explorer .space-title-line,
+.cert-space-explorer .space-title-orbit span {
   display: block;
   max-width: 100%;
   font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
-  font-size: 3.05cqw;
+  font-size: 2.85cqw;
   font-weight: 900;
   line-height: 1.18;
-  color: #fff;
+  color: #ffffff;
   text-align: center;
   text-wrap: balance;
-  text-shadow: 0 0.25cqw 0.8cqw rgba(0, 0, 0, 0.38), 0 0 1.8cqw rgba(14, 165, 233, 0.25);
+  text-shadow:
+    0 0.25cqw 0.8cqw rgba(0, 0, 0, 0.6),
+    0 0 1.8cqw rgba(14, 165, 233, 0.4),
+    0 0 3.5cqw rgba(56, 189, 248, 0.25);
 }
 
 .cert-space-explorer .space-title-en {
-  font-family: sans-serif;
-  font-size: 1.5cqw;
+  font-family: var(--student-font-en, 'Outfit'), sans-serif;
+  font-size: 1.35cqw;
   font-weight: 800;
-  letter-spacing: 0.04em;
-  color: #bfdbfe;
+  letter-spacing: 0.05em;
+  color: #bae6fd;
+  text-align: center;
 }
 
 .cert-space-explorer .space-title-divider {
@@ -392,34 +523,39 @@
   height: 0.2cqw;
   margin: 0.2cqw auto;
   border-radius: 50cqw;
-  background: linear-gradient(90deg, transparent, var(--accent, #f4b942), transparent);
+  background: linear-gradient(90deg, transparent, #fbbf24, transparent);
 }
 
 .cert-space-explorer .space-title-orbit::after {
   content: '';
   display: block;
-  width: 11cqw;
+  width: 13cqw;
   height: 0.22cqw;
-  margin: 0.45cqw auto 0;
+  margin: 0.3cqw auto 0;
   border-radius: 50cqw;
-  background: linear-gradient(90deg, transparent, var(--accent, #f4b942), #fde68a, var(--accent, #f4b942), transparent);
-  box-shadow: 0 0 1cqw rgba(244, 185, 66, 0.28);
+  background: linear-gradient(90deg, transparent, #f59e0b, #fef08a, #f59e0b, transparent);
+  box-shadow: 0 0 1.2cqw rgba(245, 158, 11, 0.5);
 }
 
+/* Glassmorphic Astronaut Cadet ID Hero Pod */
 .cert-space-explorer .space-hero-name {
   position: relative;
-  width: min(100%, 61cqw);
+  width: min(100%, 65cqw);
   min-height: 7.6cqw;
-  display: grid;
-  place-items: center;
-  padding: 1.05cqw 3.2cqw;
-  margin-top: 0.25cqw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8cqw 3.6cqw;
+  margin: 0.2cqw auto;
   box-sizing: border-box;
-  border: 0.12cqw solid rgba(125, 211, 252, 0.25);
-  border-radius: 1.2cqw;
-  background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.025));
-  box-shadow: 0 1.2cqw 3cqw rgba(2, 6, 23, 0.25), inset 0 0 1.4cqw rgba(125, 211, 252, 0.035);
-  backdrop-filter: blur(0.8cqw);
+  border: 0.14cqw solid rgba(125, 211, 252, 0.38);
+  border-radius: 1.4cqw;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02) 60%, rgba(56, 189, 248, 0.06));
+  box-shadow:
+    0 1.2cqw 3.5cqw rgba(2, 6, 23, 0.5),
+    inset 0 0 2cqw rgba(125, 211, 252, 0.1);
+  backdrop-filter: blur(12px);
 }
 
 .cert-space-explorer .space-hero-name > * {
@@ -433,53 +569,61 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 1.15cqw;
-  color: var(--accent, #f4b942);
-  text-shadow: 0 0 1cqw rgba(244, 185, 66, 0.65);
+  font-size: 1.25cqw;
+  color: #fbbf24;
+  text-shadow: 0 0 1.2cqw rgba(245, 158, 11, 0.85);
 }
 
-.cert-space-explorer .space-hero-name::before { inset-inline-start: 1.6cqw; }
-.cert-space-explorer .space-hero-name::after { inset-inline-end: 1.6cqw; }
+.cert-space-explorer .space-hero-name::before { inset-inline-start: 1.8cqw; }
+.cert-space-explorer .space-hero-name::after { inset-inline-end: 1.8cqw; }
 
 .cert-space-explorer .space-student-name-ar,
-.cert-space-explorer .space-hero-name .cert-student-name {
+.cert-space-explorer .space-hero-name :where(.student-name-ar, .student-name-en),
+.cert-space-explorer .space-hero-name .cert-student-name,
+.cert-space-explorer .space-hero-name bdi {
+  width: 100%;
   text-align: center;
-  color: #fde68a;
+  color: #fef08a;
   font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
   font-weight: 800;
   line-height: 1.2;
-  text-shadow: 0 0.2cqw 0.5cqw rgba(0,0,0,0.4), 0 0 1.2cqw rgba(244,185,66,0.2);
+  text-shadow:
+    0 0.2cqw 0.6cqw rgba(0, 0, 0, 0.6),
+    0 0 1.6cqw rgba(245, 158, 11, 0.45);
 }
 
-.cert-space-explorer .space-student-name-en {
+.cert-space-explorer .space-student-name-en,
+.cert-space-explorer .space-hero-name .student-name-en {
   text-align: center;
-  font-family: sans-serif;
+  font-family: var(--student-font-en, 'Outfit'), sans-serif;
 }
 
 .cert-space-explorer .space-message {
-  max-width: 76%;
-  margin-top: 0.15cqw;
+  width: 100%;
+  max-width: 78%;
+  margin: 0.15cqw auto;
   font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
-  font-size: 1.28cqw;
+  font-size: 1.25cqw;
   font-weight: 500;
-  line-height: 1.75;
-  color: #dbeafe;
+  line-height: 1.7;
+  color: #e0f2fe;
   text-align: center;
   text-wrap: balance;
+  text-shadow: 0 0.15cqw 0.4cqw rgba(0, 0, 0, 0.5);
 }
 
 .cert-space-explorer .space-message[dir='rtl'] {
-  line-height: 1.85;
+  line-height: 1.8;
 }
 
-/* ---------- Metrics ---------- */
+/* ---------- Telemetry Mission Badges ---------- */
 .cert-space-explorer .space-telemetry {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: stretch;
-  gap: 0.72cqw;
-  margin-top: 0.45cqw;
+  align-items: center;
+  gap: 0.7cqw;
+  margin: 0.2cqw auto 0;
   width: 100%;
 }
 
@@ -488,14 +632,14 @@
   align-items: center;
   justify-content: center;
   gap: 0.6cqw;
-  min-height: 2.8cqw;
-  padding: 0.5cqw 1.15cqw;
+  min-height: 2.9cqw;
+  padding: 0.42cqw 1.35cqw;
   box-sizing: border-box;
-  border: 0.1cqw solid rgba(125, 211, 252, 0.22);
+  border: 0.1cqw solid rgba(125, 211, 252, 0.35);
   border-radius: 100cqw;
-  background: rgba(15, 23, 42, 0.46);
-  box-shadow: 0 0.45cqw 1.2cqw rgba(2, 6, 23, 0.18);
-  backdrop-filter: blur(0.5cqw);
+  background: rgba(15, 23, 42, 0.7);
+  box-shadow: 0 0.45cqw 1.4cqw rgba(2, 6, 23, 0.3);
+  backdrop-filter: blur(8px);
   white-space: nowrap;
 }
 
@@ -503,32 +647,18 @@
   .space-subject-metric,
   .space-grade-metric,
   .space-year-metric,
-  .space-date-metric
+  .space-date-metric,
+  .space-achievement-metric
 ) {
   max-width: 100%;
 }
 
-.cert-space-explorer .space-subject-metric {
-  min-width: 24cqw;
-}
-
-.cert-space-explorer :is(.space-grade-metric, .space-date-metric) {
-  min-width: 11cqw;
-}
-
-.cert-space-explorer .space-year-metric {
-  min-width: 16cqw;
-}
-
-.cert-space-explorer.space-layout-rtl .space-metric {
-  flex-direction: row;
-}
-
 .cert-space-explorer .space-metric-label {
-  font-size: 0.78cqw;
+  font-size: 0.84cqw;
   line-height: 1;
   font-weight: 800;
-  color: #7dd3fc;
+  color: #38bdf8;
+  letter-spacing: 0.02em;
 }
 
 .cert-space-explorer.space-layout-rtl .space-metric-label {
@@ -537,10 +667,10 @@
 }
 
 .cert-space-explorer .space-metric-value {
-  font-size: 0.98cqw;
-  line-height: 1.1;
-  font-weight: 800;
-  color: #fff;
+  font-size: 1.15cqw;
+  line-height: 1.15;
+  font-weight: 850;
+  color: #ffffff;
   unicode-bidi: isolate;
 }
 
@@ -550,7 +680,11 @@
   gap: 0.38cqw;
 }
 
-/* ---------- Signatures ---------- */
+.cert-space-explorer .certificate-achievement-part {
+  display: inline;
+}
+
+/* ---------- Signatures & Center Insignia Medal ---------- */
 .cert-space-explorer .space-signatures {
   position: relative;
   z-index: 3;
@@ -559,7 +693,7 @@
   align-items: end;
   gap: 2cqw;
   width: 100%;
-  padding: 0 2cqw 0.75cqw;
+  padding: 0 1.5cqw 0.5cqw;
   box-sizing: border-box;
 }
 
@@ -569,8 +703,9 @@
   align-items: center;
   justify-content: flex-end;
   min-width: 0;
-  gap: 0.38cqw;
+  gap: 0.3cqw;
   text-align: center;
+  width: 100%;
 }
 
 .cert-space-explorer :is(.space-sig-teacher, .space-sig-principal) {
@@ -578,10 +713,11 @@
 }
 
 .cert-space-explorer .space-sig-title {
-  font-size: 0.86cqw;
+  font-size: 0.85cqw;
   font-weight: 800;
-  color: var(--accent, #f4b942);
+  color: #fbbf24;
   line-height: 1.2;
+  text-align: center;
 }
 
 .cert-space-explorer.space-layout-rtl .space-sig-title {
@@ -592,7 +728,7 @@
 .cert-space-explorer .cert-sig {
   display: block;
   max-width: 10cqw;
-  max-height: 4.3cqw;
+  max-height: 4cqw;
   object-fit: contain;
   margin: 0 auto;
 }
@@ -600,75 +736,84 @@
 .cert-space-explorer .space-sig-name {
   position: relative;
   width: 100%;
-  min-height: 2.3cqw;
+  min-height: 2.2cqw;
   box-sizing: border-box;
-  padding-top: 0.6cqw;
+  padding-top: 0.55cqw;
   border-top: 0.12cqw solid rgba(244, 185, 66, 0.55);
   font-family: var(--student-font-ar, 'El Messiri'), serif;
-  font-size: 1.18cqw;
+  font-size: 1.15cqw;
   font-weight: 700;
   line-height: 1.3;
-  color: #fff;
+  color: #ffffff;
   text-align: center;
 }
 
 .cert-space-explorer .space-sig-name::before {
   content: '';
   position: absolute;
-  top: -0.2cqw;
+  top: -0.18cqw;
   left: 50%;
-  width: 30%;
+  width: 32%;
   height: 0.18cqw;
   transform: translateX(-50%);
   border-radius: 10cqw;
-  background: var(--accent, #f4b942);
-  box-shadow: 0 0 0.7cqw rgba(244, 185, 66, 0.35);
+  background: #fbbf24;
+  box-shadow: 0 0 0.8cqw rgba(245, 158, 11, 0.5);
 }
 
 .cert-space-explorer .space-sig-name-en {
-  font-family: sans-serif;
+  font-family: var(--student-font-en, 'Outfit'), sans-serif;
   font-size: 0.75cqw;
   line-height: 1.2;
   color: #cbd5e1;
   text-align: center;
 }
 
+/* Central Golden Supernova / Orbit Medal */
 .cert-space-explorer .space-crew-insignia {
   position: relative;
-  width: 5.2cqw;
-  height: 5.2cqw;
-  margin: 0 auto 0.1cqw;
+  width: 5.4cqw;
+  height: 5.4cqw;
+  margin: 0 auto;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 1.5cqw rgba(245, 158, 11, 0.5));
 }
 
 .cert-space-explorer .space-insignia-core {
   position: absolute;
-  inset: 1.6cqw;
+  inset: 1.4cqw;
   border-radius: 50%;
-  background: radial-gradient(circle, #fde68a, var(--accent, #f4b942) 65%, #b45309);
-  box-shadow: 0 0 1.4cqw rgba(244, 185, 66, 0.45);
+  background: radial-gradient(circle at 35% 35%, #fef08a, #f59e0b 60%, #b45309);
+  box-shadow:
+    0 0 1.6cqw rgba(245, 158, 11, 0.7),
+    inset 0 0 0.5cqw rgba(255, 255, 255, 0.8);
 }
 
 .cert-space-explorer .space-insignia-orbit {
   position: absolute;
-  inset: 0.8cqw -0.25cqw;
-  border: 0.14cqw solid rgba(125, 211, 252, 0.52);
+  inset: 0.7cqw -0.3cqw;
+  border: 0.16cqw solid rgba(125, 211, 252, 0.75);
+  border-top-color: #fef08a;
   border-radius: 50%;
-  transform: rotate(-18deg);
+  transform: rotate(-22deg);
+  box-shadow: 0 0 1cqw rgba(56, 189, 248, 0.5);
 }
 
 /* ---------- Arabic-only refinements ---------- */
 .cert-space-explorer.space-layout-rtl.space-layout-single-language .space-school {
-  font-size: 1.6cqw;
+  font-size: 1.55cqw;
 }
 
-.cert-space-explorer.space-layout-rtl.space-layout-single-language .space-title-ar {
-  font-size: 3.35cqw;
+.cert-space-explorer.space-layout-rtl.space-layout-single-language .space-title-line {
+  font-size: 3.1cqw;
 }
 
 .cert-space-explorer.space-layout-rtl.space-layout-single-language .space-message {
   max-width: 80%;
-  font-size: 1.34cqw;
+  font-size: 1.3cqw;
 }
 
 .cert-space-explorer.space-layout-rtl.space-layout-single-language .space-telemetry {
@@ -677,11 +822,11 @@
 
 /* ---------- Bilingual refinements ---------- */
 .cert-space-explorer.space-layout-bilingual .space-body {
-  gap: 0.82cqw;
+  gap: 0.75cqw;
 }
 
-.cert-space-explorer.space-layout-bilingual .space-title-ar {
-  font-size: 2.55cqw;
+.cert-space-explorer.space-layout-bilingual .space-title-line {
+  font-size: 2.5cqw;
 }
 
 .cert-space-explorer.space-layout-bilingual .space-title-en {
@@ -689,7 +834,7 @@
 }
 
 .cert-space-explorer.space-layout-bilingual .space-message {
-  font-size: 1.08cqw;
+  font-size: 1.12cqw;
   line-height: 1.6;
 }
 
@@ -700,7 +845,8 @@
 /* ---------- Browser fallback ---------- */
 @supports not (backdrop-filter: blur(1px)) {
   .cert-space-explorer .space-hero-name,
-  .cert-space-explorer .space-metric {
-    background: rgba(15, 23, 42, 0.88);
+  .cert-space-explorer .space-metric,
+  .cert-space-explorer .cert-logo-space-explorer {
+    background: rgba(15, 23, 42, 0.92);
   }
 }

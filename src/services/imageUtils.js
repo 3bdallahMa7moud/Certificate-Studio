@@ -54,7 +54,7 @@ function decodeBase64Prefix(base64, maxBytes = 12) {
 }
 
 /**
- * Serialized projects and backups may only contain durable, local raster data.
+ * Serialized projects may only contain durable, local raster data.
  * Blob URLs are intentionally rejected because they do not survive a reload.
  */
 export function validateLocalRasterSource(value, options = {}) {

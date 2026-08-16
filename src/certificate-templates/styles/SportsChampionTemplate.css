@@ -1,4 +1,13 @@
-/* Sports Champion - Professional Canva-like Design */
+/* =========================================================
+   SPORTS CHAMPION CERTIFICATE
+   Grand Championship & Athletic Prestige — World-Class Design
+   Rich Amber, Gold, Stadium Glow, Ivory & Deep Bronze/Charcoal
+   Arabic / English / Bilingual safe
+   ========================================================= */
+
+/* =========================================================
+   1. ROOT CONTAINER & BASE STYLING
+   ========================================================= */
 .cert-sports-champion {
   position: absolute;
   inset: 0;
@@ -6,209 +15,609 @@
   height: 100%;
   box-sizing: border-box;
   overflow: hidden;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: linear-gradient(135deg, #FFFBF5 0%, #F5F7FA 100%);
-  color: var(--text, #1F2937);
-  padding: 4cqw 5cqw;
-  border: 1.5cqw solid var(--primary, #D35400);
+
+  padding: 2.8cqw 4.6cqw 2.4cqw;
+
+  background:
+    radial-gradient(ellipse at 50% 25%, #FFFFFF 0%, #FFF9F0 45%, #FBF0E0 100%);
+
+  color: var(--text, #231F20);
+  border: 1.1cqw solid var(--primary, #B5430A);
+  isolation: isolate;
 }
 
-/* Dynamic Stadium Glow */
-.cert-sports-champion .sports-stadium-glow {
-  position: absolute;
-  top: -20%;
-  left: -10%;
-  width: 70%;
-  height: 70%;
-  background: radial-gradient(ellipse at center, rgba(211, 84, 0, 0.15) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Speed Lines (Diagonal stripes) */
+/* Outer secondary hairline frame */
 .cert-sports-champion::before {
   content: '';
   position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 10px,
-    rgba(211, 84, 0, 0.02) 10px,
-    rgba(211, 84, 0, 0.02) 20px
-  );
+  inset: 0.65cqw;
+  border: 0.065cqw solid rgba(181, 67, 10, 0.45);
   pointer-events: none;
-  z-index: 1;
+  z-index: 6;
 }
 
+/* Inner gold metallic frame */
+.cert-sports-champion::after {
+  content: '';
+  position: absolute;
+  inset: 0.95cqw;
+  border: 0.12cqw solid var(--accent, #F0A12C);
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* =========================================================
+   2. BACKGROUND & VECTOR DECORATIVE ART
+   ========================================================= */
+.cert-sports-champion .sports-art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Dynamic Stadium Spotlight Glow */
+.cert-sports-champion .sports-stadium-glow {
+  position: absolute;
+  top: -15%;
+  left: 15%;
+  width: 70%;
+  height: 60%;
+  background: radial-gradient(ellipse at center, rgba(243, 156, 18, 0.16) 0%, rgba(211, 84, 0, 0.05) 50%, transparent 75%);
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+/* Subtle Dynamic Speed Lines */
+.cert-sports-champion .sports-speed-stripes {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 12px,
+    rgba(211, 84, 0, 0.018) 12px,
+    rgba(211, 84, 0, 0.018) 24px
+  );
+  pointer-events: none;
+}
+
+/* Third ultra-subtle frame */
+.cert-sports-champion .sports-frame-inner {
+  position: absolute;
+  inset: 1.35cqw;
+  border: 0.045cqw solid rgba(243, 156, 18, 0.35);
+  pointer-events: none;
+}
+
+.cert-sports-champion .sports-frame-gold-hairline {
+  position: absolute;
+  inset: 1.55cqw;
+  border: 0.035cqw dashed rgba(181, 67, 10, 0.2);
+  pointer-events: none;
+}
+
+/* 4 Chamfered Athletic Corner Brackets */
+.cert-sports-champion .sports-corner-bracket {
+  position: absolute;
+  width: 4.8cqw;
+  height: 4.8cqw;
+  opacity: 0.95;
+  z-index: 7;
+}
+
+.cert-sports-champion .sports-corner-tl { top: 1.4cqw; left: 1.4cqw; }
+.cert-sports-champion .sports-corner-tr { top: 1.4cqw; right: 1.4cqw; }
+.cert-sports-champion .sports-corner-bl { bottom: 1.4cqw; left: 1.4cqw; }
+.cert-sports-champion .sports-corner-br { bottom: 1.4cqw; right: 1.4cqw; }
+
+.cert-sports-champion .sports-corner-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Grand Championship Crest Watermark */
+.cert-sports-champion .sports-watermark-seal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 32cqw;
+  height: 32cqw;
+  transform: translate(-50%, -50%);
+  opacity: 0.065;
+  pointer-events: none;
+}
+
+/* =========================================================
+   3. HEADER & CHAMPIONSHIP CREST
+   ========================================================= */
 .cert-sports-champion .sports-header {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 6.2cqw;
+  padding: 0 6cqw;
+  box-sizing: border-box;
+}
+
+/* Independent Logo Positioning */
+.cert-sports-champion .sports-logo-wrapper {
+  position: absolute;
+  left: 0.4cqw;
+  top: 0;
+  display: flex;
   align-items: center;
 }
 
 .cert-sports-champion .cert-logo-sports-champion {
-  width: 5cqw;
-  height: 5cqw;
+  width: 4.8cqw;
+  height: 4.8cqw;
   object-fit: contain;
-  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+  filter: drop-shadow(0 0.15cqw 0.25cqw rgba(181, 67, 10, 0.25));
+}
+
+.cert-sports-champion .sports-header-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25cqw;
+  text-align: center;
+}
+
+/* 3D Championship Trophy Crest & Tag */
+.cert-sports-champion .sports-crest-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6cqw;
+  background: linear-gradient(135deg, #B5430A 0%, #D35400 50%, #E67E22 100%);
+  padding: 0.35cqw 1.2cqw 0.35cqw 0.8cqw;
+  border-radius: 999px;
+  border: 0.08cqw solid #FFE082;
+  box-shadow:
+    0 0.2cqw 0.8cqw rgba(181, 67, 10, 0.35),
+    inset 0 0.08cqw 0.15cqw rgba(255, 255, 255, 0.4);
+}
+
+.cert-sports-champion .sports-crest-wings {
+  display: flex;
+  align-items: center;
+  width: 1.6cqw;
+  height: 0.8cqw;
+}
+
+.cert-sports-champion .sports-wing-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.cert-sports-champion .sports-trophy-emblem {
+  width: 2.2cqw;
+  height: 2.2cqw;
+  display: grid;
+  place-items: center;
+}
+
+.cert-sports-champion .sports-trophy-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.cert-sports-champion .sports-champ-ribbon {
+  color: #FFFDF5;
+  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
+  font-size: 0.74cqw;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0.08cqw 0.15cqw rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
 }
 
 .cert-sports-champion .sports-school-lockup {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-}
-
-.cert-sports-champion .sports-champ-tag-row {
-  display: flex;
   align-items: center;
-  gap: 0.8cqw;
-  background: var(--primary, #D35400);
-  padding: 0.5cqw 1cqw;
-  border-radius: 8px;
-  transform: skewX(-15deg);
-  margin-bottom: 0.5cqw;
-}
-
-.cert-sports-champion .sports-champ-tag {
-  color: #FFF;
-  font-size: 0.9cqw;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  transform: skewX(15deg); /* Correct text skew */
+  margin-top: 0.1cqw;
 }
 
 .cert-sports-champion .sports-school {
-  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
-  font-size: 1.5cqw;
+  color: var(--primary, #B5430A);
+  font-family: var(--student-font-ar, 'El Messiri'), Georgia, serif;
+  font-size: 1.18cqw;
   font-weight: 800;
-  color: var(--primary, #D35400);
-  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
 }
 
-.cert-sports-champion .sports-body {
+.cert-sports-champion .sports-school-sep {
+  color: var(--accent, #F0A12C);
+  opacity: 0.8;
+}
+
+/* =========================================================
+   4. TITLE BLOCK & PRESENTATION RIBBON
+   ========================================================= */
+.cert-sports-champion .sports-title-block {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin: auto 0;
-  gap: 1cqw;
+  margin: 0.2cqw 0;
 }
 
-.cert-sports-champion .sports-title-banner {
-  font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
-  font-size: 3.8cqw;
-  font-weight: 900;
-  color: transparent;
-  background: linear-gradient(180deg, var(--primary, #D35400) 0%, var(--accent, #E67E22) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  filter: drop-shadow(2px 4px 0px rgba(211,84,0,0.2));
-  transform: skewX(-5deg);
-}
-
-.cert-sports-champion .sports-athlete-zone {
-  width: 100%;
-  display: grid;
-  place-items: center;
-  text-align: center;
-  background: #FFF;
-  border-top: 4px solid var(--primary, #D35400);
-  border-bottom: 4px solid var(--primary, #D35400);
-  padding: 1.5cqw 2cqw;
-  margin: 1cqw 0;
-  box-sizing: border-box;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-}
-.cert-sports-champion .sports-athlete-zone .cert-student-name {
-  color: #1F2937;
-}
-
-.cert-sports-champion .sports-message {
-  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
-  font-size: 1.4cqw;
-  line-height: 1.6;
-  color: #4B5563;
-  max-width: 85%;
-  font-weight: 600;
-}
-
-.cert-sports-champion .sports-stats-row {
+.cert-sports-champion .sports-title {
   display: flex;
-  gap: 1.5cqw;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  margin-top: 1cqw;
+  gap: 0.06cqw;
+  margin: 0;
+  padding: 0;
+  color: var(--primary, #B5430A);
+  font-family: var(--student-font-ar, 'El Messiri'), Georgia, serif;
+  font-size: 2.85cqw;
+  font-weight: 900;
+  line-height: 1.1;
+  text-align: center;
+  letter-spacing: -0.01em;
+  text-shadow: 0 0.08cqw 0.12cqw rgba(181, 67, 10, 0.15);
 }
 
-.cert-sports-champion .sports-stat-badge {
-  background: #FFF;
-  border: 2px solid var(--primary, #D35400);
-  border-radius: 8px;
-  padding: 0.6cqw 1.2cqw;
-  font-size: 1.1cqw;
+.cert-sports-champion .sports-title-ar {
+  background: linear-gradient(180deg, #9C3300 0%, #D35400 60%, #B5430A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.cert-sports-champion .sports-title-en {
+  font-family: Georgia, 'Times New Roman', serif;
+  background: linear-gradient(180deg, #9C3300 0%, #D35400 60%, #B5430A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Presentation Ribbon / Divider */
+.cert-sports-champion .sports-presentation-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1cqw;
+  width: 75%;
+  margin-top: 0.45cqw;
+}
+
+.cert-sports-champion .sports-pres-line {
+  flex: 1;
+  height: 0.08cqw;
+  background: linear-gradient(90deg, transparent, var(--accent, #F0A12C), transparent);
+}
+
+.cert-sports-champion .sports-presentation-label {
+  margin: 0;
+  color: #7D4C1E;
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 0.82cqw;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.cert-sports-champion [dir='ltr'] .sports-presentation-label,
+.cert-sports-champion .sports-layout-ltr .sports-presentation-label {
+  font-family: var(--certificate-font-en, sans-serif);
+  font-size: 0.8cqw;
+  letter-spacing: 0.08em;
+}
+
+/* =========================================================
+   5. RECIPIENT ZONE & HERO STAGE
+   ========================================================= */
+.cert-sports-champion .sports-recipient-zone {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4cqw;
+  margin: 0.1cqw 0;
+  text-align: center;
+}
+
+/* Champion Student Stage */
+.cert-sports-champion .sports-student-stage {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.5cqw;
-  box-shadow: 4px 4px 0px rgba(211, 84, 0, 0.2);
-  transform: skewX(-10deg);
+  justify-content: center;
+  width: 82%;
+  min-height: 4.8cqw;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 15%, rgba(255, 255, 255, 0.85) 85%, rgba(255, 255, 255, 0) 100%);
+  border-top: 0.08cqw solid rgba(240, 161, 44, 0.7);
+  border-bottom: 0.08cqw solid rgba(240, 161, 44, 0.7);
+  box-shadow: 0 0.4cqw 1.2cqw rgba(181, 67, 10, 0.06);
+  padding: 0.3cqw 2cqw;
+  box-sizing: border-box;
 }
-.cert-sports-champion .sports-stat-badge > * {
-  transform: skewX(10deg); /* Counter skew */
+
+.cert-sports-champion .sports-stage-bracket {
+  width: 1.4cqw;
+  height: 3.4cqw;
+  display: flex;
+  align-items: center;
+  opacity: 0.85;
+}
+
+.cert-sports-champion .sports-stage-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.cert-sports-champion .sports-student-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-width: 0;
+}
+
+.cert-sports-champion .sports-student-center .cert-student-name {
+  color: #8C2C00 !important;
+  text-shadow: 0 0.1cqw 0.2cqw rgba(140, 44, 0, 0.15);
+  line-height: 1.05;
+}
+
+/* Citation Message */
+.cert-sports-champion .sports-message {
+  width: 78%;
+  max-width: 78%;
+  margin: 0.2cqw auto 0;
+  color: #4A3B32;
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 0.98cqw;
+  font-weight: 600;
+  line-height: 1.48;
+  text-align: center;
+}
+
+/* =========================================================
+   6. DYNAMIC STATS & ACHIEVEMENT BAR (5 CARDS)
+   ========================================================= */
+.cert-sports-champion .sports-meta-bar {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.65cqw;
+  width: 88%;
+  margin: 0.2cqw auto 0.6cqw;
+}
+
+.cert-sports-champion .sports-stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15cqw;
+  padding: 0.42cqw 0.6cqw;
+  background: rgba(255, 255, 255, 0.75);
+  border: 0.08cqw solid rgba(240, 161, 44, 0.55);
+  border-radius: 0.5cqw;
+  box-shadow:
+    0 0.15cqw 0.4cqw rgba(181, 67, 10, 0.06),
+    inset 0 0.05cqw 0.1cqw rgba(255, 255, 255, 0.8);
+  min-width: 0;
+  box-sizing: border-box;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+/* Highlight Card for Achievement */
+.cert-sports-champion .sports-stat-card-highlight {
+  background: linear-gradient(135deg, rgba(255, 253, 240, 0.95) 0%, rgba(255, 243, 214, 0.95) 100%);
+  border: 0.1cqw solid #F39C12;
+  box-shadow: 0 0.2cqw 0.6cqw rgba(243, 156, 18, 0.2);
+}
+
+.cert-sports-champion .sports-stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25cqw;
+}
+
+.cert-sports-champion .sports-stat-icon {
+  font-size: 0.68cqw;
 }
 
 .cert-sports-champion .sports-stat-label {
-  color: var(--primary, #D35400);
+  color: #8C531B;
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 0.58cqw;
   font-weight: 800;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
-.cert-sports-champion .sports-stat-value {
-  color: #1F2937;
+.cert-sports-champion .sports-stat-val {
+  display: block;
+  width: 100%;
+  color: var(--primary, #B5430A);
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 0.88cqw;
+  font-weight: 800;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.cert-sports-champion .sports-achievement-val {
+  color: #B5430A;
   font-weight: 900;
 }
 
-.cert-sports-champion .sports-signatures {
+/* =========================================================
+   7. SIGNATURE PEDESTALS & CENTER GOLD SEAL
+   ========================================================= */
+.cert-sports-champion .sports-sign-row {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   display: flex;
-  justify-content: space-between;
   align-items: flex-end;
+  justify-content: space-between;
+  width: 86%;
+  margin: 0 auto;
+  min-height: 4.5cqw;
 }
 
-.cert-sports-champion .sports-sig-block {
+.cert-sports-champion .sports-sign-box {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 18cqw;
-  background: #FFF;
-  padding: 1cqw;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-  border-bottom: 4px solid var(--accent, #E67E22);
+  justify-content: flex-end;
+  width: 26cqw;
+  min-height: 4.2cqw;
+  box-sizing: border-box;
+  text-align: center;
 }
 
-.cert-sports-champion .sports-sig-title {
-  font-size: 1cqw;
-  font-weight: 800;
-  color: var(--primary, #D35400);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 0.5cqw;
+.cert-sports-champion .sports-sig-img {
+  display: block;
+  max-width: 10cqw;
+  max-height: 2.8cqw;
+  object-fit: contain;
+  margin-bottom: 0.15cqw;
 }
 
-.cert-sports-champion .sports-sig-name {
-  font-family: var(--student-font-ar, 'El Messiri'), serif;
-  font-size: 1.4cqw;
+.cert-sports-champion .sports-sign-title {
+  color: #7D4C1E;
+  font-family: var(--student-font-ar, 'Tajawal'), sans-serif;
+  font-size: 0.6cqw;
   font-weight: 800;
-  color: #1F2937;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.2cqw;
+  text-align: center;
+}
+
+.cert-sports-champion .sports-sign-name {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding-top: 0.35cqw;
+  border-top: 0.08cqw solid var(--accent, #F0A12C);
+  color: var(--primary, #B5430A);
+  font-family: var(--student-font-ar, 'El Messiri'), Georgia, serif;
+  font-size: 0.92cqw;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+}
+
+/* Center Diamond on Signature Line */
+.cert-sports-champion .sports-sign-name::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -0.2cqw;
+  width: 0.36cqw;
+  height: 0.36cqw;
+  transform: translateX(-50%) rotate(45deg);
+  background: #FFFDF9;
+  border: 0.07cqw solid #F0A12C;
+}
+
+/* Center Official 3D Championship Gold Seal */
+.cert-sports-champion .sports-seal-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 6.2cqw;
+  height: 6.2cqw;
+  margin-bottom: -0.8cqw;
+}
+
+.cert-sports-champion .sports-seal-medallion {
+  width: 5.6cqw;
+  height: 5.6cqw;
+  position: relative;
+  z-index: 2;
+}
+
+.cert-sports-champion .sports-seal-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Flowing Ribbons behind seal */
+.cert-sports-champion .sports-seal-ribbon {
+  position: absolute;
+  bottom: -0.8cqw;
+  width: 1.1cqw;
+  height: 2.2cqw;
+  background: linear-gradient(180deg, #D35400 0%, #962D00 100%);
+  z-index: 1;
+  box-shadow: 0 0.15cqw 0.3cqw rgba(0,0,0,0.25);
+}
+
+.cert-sports-champion .sports-ribbon-left {
+  left: 1.8cqw;
+  transform: rotate(18deg);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+}
+
+.cert-sports-champion .sports-ribbon-right {
+  right: 1.8cqw;
+  transform: rotate(-18deg);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+}
+
+/* =========================================================
+   8. LANGUAGE, BI-DIRECTIONAL & OVERFLOW SAFETY
+   ========================================================= */
+.cert-sports-champion [dir='rtl'],
+.cert-sports-champion [dir='ltr'] {
+  unicode-bidi: plaintext;
+}
+
+.cert-sports-champion .sports-title,
+.cert-sports-champion .sports-school,
+.cert-sports-champion .sports-presentation-label,
+.cert-sports-champion .sports-message,
+.cert-sports-champion .sports-meta-bar,
+.cert-sports-champion .sports-sign-row {
+  text-align: center;
+}
+
+.cert-sports-champion .sports-title>span+span {
+  margin-top: 0.12cqw;
+}
+
+.cert-sports-champion .sports-school>span+span {
+  margin-top: 0.06cqw;
+}
+
+.cert-sports-champion .sports-header>*,
+.cert-sports-champion .sports-title-block>*,
+.cert-sports-champion .sports-recipient-zone>*,
+.cert-sports-champion .sports-meta-bar>*,
+.cert-sports-champion .sports-sign-row>* {
+  min-width: 0;
 }

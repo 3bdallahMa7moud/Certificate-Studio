@@ -7,8 +7,6 @@ export const HISTORY_STORE = 'certificateRecords';
 export const PROJECTS_STORE = 'projects';
 export const STUDENTS_STORE = 'students';
 export const SETTINGS_STORE = 'settings';
-export const BACKUPS_STORE = 'backups';
-export const MAX_STORED_BACKUPS = 3;
 export const CONTENT_ADDRESSED_ASSET_PREFIX = 'render-asset:';
 
 const CURRENT_PROJECT_ID = 'current';
@@ -57,7 +55,6 @@ function createOrUpgradeStores(db, transaction) {
   } else {
     studentStore = transaction.objectStore(STUDENTS_STORE);
   }
-  createIndexIfMissing(studentStore, 'serial', 'serial');
   createIndexIfMissing(studentStore, 'studentNameAr', 'studentNameAr');
   createIndexIfMissing(studentStore, 'position', '_position');
 
@@ -65,14 +62,6 @@ function createOrUpgradeStores(db, transaction) {
     db.createObjectStore(SETTINGS_STORE, { keyPath: 'key' });
   }
 
-  let backupStore;
-  if (!db.objectStoreNames.contains(BACKUPS_STORE)) {
-    backupStore = db.createObjectStore(BACKUPS_STORE, { keyPath: 'id' });
-  } else {
-    backupStore = transaction.objectStore(BACKUPS_STORE);
-  }
-  createIndexIfMissing(backupStore, 'createdAt', 'createdAt');
-  createIndexIfMissing(backupStore, 'kind', 'kind');
 }
 
 export function openDb() {
@@ -190,30 +179,6 @@ function putHistory(transaction, records = []) {
   }
 }
 
-function createBackupRecord(backup, kind = 'safety') {
-  const createdAt = typeof backup?.exportedAt === 'string'
-    ? backup.exportedAt
-    : new Date().toISOString();
-  const suffix = Math.random().toString(36).slice(2, 8).toUpperCase();
-  return {
-    id: `BACKUP-${Date.now().toString(36).toUpperCase()}-${suffix}`,
-    kind,
-    createdAt,
-    backup,
-  };
-}
-
-function queueBackupPrune(backupStore, keep = MAX_STORED_BACKUPS) {
-  const request = backupStore.getAll();
-  request.onsuccess = () => {
-    const sorted = (request.result || [])
-      .sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
-    sorted.slice(Math.max(0, keep)).forEach(item => backupStore.delete(item.id));
-  };
-  request.onerror = () => {
-    try { backupStore.transaction.abort(); } catch {}
-  };
-}
 
 export async function getImage(key) {
   if (!IMAGE_KEYS.includes(key)) return null;
@@ -399,99 +364,6 @@ export async function savePresetsState(presets, revision) {
   }
 }
 
-export async function saveStoredBackup(backup, kind = 'manual') {
-  if (!backup || typeof backup !== 'object') return null;
-  try {
-    const db = await openDb();
-    const tx = db.transaction(BACKUPS_STORE, 'readwrite');
-    const store = tx.objectStore(BACKUPS_STORE);
-    const record = createBackupRecord(backup, kind);
-    store.put(record);
-    queueBackupPrune(store);
-    await transactionDone(tx);
-    return record;
-  } catch {
-    return null;
-  }
-}
-
-export async function loadStoredBackups() {
-  const db = await openDb();
-  const tx = db.transaction(BACKUPS_STORE, 'readonly');
-  const records = await requestResult(tx.objectStore(BACKUPS_STORE).getAll());
-  return (records || [])
-    .sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')))
-    .slice(0, MAX_STORED_BACKUPS);
-}
-
-export async function getStoredBackup(id) {
-  if (!id) return null;
-  const db = await openDb();
-  const tx = db.transaction(BACKUPS_STORE, 'readonly');
-  return await requestResult(tx.objectStore(BACKUPS_STORE).get(String(id))) || null;
-}
-
-export async function deleteStoredBackup(id) {
-  if (!id) return false;
-  try {
-    const db = await openDb();
-    const tx = db.transaction(BACKUPS_STORE, 'readwrite');
-    tx.objectStore(BACKUPS_STORE).delete(String(id));
-    await transactionDone(tx);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Replaces every mutable application store in one transaction. The optional
- * safety backup is inserted before the replacement requests and is rolled back
- * with them if any write fails.
- */
-export async function replaceApplicationDataAtomic(snapshot = {}, safetyBackup = null) {
-  let tx = null;
-  try {
-    const db = await openDb();
-    const storeNames = [
-      PROJECTS_STORE,
-      STUDENTS_STORE,
-      SETTINGS_STORE,
-      ASSETS_STORE,
-      HISTORY_STORE,
-      BACKUPS_STORE,
-    ];
-    tx = db.transaction(storeNames, 'readwrite');
-
-    if (safetyBackup) {
-      const backupStore = tx.objectStore(BACKUPS_STORE);
-      backupStore.put(createBackupRecord(safetyBackup, 'safety'));
-      queueBackupPrune(backupStore);
-    }
-
-    tx.objectStore(PROJECTS_STORE).clear();
-    tx.objectStore(SETTINGS_STORE).clear();
-    putWorkspace(tx, snapshot.state || {});
-    // Replace the complete live/render asset set in this same transaction.
-    // Merge restores provide the already-combined set, while replace restores
-    // no longer leave unreferenced immutable assets from the old workspace.
-    tx.objectStore(ASSETS_STORE).clear();
-    putAssets(tx, snapshot.assets || {});
-    putContentAddressedAssets(tx, snapshot.renderAssets || []);
-    putHistory(tx, Array.isArray(snapshot.records) ? snapshot.records : []);
-    tx.objectStore(SETTINGS_STORE).put({ key: 'presets', value: snapshot.presets || {} });
-    tx.objectStore(SETTINGS_STORE).put({ key: 'presetsRevision', value: Date.now() });
-
-    await transactionDone(tx);
-    return true;
-  } catch {
-    // IndexedDB request errors abort read/write transactions automatically,
-    // but a synchronous validation error (for example an unsafe asset) does
-    // not. Abort explicitly so queued workspace writes cannot commit alone.
-    try { tx?.abort(); } catch {}
-    return false;
-  }
-}
 
 /* Certificate history CRUD */
 

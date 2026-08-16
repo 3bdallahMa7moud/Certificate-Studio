@@ -131,9 +131,6 @@ export function useStudentManager(students) {
     sortKey, sortDir, toggleSort,
     // selection
     selectedRowIds, setSelectedRowIds,
-    // Transitional aliases for callers that have not migrated their prop names.
-    selectedSerials: selectedRowIds,
-    setSelectedSerials: setSelectedRowIds,
     toggleSelect,
     selectAllVisible,
     clearSelection,

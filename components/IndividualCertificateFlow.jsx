@@ -14,7 +14,6 @@ import {
   GRADE_LEVELS,
   LANGUAGE_MODES,
   SUBJECTS,
-  genSerial,
   getCurrentAcademicYear,
 } from '../src/context/data.js';
 import { dateInputValue } from '../src/context/helpers.js';
@@ -78,7 +77,6 @@ export default function IndividualCertificateFlow({
         achievementEn: student.achievementEn || state.achievementEn,
         customMessageAr,
         customMessageEn,
-        serial: student.serial || genSerial(),
       });
       setUserHasCustomizedMessageAr(Boolean(stringVal(student.customMessageAr) || studentLegacyAr));
       setUserHasCustomizedMessageEn(Boolean(stringVal(student.customMessageEn) || studentLegacyEn));
@@ -263,7 +261,7 @@ export default function IndividualCertificateFlow({
               >
                 <option value="">— اختيار طالب من القائمة ({state.batchStudents.length} طالب) —</option>
                 {state.batchStudents.map((s, i) => (
-                  <option key={s.serial || i} value={i}>
+                  <option key={s.rowId || s.id || i} value={i}>
                     {s.studentNameAr || s.studentNameEn} ({s.grade})
                   </option>
                 ))}

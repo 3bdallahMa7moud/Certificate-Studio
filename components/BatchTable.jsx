@@ -42,7 +42,7 @@ export default function BatchTable({ students, duplicates, updateStudent, previe
         </thead>
         <tbody>
           {students.map((student, index) => (
-            <tr key={student.serial} className={duplicates.has(index) ? 'duplicate' : ''}>
+            <tr key={student.rowId || student.id || index} className={duplicates.has(index) ? 'duplicate' : ''}>
               <td data-label="#">{index + 1}</td>
               <td data-label="الطالب">
                 <input

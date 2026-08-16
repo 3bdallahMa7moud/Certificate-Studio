@@ -58,7 +58,6 @@ export default function MinimalTemplate({ state, render }) {
           preservePosition: true,
         })}
       />
-      <div className="corner-tr">{state.serial}</div>
       <div
         {...(shouldShowEn(state)
           ? element(

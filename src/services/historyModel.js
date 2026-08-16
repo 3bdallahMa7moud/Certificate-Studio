@@ -80,7 +80,6 @@ function createStudentRenderState(state, student = {}) {
   const studentNameEn = studentValue(student, 'englishName', state, 'studentNameEn');
   const grade = studentValue(student, 'grade', state, 'grade');
   const gender = studentValue(student, 'gender', state, 'gender');
-  const serial = student.serial ?? student.id ?? state.serial ?? null;
   const rowId = student.rowId ?? student.studentRowId ?? state.studentRowId ?? null;
   const achievementAr = student.achievementAr
     ?? student.achievement
@@ -109,7 +108,6 @@ function createStudentRenderState(state, student = {}) {
     studentNameEn,
     grade,
     gender,
-    serial,
     studentRowId: rowId,
     subject: student.subject ?? state.subject,
     behavior: student.behavior ?? state.behavior,
@@ -220,7 +218,6 @@ export function createRecordFromState(state = {}, status = 'draft', options = {}
   const createdAt = safeIsoDate(options.createdAt, now);
   const updatedAt = safeIsoDate(options.updatedAt, now);
   const issuedAt = safeIsoDate(options.issuedAt, isIssued ? now : null);
-  const serial = renderState.serial ? String(renderState.serial) : null;
   const rowId = renderState.studentRowId ? String(renderState.studentRowId) : null;
   const pendingAssets = pendingAssetsFromState(renderState);
 
@@ -233,9 +230,8 @@ export function createRecordFromState(state = {}, status = 'draft', options = {}
     issuedAt,
 
     student: {
-      id: serial,
+      id: rowId,
       rowId,
-      serial,
       name: String(renderState.studentNameAr || '').trim(),
       englishName: String(renderState.studentNameEn || '').trim(),
       grade: String(renderState.grade || '').trim(),
@@ -326,15 +322,12 @@ function normalizeStudent(value = {}) {
       studentNameEn: student.studentNameEn ?? student.englishName,
     },
     { grade: null },
-    { rowIdFactory: null, serialFactory: null },
+    { rowIdFactory: null },
   );
   return {
     ...student,
     id: student.id ? String(student.id) : null,
     rowId: normalized.rowId || null,
-    serial: normalized.serial
-      ? normalized.serial
-      : (student.id ? String(student.id) : null),
     name: normalized.studentNameAr,
     englishName: normalized.studentNameEn,
     grade: normalized.grade,
@@ -416,7 +409,6 @@ function createLegacySnapshotState(record) {
     studentNameEn: record.student.englishName,
     grade: record.student.grade,
     gender: record.student.gender,
-    serial: record.student.serial || record.student.id || record.id,
     studentRowId: record.student.rowId,
     certificateType: record.certificate.typeId,
     subject: record.certificate.subject,

@@ -5,7 +5,6 @@ import { TEMPLATE_REGISTRY } from '../src/certificate-templates/registry.js';
 import { GRADE_LEVELS } from '../src/context/data.js';
 
 const HistoryPreviewModal = lazy(() => import('./HistoryPreviewModal.jsx'));
-const BackupRestoreModal = lazy(() => import('./BackupRestoreModal.jsx'));
 
 export default function CertificateHistory({
   history,
@@ -16,7 +15,6 @@ export default function CertificateHistory({
   onReprintRecord,
 }) {
   const [selectedRecordForPreview, setSelectedRecordForPreview] = useState(null);
-  const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 20;
@@ -134,14 +132,8 @@ export default function CertificateHistory({
               <span>أرشيف وسجل الشهادات</span>
             </h1>
             <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary, #666)' }}>
-              إدارة، بحث، تكرار، واستعادة شهاداتك المحفوظة والنسخ الاحتياطية.
+              إدارة، بحث، تكرار، وتصدير شهاداتك المحفوظة.
             </p>
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <button className="btn btn-primary" onClick={() => setIsBackupModalOpen(true)}>
-              <Icon name="Database" size={16} />
-              <span>النسخ الاحتياطي والاستعادة</span>
-            </button>
           </div>
         </div>
       </div>
@@ -470,21 +462,6 @@ export default function CertificateHistory({
         </Suspense>
       )}
 
-      {/* Backup and Restore Modal */}
-      {isBackupModalOpen && (
-        <Suspense fallback={null}>
-          <BackupRestoreModal
-            isOpen
-            onClose={() => setIsBackupModalOpen(false)}
-            state={state}
-            onRestoreSuccess={({ nextState }) => {
-              if (nextState) onRestoreState?.(nextState);
-              history.refreshRecords();
-            }}
-            showToast={showToast}
-          />
-        </Suspense>
-      )}
     </div>
   );
 }

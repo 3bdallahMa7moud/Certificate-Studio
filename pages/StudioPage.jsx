@@ -27,7 +27,6 @@ import {
   TERMS,
   THEMES,
   genRowId,
-  genSerial,
   getDefaultState,
 } from '../src/context/data.js';
 import {
@@ -64,7 +63,6 @@ const EditorToolbar = lazy(() => import('../components/CertificateEditor/EditorT
 const ElementInspector = lazy(() => import('../components/CertificateEditor/ElementInspector.jsx'));
 const ImportWizard = lazy(() => import('../components/ImportWizard.jsx'));
 const CertificateHistory = lazy(() => import('../components/CertificateHistory.jsx'));
-const BackupRestoreModal = lazy(() => import('../components/BackupRestoreModal.jsx'));
 
 function ViewFallback({ label = 'جاري تجهيز الصفحة…' }) {
   return (
@@ -228,7 +226,6 @@ function StudioPage() {
   const [mainNav, setMainNav] = useState(readMainRouteFromLocation);
   const [tab, setTab] = useState('design');
   const [isSetupOpen, setIsSetupOpen] = useState(false);
-  const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
   const [toast, showToast] = useToast();
   const [messageTemplateId, setMessageTemplateId] = useState('general');
   const [zoomLevel, setZoomLevel] = useState(1);
@@ -495,7 +492,7 @@ function StudioPage() {
   const duplicateStudent = (index) => {
     const original = state.batchStudents[index];
     if (!original) return;
-    const copy = { ...original, rowId: genRowId(), serial: genSerial() };
+    const copy = { ...original, rowId: genRowId() };
     const next = [...state.batchStudents];
     next.splice(index + 1, 0, copy);
     updateState({ batchStudents: next });
@@ -593,7 +590,6 @@ function StudioPage() {
       achievementEn: student.achievementEn || state.achievementEn,
       customMessageAr,
       customMessageEn,
-      serial: student.serial || genSerial(),
     });
     navigateMain('single');
     showToast(`جاري معاينة وإصدار شهادة: ${student.studentNameAr || student.studentNameEn || 'الطالب'}`);
@@ -631,26 +627,8 @@ function StudioPage() {
           <PrimaryNavigation mainNav={mainNav} onNavigate={navigateMain} />
 
           <div className="topbar-actions">
-            <button
-              className="btn btn-ghost"
-              onClick={() => setIsBackupModalOpen(true)}
-              disabled={busy}
-              title="النسخ الاحتياطي والاستعادة"
-              aria-label="النسخ الاحتياطي والاستعادة"
-            >
-              <Icon name="Database" size={14} /><span className="btn-label-desktop">النسخ الاحتياطي</span>
-            </button>
             {['single', 'editor'].includes(mainNav) && (
               <>
-                <button
-                  className="btn btn-ghost"
-                  onClick={() => updateState({ serial: genSerial() })}
-                  disabled={busy}
-                  title="توليد رقم تسلسلي جديد"
-                  aria-label="توليد رقم تسلسلي جديد"
-                >
-                  <Icon name="RefreshCw" size={14} /><span className="btn-label-desktop">رقم تسلسلي</span>
-                </button>
 
                 <button
                   className="btn btn-ghost"
@@ -840,7 +818,6 @@ function StudioPage() {
                       <Icon name="Maximize2" size={13} />
                     </button>
                   </div>
-                  <div className="serial-display"><span>SERIAL</span><span className="num">{state.serial}</span></div>
                 </div>
               </div>
               {mainNav === 'editor' && advancedEditingAvailable && (
@@ -1183,7 +1160,7 @@ function StudioPage() {
 
       <div className="print-only">
         {printStudents ? printStudents.map(student => (
-          <div className="print-page" key={student.rowId || student.serial}>
+          <div className="print-page" key={student.rowId || student.id}>
             <div className="cert">
               <Certificate
                 mode={isExporting ? 'export' : 'print'}
@@ -1238,22 +1215,6 @@ function StudioPage() {
         </Dialog>
       )}
 
-      {isBackupModalOpen && (
-        <Suspense fallback={null}>
-          <BackupRestoreModal
-            isOpen
-            onClose={() => setIsBackupModalOpen(false)}
-            state={state}
-            onRestoreSuccess={(newState) => {
-              const restoredState = newState?.nextState || newState;
-              if (restoredState) setState(restoredState);
-              void history.refreshRecords();
-              void presetManager.refreshPresets?.();
-            }}
-            showToast={showToast}
-          />
-        </Suspense>
-      )}
 
       {/* Setup Wizard Overlay */}
       {shouldShowSetup && (

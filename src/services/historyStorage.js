@@ -196,7 +196,7 @@ export async function loadRecordRenderState(record, overrides = {}) {
 
 /**
  * Package every content-addressed asset referenced by the supplied records.
- * The returned entries are safe to serialize in backup v2 and are deduplicated
+ * The returned entries are safe to serialize and are deduplicated
  * by their SHA-256 key.
  */
 export async function collectHistoryRenderAssets(recordsArray = [], overrides = {}) {

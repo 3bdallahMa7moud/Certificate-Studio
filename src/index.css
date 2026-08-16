@@ -192,15 +192,6 @@
   .status-badge.saving { color: #d97706; background: rgba(217, 119, 6, 0.1); }
   .status-badge.error { color: #dc2626; background: rgba(220, 38, 38, 0.1); }
 
-  .serial-display {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-size: 11px; color: var(--muted);
-    font-family: 'Outfit', sans-serif; letter-spacing: 0.15em;
-  }
-  .serial-display .num {
-    font-family: 'Outfit', monospace;
-    color: var(--text); font-weight: 600; letter-spacing: 0.05em;
-  }
 
   .cert-wrap {
     width: 100%;
@@ -563,11 +554,7 @@
     letter-spacing: 0; text-transform: none; font-weight: 600;
     margin-right: 0.6cqw;
   }
-  .cert-geometric .serial-tag {
-    font-family: 'Outfit', sans-serif;
-    font-size: 0.85cqw; letter-spacing: 0.2em;
-    color: var(--muted);
-  }
+
   .cert-geometric .pill {
     display: inline-flex; align-items: center; gap: 0.8cqw;
     padding: 1cqw 2cqw;
@@ -1457,16 +1444,6 @@
       align-items: flex-start;
     }
 
-    .serial-display {
-      max-width: 100%;
-      overflow: hidden;
-    }
-
-    .serial-display .num {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
 
     .cert-wrap {
       width: 100%;

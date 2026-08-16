@@ -1363,9 +1363,6 @@
   line-height: 1.55;
 }
 
-.backup-restore-modal.dialog-surface {
-  width: min(680px, calc(100vw - 32px));
-}
 
 @media (max-width: 1023px) {
   body {
@@ -1535,8 +1532,7 @@
   }
 
   .fullscreen-preview-modal.dialog-surface,
-  .history-preview-modal.dialog-surface,
-  .backup-restore-modal.dialog-surface {
+  .history-preview-modal.dialog-surface {
     width: calc(100vw - 16px);
     max-width: none;
     max-height: calc(100dvh - 16px);

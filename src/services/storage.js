@@ -139,7 +139,7 @@ export function normalizeLoadedState(data) {
         achievementEn: merged.achievementEn,
         certificateType: merged.certificateType,
       },
-      { rowIdFactory: null, serialFactory: null },
+      { rowIdFactory: null },
     )), 'loaded-state');
   merged.isSetupCompleted = source.isSetupCompleted !== undefined
     ? Boolean(source.isSetupCompleted)

@@ -46,19 +46,31 @@ export default function StorybookCastleTemplate({ state, render }) {
   return (
     <div className={`cert-storybook-castle storybook-language-${languageMode}`}>
       <div className="storybook-decoration" aria-hidden="true">
+        {/* Royal Gold Filigree Corner Ornaments */}
+        <span className="storybook-corner-ornament storybook-corner-tl" />
+        <span className="storybook-corner-ornament storybook-corner-tr" />
+        <span className="storybook-corner-ornament storybook-corner-bl" />
+        <span className="storybook-corner-ornament storybook-corner-br" />
+
+        {/* Ambient Starlight & Ribbons */}
         <span className="storybook-ribbon storybook-ribbon-top" />
         <span className="storybook-ribbon storybook-ribbon-bottom" />
         <span className="storybook-star storybook-star-one" />
         <span className="storybook-star storybook-star-two" />
         <span className="storybook-star storybook-star-three" />
         <span className="storybook-star storybook-star-four" />
+        <span className="storybook-star storybook-star-five" />
+
+        {/* Enchanted Fairytale Castle Scene */}
         <div className="storybook-castle-scene">
           <span className="storybook-tower storybook-tower-left"><i /></span>
-          <span className="storybook-tower storybook-tower-center"><i /></span>
+          <span className="storybook-tower storybook-tower-center"><i /><span className="storybook-tower-flag" /></span>
           <span className="storybook-tower storybook-tower-right"><i /></span>
           <span className="storybook-castle-wall" />
           <span className="storybook-castle-door" />
         </div>
+
+        {/* Magical Open Storybook */}
         <div className="storybook-book-mark">
           <span className="storybook-book-page storybook-book-page-left" />
           <span className="storybook-book-page storybook-book-page-right" />

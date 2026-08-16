@@ -84,7 +84,7 @@ function isUsableRowId(value) {
     && /^[\w.:-]+$/u.test(value.trim());
 }
 
-/** A deterministic migration ID. Once persisted it remains independent of serial changes. */
+/** A deterministic migration ID. */
 export function createStudentRowId(student = {}, _index = 0, namespace = 'student') {
   const identity = [
     namespace,
@@ -174,7 +174,7 @@ function normalizeStudent(student, fallbackGrade, index) {
   const normalized = normalizeStudentData(
     source,
     { grade: fallbackGrade },
-    { rowIdFactory: null, serialFactory: null },
+    { rowIdFactory: null },
   );
   return {
     ...normalized,
@@ -294,7 +294,6 @@ export function extractProjectDraft(state) {
     term: state.term,
     customMessageAr,
     customMessageEn,
-    serial: state.serial,
     date: state.date,
     batchStudents: ensureStudentRowIds(state.batchStudents, 'project-export'),
     templateCustomizationVersion: 1,
@@ -368,7 +367,7 @@ export function validateAndNormalizeProjectData(raw) {
     'teacherNameAr', 'teacherNameEn', 'teacherTitleAr', 'teacherTitleEn',
     'principalNameAr', 'principalNameEn', 'principalTitleAr', 'principalTitleEn',
     'academicYear', 'term', 'customMessage', 'customMessageAr', 'customMessageEn',
-    'serial', 'gender', 'certificateType', 'category', 'paletteMode',
+    'gender', 'certificateType', 'category', 'paletteMode',
   ];
   for (const key of stringKeys) {
     if (typeof inputData[key] === 'string') {

@@ -59,27 +59,45 @@ export default function SpaceExplorerTemplate({ state, render }) {
     : `${PREFIX}-principal-name`;
 
   const messageText = state.customMessageAr || state.customMessageEn || '';
+  const isRtl = showAr || !showEn;
+  const isBilingual = showAr && showEn;
+  const layoutClass = `cert-space-explorer ${isRtl ? 'space-layout-rtl' : 'space-layout-ltr'} ${isBilingual ? 'space-layout-bilingual' : 'space-layout-single-language'}`;
 
   return (
-    <div className="cert-space-explorer">
+    <div className={layoutClass}>
       {/* Decorative space layer */}
       <div className="space-art" aria-hidden="true">
+        {/* Glowing cosmic nebulae */}
         <div className="space-orb space-orb-1" />
         <div className="space-orb space-orb-2" />
+        <div className="space-orb space-orb-3" />
 
+        {/* Sci-Fi HUD corner brackets */}
+        <span className="space-hud-corner space-hud-tl" />
+        <span className="space-hud-corner space-hud-tr" />
+        <span className="space-hud-corner space-hud-bl" />
+        <span className="space-hud-corner space-hud-br" />
+
+        {/* Sparkling stars */}
         <span className="space-star space-star-one" />
         <span className="space-star space-star-two" />
         <span className="space-star space-star-three" />
         <span className="space-star space-star-four" />
         <span className="space-star space-star-five" />
+        <span className="space-star space-star-six" />
 
+        {/* High-definition 3D ringed planet */}
         <div className="space-planet">
+          <span className="space-planet-atmosphere" />
           <span className="space-planet-ring" />
+          <span className="space-planet-ring-front" />
           <span className="space-planet-spot space-planet-spot-one" />
           <span className="space-planet-spot space-planet-spot-two" />
         </div>
 
+        {/* High-tech explorer rocket */}
         <div className="space-rocket">
+          <span className="space-rocket-glow" />
           <span className="space-rocket-nose" />
           <span className="space-rocket-body" />
           <span className="space-rocket-window" />
@@ -103,9 +121,12 @@ export default function SpaceExplorerTemplate({ state, render }) {
         />
 
         <div className="space-school-lockup">
-          <span className="space-command-label" aria-hidden="true">
-            {showAr ? 'رحلة نحو التميز' : 'JOURNEY TO EXCELLENCE'}
-          </span>
+          <div className="space-command-badge">
+            <span className="space-beacon-dot" />
+            <span className="space-command-label">
+              {showAr ? 'رحلة نحو التميز' : 'JOURNEY TO EXCELLENCE'}
+            </span>
+          </div>
 
           <div className="space-school">
             {showAr && (
