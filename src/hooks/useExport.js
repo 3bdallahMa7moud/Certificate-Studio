@@ -50,8 +50,12 @@ export function useExport(
    * Capture the currently-visible preview certificate as a PNG and download it.
    * Uses the live .cert-wrap .cert element — what you see is what you get.
    */
-  const doExportPng = (editorStatus = {}) => withGuard('جاري تصدير الصورة…', async () => {
-    const validation = validateOutputRequest({ state, mode: 'png', editorStatus });
+  const doExportPng = (customStateOrStatus = null, maybeEditorStatus = {}) => withGuard('جاري تصدير الصورة…', async () => {
+    const isStateObject = customStateOrStatus && typeof customStateOrStatus === 'object' && !('isDirectEditing' in customStateOrStatus);
+    const currentState = isStateObject ? customStateOrStatus : state;
+    const editorStatus = isStateObject ? maybeEditorStatus : (customStateOrStatus || {});
+
+    const validation = validateOutputRequest({ state: currentState, mode: 'png', editorStatus });
     if (!validation.isValid) throw new Error(validation.errors[0]);
 
     const previewEl = previewCertificateRef?.current;
@@ -63,7 +67,7 @@ export function useExport(
 
     const date = new Date().toISOString().slice(0, 10);
     // Build a safe filename from the student's Arabic name (or English fallback)
-    const rawName = (state.studentNameAr || state.studentNameEn || 'certificate').trim();
+    const rawName = (currentState.studentNameAr || currentState.studentNameEn || currentState.name || currentState.englishName || 'certificate').trim();
     const safeName = rawName.replace(/[^\u0600-\u06FFa-zA-Z0-9\s]/g, '').trim().replace(/\s+/g, '-').slice(0, 40) || 'certificate';
     const filename = `certificate-${safeName}-${date}.png`;
 

@@ -17,7 +17,12 @@ import {
   getCurrentAcademicYear,
   getNowIsoDate,
 } from '../src/context/data.js';
-import { dateInputValue, formatDateAr } from '../src/context/helpers.js';
+import {
+  adaptArabicGenderText,
+  dateInputValue,
+  detectArabicGender,
+  formatDateAr,
+} from '../src/context/helpers.js';
 import { validateCertificateState } from '../src/services/certificateValidator.js';
 import { resolveTemplateId } from '../src/certificate-templates/templateUtils.js';
 
@@ -145,6 +150,18 @@ export default function IndividualCertificateFlow({
     }
   };
 
+  const handleStudentNameArChange = (studentNameAr) => {
+    const detected = detectArabicGender(studentNameAr);
+    const patch = { studentNameAr };
+    if (detected && detected !== state.gender) {
+      patch.gender = detected;
+      if (state.customMessageAr) {
+        patch.customMessageAr = adaptArabicGenderText(state.customMessageAr, detected);
+      }
+    }
+    updateState(patch);
+  };
+
   const handleGenderChange = (genderValue) => {
     const suggestedMsgs = getGenderAwareMessages(
       state.certificateType || 'academic_excellence',
@@ -152,10 +169,12 @@ export default function IndividualCertificateFlow({
       genderValue,
     );
     const patch = { gender: genderValue };
-    if (!userHasCustomizedMessageAr) {
+    if (state.customMessageAr) {
+      patch.customMessageAr = adaptArabicGenderText(state.customMessageAr, genderValue || 'neutral');
+    } else if (!userHasCustomizedMessageAr) {
       patch.customMessageAr = suggestedMsgs.ar;
     }
-    if (!userHasCustomizedMessageEn) {
+    if (!userHasCustomizedMessageEn && suggestedMsgs.en) {
       patch.customMessageEn = suggestedMsgs.en;
     }
     updateState(patch);
@@ -272,7 +291,7 @@ export default function IndividualCertificateFlow({
           <BoundInput
             label="اسم الطالب بالعربية *"
             value={state.studentNameAr}
-            onChange={studentNameAr => updateState({ studentNameAr })}
+            onChange={handleStudentNameArChange}
             ar
           />
 

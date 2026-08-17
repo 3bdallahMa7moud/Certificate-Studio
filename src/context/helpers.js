@@ -5,6 +5,13 @@ import {
   defaultAchievementPair,
   genRowId,
 } from './data.js';
+import {
+  detectArabicGender,
+  adaptArabicGenderText,
+} from '../services/genderConcordance.js';
+
+export { detectArabicGender, adaptArabicGenderText };
+
 
 export const AR_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 export const AR_DAYS = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];

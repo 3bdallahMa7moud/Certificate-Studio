@@ -243,22 +243,29 @@ export function useCertificateEditor({
 
   const previewState = useMemo(() => {
     const activeDraft = directEdit || contentInteraction;
+    let base = state;
+    if (effectiveCustomizations) {
+      base = {
+        ...base,
+        templateCustomizations: effectiveCustomizations,
+      };
+    }
     if (!activeDraft || activeDraft.bindingType === ELEMENT_BINDING_TYPES.TEMPLATE_TEXT) {
-      return state;
+      return base;
     }
     let value = activeDraft.draftValue;
     if (activeDraft.controlKind === 'date' && value) {
       value = new Date(`${value}T12:00:00`).toISOString();
     }
     return updateDomainBindingValue(
-      state,
+      base,
       activeDraft.binding,
       value,
       activeDraft.locale,
       activeDraft.occurrence,
       { multiline: activeDraft.multiline },
     );
-  }, [contentInteraction, directEdit, state]);
+  }, [contentInteraction, directEdit, effectiveCustomizations, state]);
 
   const select = useCallback(next => {
     if (!next?.elementId) return;
@@ -1076,6 +1083,11 @@ export function useCertificateEditor({
     commitContentInteraction,
     cancelContentInteraction,
     commitSelectedContent,
+    commitAllPendingEdits: () => {
+      if (directEdit) commitDirectEdit();
+      if (contentInteraction) commitContentInteraction();
+      if (interactionDraft) commitInspectorInteraction();
+    },
     resetSelectedGeometry,
     resetSelectedElement,
     resetActiveTemplate,

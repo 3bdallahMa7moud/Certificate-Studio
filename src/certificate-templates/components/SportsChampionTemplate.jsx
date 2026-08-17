@@ -19,11 +19,13 @@ import {
   mergeStaticProps,
   CertificateMessage,
 } from './TemplatePrimitives.jsx';
+import { detectArabicGender } from '../../services/genderConcordance.js';
 import '../styles/SportsChampionTemplate.css';
 
 const PREFIX = 'sports-champion';
 
 export default function SportsChampionTemplate({ state, render }) {
+  const activeGender = state.gender || (state.studentNameAr ? detectArabicGender(state.studentNameAr) : '');
   const element = (elementId, options = {}, baseProps = {}) =>
     mergeStaticProps(
       baseProps,
@@ -64,9 +66,9 @@ export default function SportsChampionTemplate({ state, render }) {
       : `${PREFIX}-principal-name`;
 
   const presentationText = showAr
-    ? (state.gender === 'female'
+    ? (activeGender === 'female'
       ? 'تُهـدى هـذه الشهـادة بكـل فخـر واعتـزاز للبطلـة المتألقـة:'
-      : (state.gender === 'male'
+      : (activeGender === 'male'
         ? 'تُهـدى هـذه الشهـادة بكـل فخـر واعتـزاز للبطـل المتألـق:'
         : 'تُهـدى هـذه الشهـادة بكـل فخـر واعتـزاز إلـى:'))
     : 'THIS CERTIFICATE IS PROUDLY PRESENTED TO THE CHAMPION:';

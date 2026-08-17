@@ -20,12 +20,15 @@ import {
   mergeStaticProps,
   CertificateMessage,
 } from './TemplatePrimitives.jsx';
+import { detectArabicGender } from '../../services/genderConcordance.js';
 
 import '../styles/GraduationHonorTemplate.css';
 
 const PREFIX = 'graduation-honor';
 
 export default function GraduationHonorTemplate({ state, render }) {
+  const activeGender = state.gender || (state.studentNameAr ? detectArabicGender(state.studentNameAr) : '');
+
   const element = (elementId, options = {}, baseProps = {}) =>
     mergeStaticProps(
       baseProps,
@@ -229,9 +232,9 @@ export default function GraduationHonorTemplate({ state, render }) {
 
         <p className="grad-present-to">
           {showAr
-            ? (state.gender === 'female'
+            ? (activeGender === 'female'
                 ? 'تشهد إدارة الصرح التعليمي بأن الخريجة الفاضلة:'
-                : (state.gender === 'male'
+                : (activeGender === 'male'
                     ? 'تشهد إدارة الصرح التعليمي بأن الخريج الفاضل:'
                     : 'تُمنح شهادة التخرج بكل فخر واعتزاز إلى:'))
             : 'THIS DIPLOMA IS PROUDLY CONFERRED UPON:'}

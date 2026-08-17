@@ -272,3 +272,49 @@ test('Navigation: Route configuration has expressive titles and slugs for all se
   }
 });
 
+test('Gender Concordance: detectArabicGender correctly identifies male and female names', async () => {
+  const { detectArabicGender, adaptArabicGenderText } = await import('../src/services/genderConcordance.js');
+  
+  // Male names
+  assert.equal(detectArabicGender('محمد أحمد'), 'male');
+  assert.equal(detectArabicGender('عمر خالد علي'), 'male');
+  assert.equal(detectArabicGender('عبدالله محمد'), 'male');
+  assert.equal(detectArabicGender('عبد الرحمن سالم'), 'male');
+  assert.equal(detectArabicGender('يوسف إبراهيم'), 'male');
+  assert.equal(detectArabicGender('علي حسن'), 'male');
+  assert.equal(detectArabicGender('حمزة أسامة'), 'male');
+
+  // Female names
+  assert.equal(detectArabicGender('فاطمة العالم'), 'female');
+  assert.equal(detectArabicGender('سلمى العبيدي'), 'female');
+  assert.equal(detectArabicGender('مريم أحمد'), 'female');
+  assert.equal(detectArabicGender('نورة سعد'), 'female');
+  assert.equal(detectArabicGender('سارة خالد'), 'female');
+  assert.equal(detectArabicGender('ريما سالم'), 'female');
+
+  // Grammatical concordance adaptation
+  const femaleSample = 'تقديراً لتفوقها الباهر وحصولها على درجات متميزة، متمنين لها دوام التوفيق والنجاح.';
+  const maleConverted = adaptArabicGenderText(femaleSample, 'male');
+  assert.match(maleConverted, /لتفوقه/);
+  assert.match(maleConverted, /وحصوله/);
+  assert.match(maleConverted, /متمنين له/);
+  assert.doesNotMatch(maleConverted, /لتفوقها/);
+  assert.doesNotMatch(maleConverted, /وحصولها/);
+
+  // Convert back to female
+  const femaleConverted = adaptArabicGenderText(maleConverted, 'female');
+  assert.match(femaleConverted, /لتفوقها/);
+  assert.match(femaleConverted, /وحصولها/);
+  assert.match(femaleConverted, /متمنين لها/);
+
+  // Second person text conversion
+  const femaleSecondPerson = 'أحسنتِ يا بطلة! تفوقكِ واجتهادكِ في دراستكِ يعكس شغفكِ وطموحكِ العالي.';
+  const maleSecondPerson = adaptArabicGenderText(femaleSecondPerson, 'male');
+  assert.match(maleSecondPerson, /أحسنت يا بطل/);
+  assert.match(maleSecondPerson, /تفوقك/);
+  assert.match(maleSecondPerson, /واجتهادك/);
+  assert.match(maleSecondPerson, /دراستك/);
+  assert.match(maleSecondPerson, /شغفك/);
+});
+
+

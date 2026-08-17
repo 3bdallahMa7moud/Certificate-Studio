@@ -13,53 +13,29 @@ function fitsWithinContract(node, maximumLines) {
 }
 
 function fitNameNode(node, frameWidth) {
-  const inlineSize = node.style.fontSize;
-  const authoredSize = inlineSize.endsWith('cqw')
-    ? inlineSize
-    : node.dataset.nameFitAuthoredSize || inlineSize;
-  if (authoredSize) {
-    node.dataset.nameFitAuthoredSize = authoredSize;
-    node.style.fontSize = authoredSize;
+  // Preserve authored cqw size so the name scales proportionally in preview, high-res export, and print
+  const currentStyleSize = node.style.fontSize || '';
+  let authoredCqw = null;
+  if (currentStyleSize.endsWith('cqw')) {
+    authoredCqw = Number.parseFloat(currentStyleSize);
+    node.dataset.nameFitAuthoredCqw = String(authoredCqw);
+  } else if (node.dataset.nameFitAuthoredCqw) {
+    authoredCqw = Number.parseFloat(node.dataset.nameFitAuthoredCqw);
   }
 
-  let maximumLines = node.classList.contains('single-line-name') ? 1 : 2;
-  const initialSize = Number.parseFloat(getComputedStyle(node).fontSize) || 36;
-  const minimumSize = Math.max(6, (frameWidth || 1000) * 0.01);
-  let currentSize = initialSize;
-  let attempts = 0;
-
-  while (
-    currentSize > minimumSize
-    && !fitsWithinContract(node, maximumLines)
-    && attempts < 48
-  ) {
-    currentSize = Math.max(minimumSize, currentSize * 0.96);
-    node.style.fontSize = `${currentSize}px`;
-    attempts += 1;
+  if (authoredCqw && Number.isFinite(authoredCqw)) {
+    node.style.fontSize = `${authoredCqw}cqw`;
   }
 
-  // If it still doesn't fit on 1 line, convert to 2-line wrapping
-  if (!fitsWithinContract(node, maximumLines) && maximumLines === 1) {
-    maximumLines = 2;
-    node.classList.remove('single-line-name');
-    node.classList.add('multi-line-name');
+  // Ensure graceful wrapping for multi-line or long names
+  if (node.classList.contains('multi-line-name')) {
     node.style.whiteSpace = 'normal';
     node.style.overflowWrap = 'break-word';
-    while (
-      currentSize > minimumSize
-      && !fitsWithinContract(node, maximumLines)
-      && attempts < 64
-    ) {
-      currentSize = Math.max(minimumSize, currentSize * 0.96);
-      node.style.fontSize = `${currentSize}px`;
-      attempts += 1;
-    }
   }
 
   const data = node.dataset;
   data.nameFitStatus = 'fit';
-  data.nameFitLines = String(maximumLines);
-  data.nameFitMeasuredSize = String(Math.round(currentSize * 100) / 100);
+  data.nameFitLines = node.classList.contains('multi-line-name') ? '2' : '1';
 }
 
 export function measureCertificateNames(frame) {

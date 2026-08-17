@@ -32,8 +32,10 @@ import {
   getNowIsoDate,
 } from '../src/context/data.js';
 import {
+  adaptArabicGenderText,
   createStudentRenderPatch,
   dateInputValue,
+  detectArabicGender,
   formatDateAr,
 } from '../src/context/helpers.js';
 import { useAutoSave } from '../src/hooks/useAutoSave.js';
@@ -352,15 +354,10 @@ function StudioPage() {
   };
 
   const beginPrintCurrent = async (snapshot = state) => {
-    if (editor.isDirectEditing) {
-      editor.commitDirectEdit?.();
-    }
-    if (editor.isInteracting) {
-      editor.commitContentInteraction?.();
-      editor.commitInspectorInteraction?.();
-    }
+    editor.commitAllPendingEdits?.();
     const currentSnapshot = {
       ...state,
+      templateCustomizations: editor.effectiveCustomizations || state.templateCustomizations,
       ...(editor.previewState || {}),
       ...(snapshot && snapshot !== state ? snapshot : {}),
     };
@@ -385,15 +382,10 @@ function StudioPage() {
   };
 
   const beginPrintBatch = async (customStudents = null, snapshot = state) => {
-    if (editor.isDirectEditing) {
-      editor.commitDirectEdit?.();
-    }
-    if (editor.isInteracting) {
-      editor.commitContentInteraction?.();
-      editor.commitInspectorInteraction?.();
-    }
+    editor.commitAllPendingEdits?.();
     const currentSnapshot = {
       ...state,
+      templateCustomizations: editor.effectiveCustomizations || state.templateCustomizations,
       ...(editor.previewState || {}),
       ...(snapshot && snapshot !== state ? snapshot : {}),
     };
@@ -436,18 +428,13 @@ function StudioPage() {
   );
 
   const doExportPng = async () => {
-    if (editor.isDirectEditing) {
-      editor.commitDirectEdit?.();
-    }
-    if (editor.isInteracting) {
-      editor.commitContentInteraction?.();
-      editor.commitInspectorInteraction?.();
-    }
+    editor.commitAllPendingEdits?.();
     const currentSnapshot = {
       ...state,
+      templateCustomizations: editor.effectiveCustomizations || state.templateCustomizations,
       ...(editor.previewState || {}),
     };
-    const result = await baseDoExportPng({
+    const result = await baseDoExportPng(currentSnapshot, {
       isDirectEditing: false,
       isInteracting: false,
     });
@@ -459,16 +446,22 @@ function StudioPage() {
   };
 
   const doExportBatchZip = async (students = null) => {
+    editor.commitAllPendingEdits?.();
+    const currentSnapshot = {
+      ...state,
+      templateCustomizations: editor.effectiveCustomizations || state.templateCustomizations,
+      ...(editor.previewState || {}),
+    };
     const selectedRows = state.batchStudents.filter(student =>
       studentManager.selectedRowIds?.has(student.rowId)
     );
     const listToExport = students || (selectedRows.length ? selectedRows : state.batchStudents);
     const result = await baseDoExportBatchZip(listToExport, {
-      isDirectEditing: editor.isDirectEditing,
-      isInteracting: editor.isInteracting,
+      isDirectEditing: false,
+      isInteracting: false,
     });
     if (isOutputSuccess(result)) try {
-      await history.markBatchAsIssued(listToExport, state);
+      await history.markBatchAsIssued(listToExport, currentSnapshot);
     } catch {}
     return result;
   };
@@ -1034,8 +1027,69 @@ function StudioPage() {
                     className={`panel ${tab === 'content' ? 'active' : ''}`}
                   >
                     <Section title="الطالب" sub="STUDENT">
-                      <BoundInput label="الاسم بالعربية" value={state.studentNameAr} onChange={studentNameAr => updateState({ studentNameAr })} ar />
+                      <BoundInput
+                        label="الاسم بالعربية"
+                        value={state.studentNameAr}
+                        onChange={studentNameAr => {
+                          const detected = detectArabicGender(studentNameAr);
+                          const patch = { studentNameAr };
+                          if (detected && detected !== state.gender) {
+                            patch.gender = detected;
+                            if (state.customMessageAr) {
+                              patch.customMessageAr = adaptArabicGenderText(state.customMessageAr, detected);
+                            }
+                          }
+                          updateState(patch);
+                        }}
+                        ar
+                      />
                       <BoundInput label="Name in English" value={state.studentNameEn} onChange={studentNameEn => updateState({ studentNameEn })} en />
+                      <Field label="جنس الطالب (لضبط الصياغة النحوية تلقائياً)">
+                        <div className="gender-radio-group" style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                          <label className={`gender-option ${state.gender === 'male' ? 'selected' : ''}`}>
+                            <input
+                              type="radio"
+                              name="panelStudentGender"
+                              value="male"
+                              checked={state.gender === 'male'}
+                              onChange={() => {
+                                const patch = { gender: 'male' };
+                                if (state.customMessageAr) patch.customMessageAr = adaptArabicGenderText(state.customMessageAr, 'male');
+                                updateState(patch);
+                              }}
+                            />
+                            <span>طالب (ذكر)</span>
+                          </label>
+                          <label className={`gender-option ${state.gender === 'female' ? 'selected' : ''}`}>
+                            <input
+                              type="radio"
+                              name="panelStudentGender"
+                              value="female"
+                              checked={state.gender === 'female'}
+                              onChange={() => {
+                                const patch = { gender: 'female' };
+                                if (state.customMessageAr) patch.customMessageAr = adaptArabicGenderText(state.customMessageAr, 'female');
+                                updateState(patch);
+                              }}
+                            />
+                            <span>طالبة (أنثى)</span>
+                          </label>
+                          <label className={`gender-option ${!state.gender || state.gender === 'neutral' ? 'selected' : ''}`}>
+                            <input
+                              type="radio"
+                              name="panelStudentGender"
+                              value=""
+                              checked={!state.gender || state.gender === 'neutral'}
+                              onChange={() => {
+                                const patch = { gender: '' };
+                                if (state.customMessageAr) patch.customMessageAr = adaptArabicGenderText(state.customMessageAr, 'neutral');
+                                updateState(patch);
+                              }}
+                            />
+                            <span>صياغة عامة</span>
+                          </label>
+                        </div>
+                      </Field>
                       <Field label="الصف">
                         <select className="field-input en" value={state.grade} onChange={e => updateState({ grade: e.target.value })}>
                           {GRADE_LEVELS.map(grade => <option key={grade} value={grade}>{grade}</option>)}
@@ -1106,11 +1160,47 @@ function StudioPage() {
                           </select>
                           <button className="btn-save" onClick={() => {
                             const template = MESSAGE_TEMPLATES.find(item => item.id === messageTemplateId);
-                            if (template) updateState({ customMessageAr:template.text });
+                            if (template) {
+                              const activeGender = state.gender || detectArabicGender(state.studentNameAr) || 'male';
+                              const text = adaptArabicGenderText(template.text, activeGender);
+                              updateState({ customMessageAr: text });
+                            }
                           }}><Icon name="WandSparkles" /> تطبيق</button>
                         </div>
                       </div>
-                      <Field label="نص عربي"><textarea className="field-textarea ar" value={state.customMessageAr ?? state.customMessage ?? ''} rows={3} onChange={e => updateState({ customMessageAr:e.target.value })} dir="rtl" /></Field>
+                      <Field label="نص عربي">
+                        <textarea className="field-textarea ar" value={state.customMessageAr ?? state.customMessage ?? ''} rows={3} onChange={e => updateState({ customMessageAr:e.target.value })} dir="rtl" />
+                        <div style={{ display: 'flex', gap: '6px', marginTop: '6px', flexWrap: 'wrap' }}>
+                          <button
+                            type="button"
+                            className="btn-save"
+                            style={{ fontSize: '0.78rem', padding: '4px 8px' }}
+                            title="تحويل صياغة النص إلى صيغة المذكر"
+                            onClick={() => {
+                              if (state.customMessageAr) {
+                                updateState({ customMessageAr: adaptArabicGenderText(state.customMessageAr, 'male'), gender: 'male' });
+                                showToast('تم تحويل صياغة النص إلى صيغة المذكر');
+                              }
+                            }}
+                          >
+                            <span>تحويل للمذكر (ـه / له)</span>
+                          </button>
+                          <button
+                            type="button"
+                            className="btn-save"
+                            style={{ fontSize: '0.78rem', padding: '4px 8px' }}
+                            title="تحويل صياغة النص إلى صيغة المؤنث"
+                            onClick={() => {
+                              if (state.customMessageAr) {
+                                updateState({ customMessageAr: adaptArabicGenderText(state.customMessageAr, 'female'), gender: 'female' });
+                                showToast('تم تحويل صياغة النص إلى صيغة المؤنث');
+                              }
+                            }}
+                          >
+                            <span>تحويل للمؤنث (ـها / لها)</span>
+                          </button>
+                        </div>
+                      </Field>
                       <Field label="نص إنجليزي"><textarea className="field-textarea en" value={state.customMessageEn || ''} rows={3} onChange={e => updateState({ customMessageEn:e.target.value })} dir="ltr" /></Field>
                     </Section>
                   </div>

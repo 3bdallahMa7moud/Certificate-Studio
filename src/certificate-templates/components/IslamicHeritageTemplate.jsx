@@ -19,11 +19,14 @@ import {
   mergeStaticProps,
   CertificateMessage,
 } from './TemplatePrimitives.jsx';
+import { detectArabicGender } from '../../services/genderConcordance.js';
 import '../styles/IslamicHeritageTemplate.css';
 
 const PREFIX = 'islamic-heritage';
 
 export default function IslamicHeritageTemplate({ state, render }) {
+  const activeGender = state.gender || (state.studentNameAr ? detectArabicGender(state.studentNameAr) : '');
+
   const element = (elementId, options = {}, baseProps = {}) =>
     mergeStaticProps(
       baseProps,
@@ -280,9 +283,9 @@ export default function IslamicHeritageTemplate({ state, render }) {
         <div className="islamic-recipient-zone">
           <p className="islamic-award-intro">
             {showAr
-              ? (state.gender === 'female'
+              ? (activeGender === 'female'
                   ? 'تشهد إدارة المدرسة بأن الطالبة المباركة:'
-                  : (state.gender === 'male'
+                  : (activeGender === 'male'
                       ? 'تشهد إدارة المدرسة بأن الطالب المبارك:'
                       : 'تُمنح هذه الشهادة بكل فخر واعتزاز إلى:'))
               : 'This Certificate is Proudly Granted to:'}

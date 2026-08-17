@@ -159,3 +159,27 @@
   vertical-align: bottom;
   white-space: normal;
 }
+
+/* Ensure certificate message parts inherit typography overrides from parents */
+:where(
+  .cert-creative-arts,
+  .cert-graduation-honor,
+  .cert-islamic-heritage,
+  .cert-jungle-friends,
+  .cert-ocean-adventure,
+  .cert-rainbow-stars,
+  .cert-space-explorer,
+  .cert-sports-champion,
+  .cert-storybook-castle,
+  .cert-editorial,
+  .cert-geometric,
+  .cert-minimal
+) :where(.certificate-message-parts, .certificate-message-part, [class*="message-part"]) {
+  font-size: inherit;
+  color: inherit;
+  font-family: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+

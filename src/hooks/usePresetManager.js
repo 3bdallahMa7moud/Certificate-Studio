@@ -3,6 +3,7 @@ import { BUILTIN_PRESETS } from '../context/data.js';
 import { mergeTemplateCustomizations } from '../certificate-editor/customizationModel.js';
 import { downloadBlob } from '../services/imageUtils.js';
 import { extractDesignPreset } from '../services/projectValidation.js';
+import { adaptArabicGenderText, detectArabicGender } from '../services/genderConcordance.js';
 import {
   loadPresets,
   loadPresetsAsync,
@@ -107,19 +108,28 @@ export function usePresetManager(
       templateCustomizationVersion: _templateCustomizationVersion,
       ...designFields
     } = designConfig;
-    setState(prev => ({
-      ...prev,
-      ...designFields,
-      ...(templateCustomizations
-        ? {
-            templateCustomizationVersion: 1,
-            templateCustomizations: mergeTemplateCustomizations(
-              prev.templateCustomizations,
-              templateCustomizations,
-            ),
-          }
-        : {}),
-    }));
+
+    setState(prev => {
+      const activeGender = prev.gender || detectArabicGender(prev.studentNameAr) || 'male';
+      const customMessageAr = designFields.customMessageAr
+        ? adaptArabicGenderText(designFields.customMessageAr, activeGender)
+        : designFields.customMessageAr;
+
+      return {
+        ...prev,
+        ...designFields,
+        ...(customMessageAr !== undefined ? { customMessageAr } : {}),
+        ...(templateCustomizations
+          ? {
+              templateCustomizationVersion: 1,
+              templateCustomizations: mergeTemplateCustomizations(
+                prev.templateCustomizations,
+                templateCustomizations,
+              ),
+            }
+          : {}),
+      };
+    });
     if (templateCustomizations && onTemplateCustomizationReplaced) {
       for (const templateId of Object.keys(templateCustomizations)) {
         onTemplateCustomizationReplaced(templateId);
