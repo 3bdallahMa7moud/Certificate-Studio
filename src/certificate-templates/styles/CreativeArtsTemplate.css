@@ -182,14 +182,22 @@
   display: block;
 }
 
+.cert-creative-arts .arts-school-logo {
+  width: 4.6cqw;
+  height: 4.6cqw;
+  object-fit: contain;
+  filter: drop-shadow(0 0.3cqw 0.6cqw rgba(58, 41, 64, 0.1));
+}
+
 .cert-creative-arts .arts-school {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.1cqw;
+  gap: 0.15cqw;
   color: var(--primary, #6c3483);
   line-height: 1.15;
+  margin-top: 0.15cqw;
 }
 
 .cert-creative-arts .arts-school-name {
@@ -202,16 +210,16 @@
 .cert-creative-arts .arts-school-name-ar {
   direction: rtl;
   font-family: var(--student-font-ar, 'El Messiri'), sans-serif;
-  font-size: 1.55cqw;
-  font-weight: 800;
-  color: #3b1847;
-  letter-spacing: 0.01em;
+  font-size: 1.62cqw;
+  font-weight: 850;
+  color: #361444;
+  letter-spacing: 0.015em;
 }
 
 .cert-creative-arts .arts-school-name-en {
   direction: ltr;
   font-family: var(--student-font-en, Georgia), serif;
-  font-size: 1.05cqw;
+  font-size: 1.08cqw;
   font-weight: 600;
   color: rgba(94, 39, 119, 0.85);
 }

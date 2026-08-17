@@ -74,6 +74,16 @@ export default function CreativeArtsTemplate({ state, render }) {
       </div>
 
       <header className="arts-header">
+        {state.schoolLogo && (
+          <img
+            src={state.schoolLogo}
+            alt="شعار المدرسة"
+            {...element(`${PREFIX}-school-logo`, {
+              contentKey: 'schoolLogo',
+              occurrenceId: `${PREFIX}-school-logo`,
+            }, { className: 'arts-school-logo' })}
+          />
+        )}
         <div className="arts-school-lockup">
           <div className="arts-badge-row">
             <span className="arts-badge-label" aria-hidden="true">
@@ -276,6 +286,15 @@ export default function CreativeArtsTemplate({ state, render }) {
 
       <div className="arts-sign-row" dir={showAr ? 'rtl' : 'ltr'}>
         <div className="arts-sign-box arts-sign-teacher">
+          <span className="arts-sign-title">{roleLabel(state, 'معلم الفنون والأنشطة', 'Art Instructor')}</span>
+          <div className="arts-sign-line" aria-hidden="true" />
+          <span
+            {...element(`${PREFIX}-teacher-name`, {
+              occurrenceId: teacherPrimaryId,
+            }, { className: 'arts-sign-name' })}
+          >
+            {primaryDisplayName(state, state.teacherNameAr, state.teacherNameEn, '—')}
+          </span>
           {state.teacherSig && (
             <img
               src={state.teacherSig}
@@ -287,15 +306,6 @@ export default function CreativeArtsTemplate({ state, render }) {
               }, { className: 'arts-sig-img cert-sig cert-sig-teacher' })}
             />
           )}
-          <div className="arts-sign-line" aria-hidden="true" />
-          <span className="arts-sign-title">{roleLabel(state, 'معلم الفنون والأنشطة', 'Art Instructor')}</span>
-          <span
-            {...element(`${PREFIX}-teacher-name`, {
-              occurrenceId: teacherPrimaryId,
-            }, { className: 'arts-sign-name' })}
-          >
-            {primaryDisplayName(state, state.teacherNameAr, state.teacherNameEn, '—')}
-          </span>
         </div>
 
         <div className="arts-seal-badge" aria-hidden="true">
@@ -307,6 +317,15 @@ export default function CreativeArtsTemplate({ state, render }) {
         </div>
 
         <div className="arts-sign-box arts-sign-principal">
+          <span className="arts-sign-title">{roleLabel(state, 'مدير المدرسة', 'Principal')}</span>
+          <div className="arts-sign-line" aria-hidden="true" />
+          <span
+            {...element(`${PREFIX}-principal-name`, {
+              occurrenceId: principalPrimaryId,
+            }, { className: 'arts-sign-name' })}
+          >
+            {primaryDisplayName(state, state.principalNameAr, state.principalNameEn, '—')}
+          </span>
           {state.principalSig && (
             <img
               src={state.principalSig}
@@ -318,15 +337,6 @@ export default function CreativeArtsTemplate({ state, render }) {
               }, { className: 'arts-sig-img cert-sig cert-sig-principal' })}
             />
           )}
-          <div className="arts-sign-line" aria-hidden="true" />
-          <span className="arts-sign-title">{roleLabel(state, 'مدير المدرسة', 'Principal')}</span>
-          <span
-            {...element(`${PREFIX}-principal-name`, {
-              occurrenceId: principalPrimaryId,
-            }, { className: 'arts-sign-name' })}
-          >
-            {primaryDisplayName(state, state.principalNameAr, state.principalNameEn, '—')}
-          </span>
         </div>
       </div>
     </div>
