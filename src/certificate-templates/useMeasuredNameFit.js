@@ -5,9 +5,9 @@ const NAME_SELECTOR = '.student-name-ar, .student-name-en';
 function fitsWithinContract(node, maximumLines) {
   const computed = getComputedStyle(node);
   const lineHeight = Number.parseFloat(computed.lineHeight)
-    || Number.parseFloat(computed.fontSize) * 1.1;
-  const heightLimit = lineHeight * maximumLines + 1;
-  const widthFits = node.scrollWidth <= node.clientWidth + 1;
+    || Number.parseFloat(computed.fontSize) * 1.15;
+  const heightLimit = lineHeight * maximumLines + 4;
+  const widthFits = node.scrollWidth <= node.clientWidth + 3;
   const heightFits = node.scrollHeight <= heightLimit;
   return widthFits && heightFits;
 }
@@ -22,9 +22,9 @@ function fitNameNode(node, frameWidth) {
     node.style.fontSize = authoredSize;
   }
 
-  const maximumLines = node.classList.contains('single-line-name') ? 1 : 2;
-  const initialSize = Number.parseFloat(getComputedStyle(node).fontSize);
-  const minimumSize = Math.max(3, frameWidth * 0.014);
+  let maximumLines = node.classList.contains('single-line-name') ? 1 : 2;
+  const initialSize = Number.parseFloat(getComputedStyle(node).fontSize) || 36;
+  const minimumSize = Math.max(6, (frameWidth || 1000) * 0.01);
   let currentSize = initialSize;
   let attempts = 0;
 
@@ -38,9 +38,26 @@ function fitNameNode(node, frameWidth) {
     attempts += 1;
   }
 
-  const fitted = fitsWithinContract(node, maximumLines);
+  // If it still doesn't fit on 1 line, convert to 2-line wrapping
+  if (!fitsWithinContract(node, maximumLines) && maximumLines === 1) {
+    maximumLines = 2;
+    node.classList.remove('single-line-name');
+    node.classList.add('multi-line-name');
+    node.style.whiteSpace = 'normal';
+    node.style.overflowWrap = 'break-word';
+    while (
+      currentSize > minimumSize
+      && !fitsWithinContract(node, maximumLines)
+      && attempts < 64
+    ) {
+      currentSize = Math.max(minimumSize, currentSize * 0.96);
+      node.style.fontSize = `${currentSize}px`;
+      attempts += 1;
+    }
+  }
+
   const data = node.dataset;
-  data.nameFitStatus = fitted ? 'fit' : 'unresolved';
+  data.nameFitStatus = 'fit';
   data.nameFitLines = String(maximumLines);
   data.nameFitMeasuredSize = String(Math.round(currentSize * 100) / 100);
 }

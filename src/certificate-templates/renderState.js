@@ -185,6 +185,12 @@ export function normalizeCertificateRenderState(input = {}) {
 
   return {
     ...nextSource,
+    studentNameAr: source.studentNameAr || source.name || source.studentName || '',
+    studentNameEn: source.studentNameEn || source.englishName || '',
+    teacherNameAr: source.teacherNameAr || source.teacherName || '',
+    teacherNameEn: source.teacherNameEn || '',
+    principalNameAr: source.principalNameAr || source.principalName || '',
+    principalNameEn: source.principalNameEn || '',
     template: resolveTemplateId(source.template),
     paperSize: paper.id,
     requestedPaperSize: paper.requested,

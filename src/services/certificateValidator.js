@@ -6,17 +6,29 @@ import { TEMPLATE_REGISTRY } from '../certificate-templates/registry.js';
 import { visualNameUnits } from '../certificate-templates/templateUtils.js';
 import { createStudentRenderPatch } from '../context/helpers.js';
 
+function extractStudentNames(source = {}) {
+  const ar = String(source.studentNameAr || source.name || source.studentName || '').trim();
+  const en = String(source.studentNameEn || source.englishName || '').trim();
+  return { ar, en, hasAny: Boolean(ar || en) };
+}
+
+function extractStaffName(arVal, enVal, genericVal) {
+  const ar = String(arVal || genericVal || '').trim();
+  const en = String(enVal || '').trim();
+  return Boolean(ar || en);
+}
+
 export function validateCertificateState(state = {}, editorStatus = {}) {
   const errors = [];
   const warnings = [];
 
   // Required checks
-  const hasStudentName = Boolean((state.studentNameAr && state.studentNameAr.trim()) || (state.studentNameEn && state.studentNameEn.trim()));
+  const { ar: studentNameAr, en: studentNameEn, hasAny: hasStudentName } = extractStudentNames(state);
   if (!hasStudentName) {
     errors.push('اسم الطالب مطلوب (بالعربية أو الإنجليزية).');
   }
 
-  if (!state.grade || !state.grade.trim()) {
+  if (!state.grade || !String(state.grade).trim()) {
     errors.push('الصف الدراسي مطلوب.');
   }
 
@@ -29,7 +41,7 @@ export function validateCertificateState(state = {}, editorStatus = {}) {
     errors.push('نص الشهادة مطلوب.');
   }
 
-  const hasTeacherName = Boolean((state.teacherNameAr && state.teacherNameAr.trim()) || (state.teacherNameEn && state.teacherNameEn.trim()));
+  const hasTeacherName = extractStaffName(state.teacherNameAr, state.teacherNameEn, state.teacherName);
   if (!hasTeacherName) {
     errors.push('اسم المعلم مطلوب.');
   }
@@ -40,7 +52,7 @@ export function validateCertificateState(state = {}, editorStatus = {}) {
   }
 
   // Check if principal name is required for this template (if template displays principal)
-  const hasPrincipalName = Boolean((state.principalNameAr && state.principalNameAr.trim()) || (state.principalNameEn && state.principalNameEn.trim()));
+  const hasPrincipalName = extractStaffName(state.principalNameAr, state.principalNameEn, state.principalName);
   if (!hasPrincipalName && templateEntry && templateEntry.id !== 'minimal') {
     errors.push('اسم مدير المدرسة مطلوب لهذا القالب.');
   }
@@ -64,7 +76,7 @@ export function validateCertificateState(state = {}, editorStatus = {}) {
     warnings.push('جنس الطالب غير محدد (قد تستخدم الصياغة التلقائية الكلمات المحايدة).');
   }
 
-  const fullStudentName = `${state.studentNameAr || ''} ${state.studentNameEn || ''}`.trim();
+  const fullStudentName = `${studentNameAr} ${studentNameEn}`.trim();
   if (visualNameUnits(fullStudentName) > 96) {
     errors.push('اسم الطالب أطول من المساحة الآمنة المتاحة في القالب. اختصر الاسم قبل التصدير.');
   }
@@ -110,7 +122,7 @@ export function validateOutputRequest({
       ...state,
       ...createStudentRenderPatch(student, state),
     }, editorStatus);
-    const label = student.studentNameAr || student.studentNameEn || 'طالب بلا اسم';
+    const label = student.studentNameAr || student.studentNameEn || student.name || student.englishName || student.studentName || 'طالب بلا اسم';
     return {
       errors: result.errors.map(error => `${label}: ${error}`),
       warnings: result.warnings.map(warning => `${label}: ${warning}`),
@@ -139,8 +151,14 @@ export function validateBatchSelection(batchStudents = []) {
     };
   }
 
-  const missingNames = batchStudents.filter(s => !s.studentNameAr?.trim() && !s.studentNameEn?.trim());
-  const longNames = batchStudents.filter(s => `${s.studentNameAr || ''} ${s.studentNameEn || ''}`.trim().length > 40);
+  const missingNames = batchStudents.filter(s => {
+    const { hasAny } = extractStudentNames(s);
+    return !hasAny;
+  });
+  const longNames = batchStudents.filter(s => {
+    const { ar, en } = extractStudentNames(s);
+    return `${ar} ${en}`.trim().length > 40;
+  });
 
   const errors = [];
   const warnings = [];

@@ -6,7 +6,9 @@ import {
   LANGUAGE_MODES,
   SUBJECTS,
   THEMES,
+  getNowIsoDate,
 } from '../src/context/data.js';
+import { formatLiveArabicDate } from '../src/context/helpers.js';
 import { resolveTemplateId } from '../src/certificate-templates/templateUtils.js';
 import '../src/teacherSettings.css';
 
@@ -147,6 +149,31 @@ export default function TeacherSettings({
                 onChange={e => updateState({ academicYear: e.target.value })}
                 placeholder="2026–2027"
               />
+            </div>
+
+            <div className="settings-live-date-preference">
+              <div className="live-date-pref-info">
+                <div className="live-date-pref-title">
+                  <Icon name="Calendar" size={16} />
+                  <span>الربط اللحظي بالتاريخ الحالي</span>
+                  <span className="live-stat-pill"><span className="live-pulse-dot-small" />مباشر</span>
+                </div>
+                <p className="live-date-pref-sub">
+                  تحديث تاريخ إصدار الشهادات تلقائياً إلى تاريخ اليوم الفعلي ({formatLiveArabicDate()}) في كل مرة تنشئ فيها شهادة.
+                </p>
+              </div>
+              <label className="toggle-switch-wrap" title="تفعيل أو تعطيل الربط اللحظي بتاريخ اليوم">
+                <input
+                  type="checkbox"
+                  className="toggle-switch-input"
+                  checked={state.useLiveDate !== false}
+                  onChange={e => updateState({
+                    useLiveDate: e.target.checked,
+                    ...(e.target.checked ? { date: getNowIsoDate() } : {}),
+                  })}
+                />
+                <span className="toggle-switch-slider" />
+              </label>
             </div>
           </div>
 

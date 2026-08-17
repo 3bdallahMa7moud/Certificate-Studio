@@ -8,6 +8,9 @@ import {
   duplicateIndexes,
   formatDateAr,
   formatDateEn,
+  formatLiveArabicDate,
+  formatLiveTime,
+  formatLiveDateTime,
   toDate,
   normalizeStudentData,
 } from '../src/context/helpers.js';
@@ -47,7 +50,8 @@ import {
   sanitizeTemplateCustomizationBucket,
 } from '../src/certificate-editor/customizationModel.js';
 
-import { getDefaultState } from '../src/context/data.js';
+import { getDefaultState, getNowIsoDate } from '../src/context/data.js';
+import { normalizeLoadedState } from '../src/services/storage.js';
 
 test('Helpers: normalizeGradeValue normalizes variations correctly', () => {
   assert.equal(normalizeGradeValue('Grade 7'), 'Grade 7');
@@ -83,6 +87,28 @@ test('Helpers: toDate and formatting work seamlessly', () => {
   assert.equal(d.getMonth(), 5); // June
   assert.equal(d.getDate(), 15);
   assert.match(formatDateAr('2026-06-15'), /يونيو/);
+
+  // Live date formatting
+  const fixedDate = new Date(2026, 7, 17, 14, 5, 0); // 17 Aug 2026 14:05:00
+  const liveAr = formatLiveArabicDate(fixedDate);
+  assert.match(liveAr, /أغسطس/);
+  assert.match(liveAr, /2026/);
+  assert.match(liveAr, /17/);
+
+  const liveTime = formatLiveTime(fixedDate, { includeSeconds: true });
+  assert.match(liveTime, /02:05:00/);
+
+  const liveDateTime = formatLiveDateTime(fixedDate);
+  assert.match(liveDateTime, /أغسطس/);
+  assert.match(liveDateTime, /02:05/);
+
+  const nowIso = getNowIsoDate();
+  assert.ok(typeof nowIso === 'string' && nowIso.length > 0);
+
+  // Storage normalization with useLiveDate
+  const normalized = normalizeLoadedState({ useLiveDate: true });
+  assert.equal(normalized.useLiveDate, true);
+  assert.ok(normalized.date);
 });
 
 test('Validation: validateCertificateState checks required fields', () => {
@@ -91,7 +117,22 @@ test('Validation: validateCertificateState checks required fields', () => {
   assert.equal(valid.isValid, true);
   assert.equal(valid.errors.length, 0);
 
-  const invalid = validateCertificateState({ ...defaultState, studentNameAr: '', studentNameEn: '' });
+  // English-only student name should be valid
+  const englishOnly = validateCertificateState({ ...defaultState, studentNameAr: '', studentNameEn: 'Mohamed Ahmed Mohamed' });
+  assert.equal(englishOnly.isValid, true);
+
+  // Arabic-only student name should be valid
+  const arabicOnly = validateCertificateState({ ...defaultState, studentNameAr: 'محمد أحمد علي', studentNameEn: '' });
+  assert.equal(arabicOnly.isValid, true);
+
+  // Fallback name properties should be recognized
+  const genericName = validateCertificateState({ ...defaultState, studentNameAr: '', studentNameEn: '', name: 'محمد أحمد' });
+  assert.equal(genericName.isValid, true);
+
+  const englishGenericName = validateCertificateState({ ...defaultState, studentNameAr: '', studentNameEn: '', englishName: 'Mohamed Ahmed' });
+  assert.equal(englishGenericName.isValid, true);
+
+  const invalid = validateCertificateState({ ...defaultState, studentNameAr: '', studentNameEn: '', name: '', englishName: '' });
   assert.equal(invalid.isValid, false);
   assert.match(invalid.errors[0], /اسم الطالب مطلوب/);
 });
@@ -102,6 +143,9 @@ test('Validation: validateBatchSelection validates empty and invalid entries', (
 
   const missingNameRes = validateBatchSelection([{ studentNameAr: '', studentNameEn: '' }]);
   assert.equal(missingNameRes.isValid, false);
+
+  const validNameRes = validateBatchSelection([{ name: 'Mohamed Ahmed' }]);
+  assert.equal(validNameRes.isValid, true);
 });
 
 test('Project Validation: export and parse project JSON roundtrip', () => {

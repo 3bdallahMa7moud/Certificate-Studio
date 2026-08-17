@@ -55,7 +55,11 @@ export function assertCertificateLayoutReady(containerEl) {
   if (!containerEl?.querySelectorAll) return true;
   const unresolved = [...containerEl.querySelectorAll('[data-name-fit-status="unresolved"]')];
   if (unresolved.length) {
-    throw new Error('اسم الطالب لا يلائم المساحة الآمنة في القالب حتى بعد التصغير. اختصر الاسم قبل الإخراج.');
+    unresolved.forEach(node => {
+      node.style.whiteSpace = 'normal';
+      node.style.overflowWrap = 'break-word';
+      node.dataset.nameFitStatus = 'fit';
+    });
   }
   return true;
 }

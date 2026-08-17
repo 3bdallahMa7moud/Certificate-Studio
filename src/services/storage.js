@@ -125,7 +125,10 @@ export function normalizeLoadedState(data) {
   }
   merged.grade = normalizeGradeValue(merged.grade, defaults.grade);
   merged.academicYear = normalizeAcademicYear(merged.academicYear);
-  merged.date = normalizedIsoDate(merged.date, defaults.date);
+  merged.useLiveDate = source.useLiveDate !== false;
+  merged.date = merged.useLiveDate
+    ? new Date().toISOString()
+    : normalizedIsoDate(merged.date, defaults.date);
   if (!Array.isArray(merged.batchStudents)) merged.batchStudents = [];
   merged.batchStudents = ensureStudentRowIds(merged.batchStudents
     .filter(isRecord)

@@ -1561,3 +1561,349 @@
     font-size: 9.5px;
   }
 }
+
+/* ==========================================================================
+   Real-Time Live Date & Clock Widgets (المزامنة اللحظية والتوقيت المباشر)
+   ========================================================================== */
+
+@keyframes livePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  50% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 5px rgba(16, 185, 129, 0);
+  }
+}
+
+.live-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  display: inline-block;
+  animation: livePulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.live-pulse-dot-small {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  display: inline-block;
+  animation: livePulse 1.8s ease-in-out infinite;
+}
+
+/* Topbar Live Clock Badge */
+.live-clock-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(201, 163, 95, 0.25);
+  border-radius: 100px;
+  padding: 4px 12px 4px 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.live-clock-badge:hover {
+  border-color: rgba(201, 163, 95, 0.45);
+  background: rgba(15, 23, 42, 0.75);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22), 0 0 12px rgba(201, 163, 95, 0.15);
+}
+
+.live-clock-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+
+.live-status-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #34d399;
+  letter-spacing: 0.02em;
+}
+
+.live-clock-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.live-clock-date,
+.live-clock-time {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #e2e8f0;
+}
+
+.live-clock-time time {
+  font-family: 'Outfit', 'Courier New', monospace;
+  font-weight: 600;
+  color: #f1f5f9;
+  letter-spacing: 0.04em;
+}
+
+.live-clock-icon {
+  color: #c9a35f;
+  flex-shrink: 0;
+}
+
+.live-date-sync-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid rgba(201, 163, 95, 0.35);
+  background: linear-gradient(135deg, rgba(201, 163, 95, 0.15), rgba(201, 163, 95, 0.05));
+  color: #e5c583;
+  padding: 3px 9px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.live-date-sync-btn:hover {
+  background: linear-gradient(135deg, rgba(201, 163, 95, 0.3), rgba(201, 163, 95, 0.15));
+  border-color: #c9a35f;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.live-date-sync-btn.synced {
+  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.12);
+  color: #6ee7b7;
+}
+
+.live-date-sync-btn.synced:hover {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.22);
+}
+
+/* Date Input with Live Sync Button */
+.date-sync-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.date-sync-input-row .field-input {
+  flex: 1;
+}
+
+.btn-sync-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(201, 163, 95, 0.3);
+  color: #cbd5e1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-sync-live:hover {
+  background: rgba(201, 163, 95, 0.15);
+  border-color: #c9a35f;
+  color: #f1f5f9;
+}
+
+.btn-sync-live.active {
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #34d399;
+}
+
+.btn-sync-live.active:hover {
+  background: rgba(16, 185, 129, 0.22);
+  border-color: #10b981;
+}
+
+/* Date hints */
+.field-date-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 11.5px;
+  color: #94a3b8;
+}
+
+.field-date-hint-compact {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #94a3b8;
+  padding: 4px 8px;
+  background: rgba(15, 23, 42, 0.35);
+  border-radius: 6px;
+}
+
+.live-hint-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  flex-shrink: 0;
+}
+
+/* Home Screen Live Card */
+.home-stat-card.home-stat-live {
+  border-color: rgba(201, 163, 95, 0.28);
+  background: linear-gradient(145deg, rgba(15, 27, 45, 0.7), rgba(15, 23, 42, 0.85));
+}
+
+.stat-live-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-num-date {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f8fafc;
+  line-height: 1.3;
+}
+
+.live-stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 100px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #34d399;
+}
+
+/* Teacher Settings Live Date Preference */
+.settings-live-date-preference {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(201, 163, 95, 0.2);
+  border-radius: 10px;
+}
+
+.live-date-pref-info {
+  flex: 1;
+}
+
+.live-date-pref-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.live-date-pref-sub {
+  margin: 4px 0 0 0;
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+.toggle-switch-wrap {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.toggle-switch-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #334155;
+  border-radius: 24px;
+  transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toggle-switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toggle-switch-input:checked + .toggle-switch-slider {
+  background: linear-gradient(135deg, #10b981, #059669);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+.toggle-switch-input:checked + .toggle-switch-slider:before {
+  transform: translateX(20px);
+}
+
+/* Responsive adjustments for topbar clock */
+@media (max-width: 1100px) {
+  .live-clock-date {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .live-clock-badge {
+    padding: 3px 8px;
+    gap: 6px;
+  }
+  .live-status-label {
+    display: none;
+  }
+  .live-date-sync-btn .sync-btn-label {
+    display: none;
+  }
+}
+
+@media (max-width: 580px) {
+  .live-clock-badge {
+    display: none;
+  }
+}
+

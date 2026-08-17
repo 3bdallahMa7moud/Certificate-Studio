@@ -42,8 +42,11 @@ export function StudentName({
   secondarySize,
   secondaryFitWidth = fitWidth,
 }) {
+  const studentNameAr = state.studentNameAr ?? state.name ?? state.studentName ?? '';
+  const studentNameEn = state.studentNameEn ?? state.englishName ?? '';
+
   if (!shouldShowAr(state) && shouldShowEn(state)) {
-    const name = state.studentNameEn || state.studentNameAr || 'Student Name';
+    const name = studentNameEn || studentNameAr || 'Student Name';
     const nameProps = fittedNameProps(name, size, state, fitWidth);
     const englishName = isLtrText(name);
     return (
@@ -61,13 +64,13 @@ export function StudentName({
     );
   }
 
-  const primaryName = state.studentNameAr || state.studentNameEn || 'اسم الطالب';
+  const primaryName = studentNameAr || studentNameEn || 'اسم الطالب';
   const primaryNameProps = fittedNameProps(primaryName, size, state, fitWidth);
-  const primaryIsEnglish = !String(state.studentNameAr || '').trim() && String(state.studentNameEn || '').trim();
-  const showSecondaryEnglish = shouldShowEn(state) && String(state.studentNameEn || '').trim() && state.studentNameEn !== primaryName;
+  const primaryIsEnglish = !String(studentNameAr || '').trim() && String(studentNameEn || '').trim();
+  const showSecondaryEnglish = shouldShowEn(state) && String(studentNameEn || '').trim() && studentNameEn !== primaryName;
   const secondaryNameProps = Number.isFinite(secondarySize)
     ? fittedNameProps(
-        state.studentNameEn,
+        studentNameEn,
         secondarySize,
         state,
         secondaryFitWidth,
@@ -102,7 +105,7 @@ export function StudentName({
             dir: 'ltr',
           }, secondaryProps)}
         >
-          <bdi lang="en" dir="ltr">{state.studentNameEn}</bdi>
+          <bdi lang="en" dir="ltr">{studentNameEn}</bdi>
         </div>
       )}
     </>

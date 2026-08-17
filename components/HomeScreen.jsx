@@ -3,6 +3,7 @@ import Icon from './Icon.jsx';
 import { TEMPLATE_REGISTRY } from '../src/certificate-templates/registry.js';
 import { resolveTemplateId } from '../src/certificate-templates/templateUtils.js';
 import { getCurrentAcademicYear } from '../src/context/data.js';
+import { formatLiveArabicDate } from '../src/context/helpers.js';
 
 export default function HomeScreen({
   state,
@@ -54,13 +55,16 @@ export default function HomeScreen({
           </div>
         </button>
 
-        <div className="home-stat-card">
+        <div className="home-stat-card home-stat-live">
           <div className="stat-icon-wrap year-icon">
             <Icon name="Calendar" size={24} />
           </div>
           <div className="stat-info">
-            <span className="stat-num">{state.academicYear || getCurrentAcademicYear()}</span>
-            <span className="stat-label">العام الدراسي</span>
+            <div className="stat-live-header">
+              <span className="stat-num-date">{formatLiveArabicDate()}</span>
+              <span className="live-stat-pill"><span className="live-pulse-dot-small" />لحظي</span>
+            </div>
+            <span className="stat-label">العام الدراسي: {state.academicYear || getCurrentAcademicYear()}</span>
           </div>
         </div>
 

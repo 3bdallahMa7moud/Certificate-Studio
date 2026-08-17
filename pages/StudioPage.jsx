@@ -11,6 +11,7 @@ import {
 } from '../components/FormControls.jsx';
 import Icon from '../components/Icon.jsx';
 import Logo from '../components/Logo.jsx';
+import LiveClockBadge from '../components/LiveClockBadge.jsx';
 import TemplateGallery from '../components/TemplateGallery.jsx';
 import HomeScreen from '../components/HomeScreen.jsx';
 import SetupWizard from '../components/SetupWizard.jsx';
@@ -28,10 +29,12 @@ import {
   THEMES,
   genRowId,
   getDefaultState,
+  getNowIsoDate,
 } from '../src/context/data.js';
 import {
   createStudentRenderPatch,
   dateInputValue,
+  formatDateAr,
 } from '../src/context/helpers.js';
 import { useAutoSave } from '../src/hooks/useAutoSave.js';
 import { useExport } from '../src/hooks/useExport.js';
@@ -349,15 +352,27 @@ function StudioPage() {
   };
 
   const beginPrintCurrent = async (snapshot = state) => {
+    if (editor.isDirectEditing) {
+      editor.commitDirectEdit?.();
+    }
+    if (editor.isInteracting) {
+      editor.commitContentInteraction?.();
+      editor.commitInspectorInteraction?.();
+    }
+    const currentSnapshot = {
+      ...state,
+      ...(editor.previewState || {}),
+      ...(snapshot && snapshot !== state ? snapshot : {}),
+    };
     setIsPrintPending(true);
     try {
-      const result = await printCurrent(snapshot, {
-        isDirectEditing: editor.isDirectEditing,
-        isInteracting: editor.isInteracting,
+      const result = await printCurrent(currentSnapshot, {
+        isDirectEditing: false,
+        isInteracting: false,
       });
       if (isOutputSuccess(result)) {
         try {
-          const saved = await history.markAsIssued(snapshot);
+          const saved = await history.markAsIssued(currentSnapshot);
           if (saved) updateState({ currentRecordId: saved.id });
         } catch {}
       }
@@ -370,19 +385,31 @@ function StudioPage() {
   };
 
   const beginPrintBatch = async (customStudents = null, snapshot = state) => {
+    if (editor.isDirectEditing) {
+      editor.commitDirectEdit?.();
+    }
+    if (editor.isInteracting) {
+      editor.commitContentInteraction?.();
+      editor.commitInspectorInteraction?.();
+    }
+    const currentSnapshot = {
+      ...state,
+      ...(editor.previewState || {}),
+      ...(snapshot && snapshot !== state ? snapshot : {}),
+    };
     const selectedRows = state.batchStudents.filter(student =>
       studentManager.selectedRowIds?.has(student.rowId)
     );
     const listToPrint = customStudents || (selectedRows.length ? selectedRows : state.batchStudents);
     setIsPrintPending(true);
     try {
-      const result = await printBatch(listToPrint, snapshot, {
-        isDirectEditing: editor.isDirectEditing,
-        isInteracting: editor.isInteracting,
+      const result = await printBatch(listToPrint, currentSnapshot, {
+        isDirectEditing: false,
+        isInteracting: false,
       });
       if (isOutputSuccess(result)) {
         try {
-          await history.markBatchAsIssued(listToPrint, snapshot);
+          await history.markBatchAsIssued(listToPrint, currentSnapshot);
         } catch {}
       }
       return result;
@@ -409,12 +436,23 @@ function StudioPage() {
   );
 
   const doExportPng = async () => {
+    if (editor.isDirectEditing) {
+      editor.commitDirectEdit?.();
+    }
+    if (editor.isInteracting) {
+      editor.commitContentInteraction?.();
+      editor.commitInspectorInteraction?.();
+    }
+    const currentSnapshot = {
+      ...state,
+      ...(editor.previewState || {}),
+    };
     const result = await baseDoExportPng({
-      isDirectEditing: editor.isDirectEditing,
-      isInteracting: editor.isInteracting,
+      isDirectEditing: false,
+      isInteracting: false,
     });
     if (isOutputSuccess(result)) try {
-      const saved = await history.markAsIssued(state);
+      const saved = await history.markAsIssued(currentSnapshot);
       if (saved) updateState({ currentRecordId: saved.id });
     } catch {}
     return result;
@@ -630,6 +668,12 @@ function StudioPage() {
           </div>
 
           <PrimaryNavigation mainNav={mainNav} onNavigate={navigateMain} />
+
+          <LiveClockBadge
+            state={state}
+            updateState={updateState}
+            onSyncDate={() => showToast('تم ضبط الشهادة على تاريخ وتوقيت اللحظة الحالية')}
+          />
 
           <div className="topbar-actions">
             {['single', 'editor'].includes(mainNav) && (
@@ -1015,7 +1059,37 @@ function StudioPage() {
                       <UploadField label="توقيع المدير/ة (اختياري)" stateKey="principalSig" preview={state.principalSig} onFile={handleImage} onClear={clearImage} />
                     </Section>
                     <Section title="التاريخ والعام الدراسي" sub="DATE">
-                      <Field label="تاريخ الإصدار"><input type="date" className="field-input en" value={dateInputValue(state.date)} onChange={e => updateState({ date: e.target.value ? new Date(e.target.value + 'T12:00:00').toISOString() : '' })} /></Field>
+                      <Field label="تاريخ الإصدار">
+                        <div className="date-sync-input-row">
+                          <input
+                            type="date"
+                            className="field-input en"
+                            value={dateInputValue(state.date)}
+                            onChange={e => updateState({
+                              date: e.target.value ? new Date(e.target.value + 'T12:00:00').toISOString() : '',
+                              useLiveDate: false,
+                            })}
+                          />
+                          <button
+                            type="button"
+                            className={`btn-sync-live ${state.useLiveDate !== false ? 'active' : ''}`}
+                            onClick={() => {
+                              updateState({ date: getNowIsoDate(), useLiveDate: true });
+                              showToast('تم ضبط التاريخ على اليوم لحظياً');
+                            }}
+                            title="مزامنة لحظية مع تاريخ اليوم"
+                          >
+                            <Icon name="Zap" size={13} />
+                            <span>اليوم لحظياً</span>
+                          </button>
+                        </div>
+                        {state.date && (
+                          <div className="field-date-hint">
+                            <span className="live-hint-dot" />
+                            <span>المعروض على الشهادة: <strong>{formatDateAr(state.date)}</strong></span>
+                          </div>
+                        )}
+                      </Field>
                       <BoundInput label="العام الدراسي" value={state.academicYear} onChange={academicYear => updateState({ academicYear })} en />
                       <Field label="الفصل الدراسي">
                         <select className="field-input" value={state.term} onChange={e => updateState({ term:e.target.value })}>
@@ -1148,7 +1222,7 @@ function StudioPage() {
         aria-hidden="true"
       >
         <div ref={staticCertificateRef} className="cert">
-          <Certificate mode="export" state={state} />
+          <Certificate mode="export" state={editor.previewState || state} />
         </div>
       </div>
 

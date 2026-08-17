@@ -7,6 +7,7 @@ import {
 } from './data.js';
 
 export const AR_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+export const AR_DAYS = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 
 export function toDate(value) {
   if (!value) {
@@ -78,6 +79,29 @@ export function formatDateAr(value) {
 export function formatDateEn(value) {
   if (!value) return '';
   return toDate(value).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+}
+
+export function formatLiveArabicDate(value = new Date()) {
+  const date = toDate(value);
+  const dayName = AR_DAYS[date.getDay()] || '';
+  return `${dayName}، ${date.getDate()} ${AR_MONTHS[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+export function formatLiveTime(value = new Date(), { includeSeconds = true } = {}) {
+  const date = toDate(value);
+  let hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  const period = hours >= 12 ? 'م' : 'ص';
+  hours = hours % 12 || 12;
+  const hoursStr = String(hours).padStart(2, '0');
+  return includeSeconds
+    ? `${hoursStr}:${minutes}:${seconds} ${period}`
+    : `${hoursStr}:${minutes} ${period}`;
+}
+
+export function formatLiveDateTime(value = new Date()) {
+  return `${formatLiveArabicDate(value)} • ${formatLiveTime(value, { includeSeconds: false })}`;
 }
 
 export function normalizeText(str) {

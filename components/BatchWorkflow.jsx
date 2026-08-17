@@ -3,8 +3,7 @@ import Icon from './Icon.jsx';
 import { Field, Section } from './FormControls.jsx';
 import TemplateGallery from './TemplateGallery.jsx';
 import Certificate from './Certificate.jsx';
-import { CERTIFICATE_TYPES, getCertificateType, getGenderAwareMessage, getGenderAwareMessages } from '../src/context/certificateTypes.js';
-import { BEHAVIORS, GRADE_LEVELS, LANGUAGE_MODES, SUBJECTS } from '../src/context/data.js';
+import { BEHAVIORS, GRADE_LEVELS, LANGUAGE_MODES, SUBJECTS, getNowIsoDate } from '../src/context/data.js';
 import { dateInputValue, formatDateAr } from '../src/context/helpers.js';
 import { validateBatchSelection } from '../src/services/certificateValidator.js';
 import {
@@ -336,19 +335,37 @@ export default function BatchWorkflow({
                 </Field>
 
                 <Field label="التاريخ والعام الدراسي">
-                  <div className="grid-2">
+                  <div className="date-sync-input-row" style={{ marginBottom: '8px' }}>
                     <input
                       type="date"
                       className="field-input en"
                       value={dateInputValue(state.date)}
-                      onChange={e => updateState({ date: e.target.value ? new Date(e.target.value + 'T12:00:00').toISOString() : '' })}
+                      onChange={e => updateState({
+                        date: e.target.value ? new Date(e.target.value + 'T12:00:00').toISOString() : '',
+                        useLiveDate: false,
+                      })}
                     />
+                    <button
+                      type="button"
+                      className={`btn-sync-live ${state.useLiveDate !== false ? 'active' : ''}`}
+                      onClick={() => updateState({ date: getNowIsoDate(), useLiveDate: true })}
+                      title="مزامنة لحظية مع تاريخ وتوقيت اليوم لجميع شهادات الدفعة"
+                    >
+                      <Icon name="Zap" size={13} />
+                      <span>اليوم لحظياً</span>
+                    </button>
+                  </div>
+                  <div className="grid-2">
                     <input
                       type="text"
                       className="field-input en"
                       value={state.academicYear}
                       onChange={e => updateState({ academicYear: e.target.value })}
                     />
+                    <div className="field-date-hint-compact">
+                      <span className="live-hint-dot" />
+                      <span>تاريخ شهادات الدفعة: <strong>{formatDateAr(state.date)}</strong></span>
+                    </div>
                   </div>
                 </Field>
               </Section>

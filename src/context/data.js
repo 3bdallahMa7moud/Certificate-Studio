@@ -252,10 +252,16 @@ export const FIXED_CERTIFICATE_IDENTITY = {
   principalTitleEn: 'School Principal',
 };
 
+export function getNowIsoDate() {
+  return new Date().toISOString();
+}
+
 export function getForcedDate(date = new Date()) {
-  const validDate = date instanceof Date && !Number.isNaN(date.getTime()) ? new Date(date) : new Date();
-  validDate.setFullYear(Math.max(2026, new Date().getFullYear()));
-  return validDate;
+  if (date instanceof Date && !Number.isNaN(date.getTime())) {
+    return new Date(date);
+  }
+  const parsed = new Date(date);
+  return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
 }
 
 export function normalizeAcademicYear(value = ACADEMIC_YEAR) {
@@ -326,7 +332,8 @@ export function getDefaultState() {
     customMessageAr: MESSAGE_TEMPLATES[0].text,
     customMessageEn: '',
     paletteMode: 'template',
-    date: getForcedDate().toISOString(),
+    useLiveDate: true,
+    date: getNowIsoDate(),
     nameFontSize: 100,
     fontStyle: 'classic',
     languageMode: 'both',

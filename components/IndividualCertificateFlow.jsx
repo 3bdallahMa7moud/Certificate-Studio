@@ -15,8 +15,9 @@ import {
   LANGUAGE_MODES,
   SUBJECTS,
   getCurrentAcademicYear,
+  getNowIsoDate,
 } from '../src/context/data.js';
-import { dateInputValue } from '../src/context/helpers.js';
+import { dateInputValue, formatDateAr } from '../src/context/helpers.js';
 import { validateCertificateState } from '../src/services/certificateValidator.js';
 import { resolveTemplateId } from '../src/certificate-templates/templateUtils.js';
 
@@ -66,8 +67,8 @@ export default function IndividualCertificateFlow({
         || '';
 
       updateState({
-        studentNameAr: student.studentNameAr || '',
-        studentNameEn: student.studentNameEn || '',
+        studentNameAr: student.studentNameAr || student.name || student.studentName || '',
+        studentNameEn: student.studentNameEn || student.englishName || '',
         gender: student.gender || '',
         grade: student.grade || state.grade,
         subject: student.subject || state.subject,
@@ -383,13 +384,27 @@ export default function IndividualCertificateFlow({
           />
 
           <Field label="تاريخ الإصدار والعام الدراسي">
-            <div className="grid-2">
+            <div className="date-sync-input-row" style={{ marginBottom: '8px' }}>
               <input
                 type="date"
                 className="field-input en"
                 value={dateInputValue(state.date)}
-                onChange={e => updateState({ date: e.target.value ? new Date(e.target.value + 'T12:00:00').toISOString() : '' })}
+                onChange={e => updateState({
+                  date: e.target.value ? new Date(e.target.value + 'T12:00:00').toISOString() : '',
+                  useLiveDate: false,
+                })}
               />
+              <button
+                type="button"
+                className={`btn-sync-live ${state.useLiveDate !== false ? 'active' : ''}`}
+                onClick={() => updateState({ date: getNowIsoDate(), useLiveDate: true })}
+                title="مزامنة لحظية مع تاريخ وتوقيت اليوم"
+              >
+                <Icon name="Zap" size={13} />
+                <span>اليوم لحظياً</span>
+              </button>
+            </div>
+            <div className="grid-2">
               <input
                 type="text"
                 className="field-input en"
@@ -397,6 +412,10 @@ export default function IndividualCertificateFlow({
                 value={state.academicYear}
                 onChange={e => updateState({ academicYear: e.target.value })}
               />
+              <div className="field-date-hint-compact">
+                <span className="live-hint-dot" />
+                <span>تاريخ الشهادة: <strong>{formatDateAr(state.date)}</strong></span>
+              </div>
             </div>
           </Field>
         </Section>
