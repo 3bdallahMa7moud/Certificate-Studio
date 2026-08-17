@@ -37,8 +37,7 @@ export default function IndividualCertificateFlow({
   const [userHasCustomizedMessageEn, setUserHasCustomizedMessageEn] = useState(false);
   const [validationResult, setValidationResult] = useState(null);
 
-  // Grades list as required by Section 8
-  const primaryGrades = ['KG1', 'KG2', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7'];
+  const primaryGrades = GRADE_LEVELS;
 
   const handleStudentSelect = (e) => {
     const indexStr = e.target.value;

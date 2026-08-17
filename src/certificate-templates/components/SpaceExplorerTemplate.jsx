@@ -110,16 +110,6 @@ export default function SpaceExplorerTemplate({ state, render }) {
 
       {/* Top identity bar */}
       <header className="space-command-bar">
-        <TemplateLogo
-          state={state}
-          className="cert-logo-space-explorer"
-          containerProps={element(`${PREFIX}-logo`, {
-            contentKey: 'logo',
-            occurrenceId: `${PREFIX}-logo`,
-            preservePosition: true,
-          })}
-        />
-
         <div className="space-school-lockup">
           <div className="space-command-badge">
             <span className="space-beacon-dot" />

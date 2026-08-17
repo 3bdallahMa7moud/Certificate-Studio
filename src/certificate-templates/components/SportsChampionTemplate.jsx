@@ -171,18 +171,6 @@ export default function SportsChampionTemplate({ state, render }) {
 
       {/* ================= HEADER ================= */}
       <header className="sports-header">
-        <div className="sports-logo-wrapper">
-          <TemplateLogo
-            state={state}
-            className="cert-logo-sports-champion"
-            containerProps={element(`${PREFIX}-logo`, {
-              contentKey: 'logo',
-              occurrenceId: `${PREFIX}-logo`,
-              preservePosition: true,
-            })}
-          />
-        </div>
-
         <div className="sports-header-center">
           {/* 3D Golden Championship Crest & Tag */}
           <div className="sports-crest-badge">

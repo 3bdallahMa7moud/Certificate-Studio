@@ -78,15 +78,6 @@ export default function RainbowStarsTemplate({ state, render }) {
       </div>
 
       <header className="rainbow-header">
-        <TemplateLogo
-          state={state}
-          className="cert-logo-rainbow-stars"
-          containerProps={element(`${PREFIX}-logo`, {
-            contentKey: 'logo',
-            occurrenceId: `${PREFIX}-logo`,
-            preservePosition: true,
-          })}
-        />
         <div className="rainbow-school">
           {showAr && (
             <span

@@ -105,16 +105,6 @@ export default function GraduationHonorTemplate({ state, render }) {
       {/* ================= HEADER ================= */}
       <header className="grad-header">
 
-        <TemplateLogo
-          state={state}
-          className="cert-logo-graduation-honor"
-          containerProps={element(`${PREFIX}-logo`, {
-            contentKey: 'logo',
-            occurrenceId: `${PREFIX}-logo`,
-            preservePosition: true,
-          })}
-        />
-
         <div className="grad-school-lockup">
 
           <div className="grad-badge-row">

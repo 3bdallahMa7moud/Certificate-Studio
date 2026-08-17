@@ -61,15 +61,6 @@ export default function CreativeArtsTemplate({ state, render }) {
       </div>
 
       <header className="arts-header">
-        <TemplateLogo
-          state={state}
-          className="cert-logo-creative-arts"
-          containerProps={element(`${PREFIX}-logo`, {
-            contentKey: 'logo',
-            occurrenceId: `${PREFIX}-logo`,
-            preservePosition: true,
-          })}
-        />
         <div className="arts-school-lockup">
           <div className="arts-badge-row">
             <span className="arts-badge-label" aria-hidden="true">
@@ -98,7 +89,7 @@ export default function CreativeArtsTemplate({ state, render }) {
                   locale: 'ar',
                   occurrenceId: `${PREFIX}-school-name`,
                   inline: true,
-                })}
+                }, { className: 'arts-school-name arts-school-name-ar', dir: 'rtl' })}
               >
                 {state.schoolNameAr || 'اسم المدرسة'}
               </span>
@@ -110,7 +101,7 @@ export default function CreativeArtsTemplate({ state, render }) {
                   locale: 'en',
                   occurrenceId: `${PREFIX}-school-name-en`,
                   inline: true,
-                })}
+                }, { className: 'arts-school-name arts-school-name-en', dir: 'ltr' })}
               >
                 {state.schoolNameEn || 'School Name'}
               </span>
@@ -129,7 +120,7 @@ export default function CreativeArtsTemplate({ state, render }) {
               {...element(`${PREFIX}-title`, {
                 locale: 'ar',
                 occurrenceId: `${PREFIX}-title`,
-              })}
+              }, { className: 'arts-title-line arts-title-ar', dir: 'rtl' })}
             >
               {titleAr}
             </span>
@@ -139,7 +130,7 @@ export default function CreativeArtsTemplate({ state, render }) {
               {...element(`${PREFIX}-title-en`, {
                 locale: 'en',
                 occurrenceId: `${PREFIX}-title-en`,
-              })}
+              }, { className: 'arts-title-line arts-title-en', dir: 'ltr' })}
             >
               {titleEn}
             </span>

@@ -305,22 +305,7 @@ export default function EditorialTemplate({ state, render }) {
 
       <div className="right">
         <div className="right-top">
-          {state.logo ? (
-            <img
-              {...element(
-                'editorial-logo',
-                {
-                  contentKey: 'logo',
-                  occurrenceId: 'editorial-logo',
-                },
-                {
-                  className: 'cert-logo',
-                  src: state.logo,
-                  alt: 'شعار',
-                },
-              )}
-            />
-          ) : <span className="label">Issued by</span>}
+          <span className="label">{shouldShowEn(state) && !shouldShowAr(state) ? 'Issued by' : 'صادر عن'}</span>
           {shouldShowAr(state) && (
             <div
               {...element(

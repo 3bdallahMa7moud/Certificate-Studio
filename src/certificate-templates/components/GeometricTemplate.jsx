@@ -49,17 +49,6 @@ export default function GeometricTemplate({ state, render }) {
       <div className="shape-circle" />
       <div className="shape-square" />
       <div className="diag-line-1" />
-      <div className="diag-line-2" />
-      <TemplateLogo
-        state={state}
-        className="cert-logo-geometric"
-        containerProps={element('geometric-logo', {
-          contentKey: 'logo',
-          occurrenceId: 'geometric-logo',
-          preservePosition: true,
-        })}
-      />
-
       <div className="content">
         <div className="top-row">
           <div className="school-tag">

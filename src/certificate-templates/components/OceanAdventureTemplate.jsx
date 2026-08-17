@@ -65,15 +65,6 @@ export default function OceanAdventureTemplate({ state, render }) {
 
       <header className="ocean-header">
         <div className="ocean-school-lockup">
-          <TemplateLogo
-            state={state}
-            className="ocean-logo"
-            containerProps={element('ocean-adventure-logo', {
-              contentKey: 'logo',
-              occurrenceId: 'ocean-adventure-logo',
-              preservePosition: true,
-            })}
-          />
           <div className="ocean-school-copy">
             {showAr && (
               <div

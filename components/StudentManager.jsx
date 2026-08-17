@@ -34,28 +34,32 @@ function StatPill({ label, count, variant }) {
 /* ─────────────────────────────────────────────────────────────────────────
    Confirmation modal for bulk delete
    ───────────────────────────────────────────────────────────────────── */
-function ConfirmModal({ count, onConfirm, onCancel }) {
+function ConfirmModal({ count, studentName, onConfirm, onCancel }) {
   return (
     <Dialog
       overlayClassName="sm-confirm-overlay"
       className="sm-confirm-modal"
+      open
+      onClose={onCancel}
       labelledBy="confirm-modal-title"
       describedBy="confirm-modal-description"
-      onClose={onCancel}
+      ariaLabel="تأكيد الحذف"
     >
-        <div className="sm-confirm-icon">
-          <Icon name="Trash2" size={32} />
-        </div>
-        <p className="sm-confirm-title" id="confirm-modal-title">تأكيد الحذف</p>
-        <p className="sm-confirm-body" id="confirm-modal-description">
-          سيتم حذف <strong>{count}</strong> طالب من القائمة. هذا الإجراء لا يمكن التراجع عنه.
-        </p>
-        <div className="sm-confirm-actions">
-          <button type="button" className="sm-confirm-cancel" onClick={onCancel} autoFocus>إلغاء</button>
-          <button type="button" className="sm-confirm-delete" onClick={onConfirm}>
-            <Icon name="Trash2" size={14} /> حذف {count} سجل
-          </button>
-        </div>
+      <div className="sm-confirm-icon">
+        <Icon name="AlertTriangle" size={32} />
+      </div>
+      <h3 id="confirm-modal-title" className="sm-confirm-title">تأكيد الحذف</h3>
+      <p className="sm-confirm-body" id="confirm-modal-description">
+        {studentName
+          ? <>هل أنت متأكد من حذف الطالب <strong>{studentName}</strong> من القائمة؟ هذا الإجراء لا يمكن التراجع عنه.</>
+          : <>سيتم حذف <strong>{count}</strong> طالب من القائمة. هذا الإجراء لا يمكن التراجع عنه.</>}
+      </p>
+      <div className="sm-confirm-actions">
+        <button type="button" className="sm-confirm-cancel" onClick={onCancel} autoFocus>إلغاء</button>
+        <button type="button" className="sm-confirm-delete" onClick={onConfirm}>
+          <Icon name="Trash2" size={14} /> {count > 1 ? `حذف ${count} سجل` : 'تأكيد الحذف'}
+        </button>
+      </div>
     </Dialog>
   );
 }
@@ -174,6 +178,7 @@ export default function StudentManager({
 
   const [showConfirm, setShowConfirm]     = useState(false);
   const [showBulkEdit, setShowBulkEdit]   = useState(false);
+  const [pendingDeleteStudent, setPendingDeleteStudent] = useState(null);
 
   const selectedCount = selectedRowIds.size;
 
@@ -181,6 +186,13 @@ export default function StudentManager({
     bulkDelete([...selectedRowIds]);
     clearSelection();
     setShowConfirm(false);
+  };
+
+  const handleSingleDelete = () => {
+    if (pendingDeleteStudent) {
+      deleteStudent(pendingDeleteStudent.rowId);
+      setPendingDeleteStudent(null);
+    }
   };
 
   const handleBulkApply = (patch) => {
@@ -377,7 +389,7 @@ export default function StudentManager({
                       <input
                         className={`table-input ar${isMissing ? ' input-error' : ''}`}
                         value={student.studentNameAr}
-                        onChange={e => updateStudent(idx, { studentNameAr: e.target.value })}
+                        onChange={e => updateStudent(student.rowId, { studentNameAr: e.target.value })}
                         placeholder="الاسم بالعربية"
                         aria-label={`اسم الطالب ${idx + 1} بالعربية`}
                       />
@@ -387,7 +399,7 @@ export default function StudentManager({
                       <input
                         className="table-input en"
                         value={student.studentNameEn}
-                        onChange={e => updateStudent(idx, { studentNameEn: e.target.value })}
+                        onChange={e => updateStudent(student.rowId, { studentNameEn: e.target.value })}
                         placeholder="Name in English"
                         aria-label={`اسم الطالب ${idx + 1} بالإنجليزية`}
                       />
@@ -397,7 +409,7 @@ export default function StudentManager({
                       <select
                         className="table-input small"
                         value={student.gender || ''}
-                        onChange={e => updateStudent(idx, { gender: e.target.value })}
+                        onChange={e => updateStudent(student.rowId, { gender: e.target.value })}
                         aria-label={`جنس الطالب ${idx + 1}`}
                       >
                         <option value="">محايد</option>
@@ -410,7 +422,7 @@ export default function StudentManager({
                       <select
                         className="table-input en small"
                         value={student.grade}
-                        onChange={e => updateStudent(idx, { grade: e.target.value })}
+                        onChange={e => updateStudent(student.rowId, { grade: e.target.value })}
                         aria-label={`صف الطالب ${idx + 1}`}
                       >
                         {GRADE_LEVELS.map(g => <option key={g} value={g}>{g}</option>)}
@@ -421,7 +433,7 @@ export default function StudentManager({
                       <select
                         className="table-input"
                         value={student.subject}
-                        onChange={e => updateStudent(idx, { subject: e.target.value })}
+                        onChange={e => updateStudent(student.rowId, { subject: e.target.value })}
                         aria-label={`مادة الطالب ${idx + 1}`}
                       >
                         {SUBJECTS.map(s => <option key={s.id} value={s.id}>{s.ar}</option>)}
@@ -432,7 +444,7 @@ export default function StudentManager({
                       <select
                         className="table-input"
                         value={student.behavior}
-                        onChange={e => updateStudent(idx, achievementPatchForBehavior(e.target.value))}
+                        onChange={e => updateStudent(student.rowId, achievementPatchForBehavior(e.target.value))}
                         aria-label={`نوع تميز الطالب ${idx + 1}`}
                       >
                         {BEHAVIORS.map(b => <option key={b.id} value={b.id}>{b.ar}</option>)}
@@ -440,14 +452,14 @@ export default function StudentManager({
                       <input
                         className="table-input ar table-achievement-input"
                         value={student.achievementAr || ''}
-                        onChange={e => updateStudent(idx, { achievementAr: e.target.value })}
+                        onChange={e => updateStudent(student.rowId, { achievementAr: e.target.value })}
                         dir="rtl"
                         aria-label={`نص تميّز الطالب ${idx + 1} بالعربية`}
                       />
                       <input
                         className="table-input en table-achievement-input"
                         value={student.achievementEn || ''}
-                        onChange={e => updateStudent(idx, { achievementEn: e.target.value })}
+                        onChange={e => updateStudent(student.rowId, { achievementEn: e.target.value })}
                         dir="ltr"
                         aria-label={`Achievement text for student ${idx + 1}`}
                       />
@@ -458,7 +470,7 @@ export default function StudentManager({
                         <button type="button" title="معاينة وإصدار شهادة" aria-label="معاينة وإصدار شهادة" className="row-preview-btn" onClick={() => previewStudent(student)}>
                           <Icon name="Award" size={15} />
                         </button>
-                        <button type="button" title="تكرار" aria-label="تكرار الطالب" onClick={() => duplicateStudent(idx)}>
+                        <button type="button" title="تكرار" aria-label="تكرار الطالب" onClick={() => duplicateStudent(student.rowId)}>
                           <Icon name="Copy" size={14} />
                         </button>
                         <button
@@ -466,10 +478,7 @@ export default function StudentManager({
                           title="حذف"
                           aria-label="حذف الطالب"
                           className="row-delete-btn"
-                          onClick={() => {
-                            if (window.confirm && !window.confirm('هل أنت تأكد من حذف هذا الطالب من القائمة؟')) return;
-                            deleteStudent(idx);
-                          }}
+                          onClick={() => setPendingDeleteStudent(student)}
                         >
                           <Icon name="Trash2" size={14} />
                         </button>
@@ -496,6 +505,14 @@ export default function StudentManager({
           count={selectedCount}
           onConfirm={handleBulkDelete}
           onCancel={() => setShowConfirm(false)}
+        />
+      )}
+      {pendingDeleteStudent && (
+        <ConfirmModal
+          count={1}
+          studentName={pendingDeleteStudent.studentNameAr || pendingDeleteStudent.studentNameEn}
+          onConfirm={handleSingleDelete}
+          onCancel={() => setPendingDeleteStudent(null)}
         />
       )}
     </div>

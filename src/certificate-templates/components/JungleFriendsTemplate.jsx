@@ -83,15 +83,6 @@ export default function JungleFriendsTemplate({ state, render }) {
 
       <section className="jungle-paper">
         <header className="jungle-header">
-          <TemplateLogo
-            state={state}
-            className="cert-logo-jungle-friends"
-            containerProps={element(`${PREFIX}-logo`, {
-              contentKey: 'logo',
-              occurrenceId: `${PREFIX}-logo`,
-              preservePosition: true,
-            })}
-          />
           <div className="jungle-school">
             {showAr && (
               <span

@@ -54,9 +54,6 @@ export function validateCertificateState(state = {}, editorStatus = {}) {
   }
 
   // Optional warnings
-  if (!state.logo) {
-    warnings.push('شعار المدرسة غير مرفق (اختياري).');
-  }
   if (!state.teacherSig) {
     warnings.push('توقيع المعلم غير مرفق (اختياري).');
   }

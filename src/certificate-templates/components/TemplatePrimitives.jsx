@@ -109,26 +109,8 @@ export function StudentName({
   );
 }
 
-export function TemplateLogo({ state, className = '', containerProps }) {
-  const classes = [
-    'cert-logo-template',
-    className,
-    state.logo ? 'has-image' : 'is-empty',
-  ].filter(Boolean).join(' ');
-  return (
-    <div
-      {...mergeStaticProps({ className: classes }, containerProps)}
-      data-image-slot="school-logo"
-    >
-      {state.logo && (
-        <img
-          className="cert-logo"
-          src={state.logo}
-          alt={state.logoAlt || 'شعار المدرسة'}
-        />
-      )}
-    </div>
-  );
+export function TemplateLogo() {
+  return null;
 }
 
 export function CertificateMessage({

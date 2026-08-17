@@ -13,7 +13,7 @@ export function TileGrid({ items, selected, onSelect, compact = false, ariaLabel
           aria-pressed={selected === item.id}
         >
           <div className="tile-check"><Icon name="Check" size={11} /></div>
-          <Icon name={item.icon} size={22} />
+          <Icon name={item.icon} size={compact ? 18 : 22} />
           <div className="tile-name">{item.name}</div>
         </button>
       ))}

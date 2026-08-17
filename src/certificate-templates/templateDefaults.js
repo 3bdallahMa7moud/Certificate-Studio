@@ -369,18 +369,6 @@ const EDITORIAL_ELEMENTS = [
     zIndex: 3,
     style: { fontSize: 18 },
   }),
-  imageElement({
-    id: 'editorial-logo',
-    role: 'school-logo',
-    labelEn: 'School logo',
-    labelAr: 'شعار المدرسة',
-    contentKeys: ['logo'],
-    x: 238,
-    y: 15,
-    width: 35,
-    height: 39,
-    zIndex: 3,
-  }),
   signatureElement({
     id: 'editorial-teacher-signature',
     role: 'teacher-signature',
@@ -546,18 +534,6 @@ const EDITORIAL_ELEMENTS = [
 ];
 
 const GEOMETRIC_ELEMENTS = [
-  imageElement({
-    id: 'geometric-logo',
-    role: 'school-logo',
-    labelEn: 'School logo',
-    labelAr: 'شعار المدرسة',
-    contentKeys: ['logo'],
-    x: 15,
-    y: 15,
-    width: 32,
-    height: 32,
-    zIndex: 3,
-  }),
   textElement({
     id: 'geometric-student-name',
     role: 'student-name',
@@ -752,18 +728,6 @@ const GEOMETRIC_ELEMENTS = [
 ];
 
 const MINIMAL_ELEMENTS = [
-  imageElement({
-    id: 'minimal-logo',
-    role: 'school-logo',
-    labelEn: 'School logo',
-    labelAr: 'شعار المدرسة',
-    contentKeys: ['logo'],
-    x: 18,
-    y: 15,
-    width: 30,
-    height: 30,
-    zIndex: 3,
-  }),
   textElement({
     id: 'minimal-student-name',
     role: 'student-name',
@@ -959,15 +923,6 @@ const MINIMAL_ELEMENTS = [
 
 function createChildTemplateElements(prefix, positions) {
   return [
-    imageElement({
-      id: `${prefix}-logo`,
-      role: 'school-logo',
-      labelEn: 'School logo',
-      labelAr: 'شعار المدرسة',
-      contentKeys: ['logo'],
-      zIndex: 4,
-      ...positions.logo,
-    }),
     textElement({
       id: `${prefix}-school-name`,
       role: 'school-name',

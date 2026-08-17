@@ -1,0 +1,731 @@
+/* ==========================================================================
+   Teacher & School Settings - Premium & Eye-Comforting Modern Design
+   ========================================================================== */
+
+.teacher-settings-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px 20px 48px;
+  direction: rtl;
+  color: var(--text, #1e293b);
+  font-family: 'Tajawal', system-ui, -apple-system, sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   Page Hero Header
+   -------------------------------------------------------------------------- */
+.settings-hero-card {
+  position: relative;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 24px rgba(15, 27, 45, 0.04);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.settings-hero-main {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.settings-hero-badge {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0f1b2d 0%, #1e293b 100%);
+  color: #c9a35f;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 16px rgba(15, 27, 45, 0.14);
+  flex-shrink: 0;
+}
+
+.settings-hero-title {
+  font-family: 'El Messiri', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f1b2d;
+  margin: 0 0 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.settings-hero-autosave {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #059669;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Tajawal', sans-serif;
+}
+
+.settings-autosave-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+  animation: pulseDot 2.2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+.settings-hero-subtitle {
+  color: #64748b;
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.settings-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.settings-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
+}
+
+.settings-action-btn.primary {
+  background: #0f1b2d;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 27, 45, 0.12);
+}
+
+.settings-action-btn.primary:hover {
+  background: #1e293b;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(15, 27, 45, 0.2);
+}
+
+.settings-action-btn.ghost {
+  background: #ffffff;
+  color: #475569;
+  border-color: #cbd5e1;
+}
+
+.settings-action-btn.ghost:hover {
+  background: #f1f5f9;
+  color: #0f1b2d;
+  border-color: #94a3b8;
+}
+
+.settings-action-btn.danger-ghost {
+  background: #ffffff;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.settings-action-btn.danger-ghost:hover {
+  background: #fef2f2;
+  border-color: #f87171;
+  color: #b91c1c;
+}
+
+/* --------------------------------------------------------------------------
+   Segmented Tab Navigation
+   -------------------------------------------------------------------------- */
+.settings-nav-tabs {
+  display: flex;
+  gap: 8px;
+  background: #e2e8f0;
+  padding: 5px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.settings-nav-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 12px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #64748b;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.settings-nav-tab:hover {
+  color: #0f1b2d;
+}
+
+.settings-nav-tab.active {
+  background: #ffffff;
+  color: #0f1b2d;
+  box-shadow: 0 2px 10px rgba(15, 27, 45, 0.08);
+}
+
+.settings-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.settings-nav-tab.active .settings-tab-badge {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+/* --------------------------------------------------------------------------
+   Cards and Sections
+   -------------------------------------------------------------------------- */
+.settings-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(15, 27, 45, 0.03);
+  margin-bottom: 24px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.settings-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 6px 24px rgba(15, 27, 45, 0.05);
+}
+
+.settings-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.settings-card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #0f1b2d;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.settings-card-title-group {
+  flex: 1;
+}
+
+.settings-card-title {
+  font-family: 'El Messiri', serif;
+  font-size: 18.5px;
+  font-weight: 700;
+  color: #0f1b2d;
+  margin: 0 0 2px 0;
+}
+
+.settings-card-subtitle {
+  color: #64748b;
+  font-size: 13px;
+  margin: 0;
+}
+
+/* Two-column grid for staff profile cards */
+.settings-dual-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 24px;
+}
+
+/* School Banner Card */
+.school-identity-banner {
+  background: linear-gradient(135deg, #0f1b2d 0%, #1e293b 100%);
+  border-radius: 18px;
+  padding: 24px 28px;
+  color: #ffffff;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  box-shadow: 0 8px 30px rgba(15, 27, 45, 0.14);
+}
+
+.school-identity-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.school-identity-crest {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(201, 163, 95, 0.16);
+  border: 1.5px solid rgba(201, 163, 95, 0.5);
+  color: #c9a35f;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.school-identity-badge-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(201, 163, 95, 0.2);
+  color: #ebd5a3;
+  font-size: 11.5px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.school-identity-name {
+  font-family: 'El Messiri', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.school-identity-meta {
+  min-width: 240px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  padding: 12px 16px;
+}
+
+.school-identity-meta-label {
+  display: block;
+  font-size: 11.5px;
+  color: #cbd5e1;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.school-identity-year-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f1b2d;
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+  direction: ltr;
+}
+
+.school-identity-year-input:focus {
+  outline: none;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(201, 163, 95, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   Modern Form Controls
+   -------------------------------------------------------------------------- */
+.settings-form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.settings-field-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.settings-field-required {
+  color: #e11d48;
+}
+
+.settings-field-hint {
+  font-size: 11.5px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.settings-input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f1b2d;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.18s ease;
+  box-sizing: border-box;
+}
+
+.settings-input:hover {
+  border-color: #94a3b8;
+  background: #ffffff;
+}
+
+.settings-input:focus {
+  outline: none;
+  background: #ffffff;
+  border-color: #0f1b2d;
+  box-shadow: 0 0 0 3px rgba(15, 27, 45, 0.1);
+}
+
+.settings-input.ar {
+  direction: rtl;
+  text-align: right;
+}
+
+.settings-input.en {
+  direction: ltr;
+  text-align: left;
+  font-family: 'Outfit', sans-serif;
+}
+
+.settings-select {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f1b2d;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-sizing: border-box;
+}
+
+.settings-select:focus {
+  outline: none;
+  background: #ffffff;
+  border-color: #0f1b2d;
+  box-shadow: 0 0 0 3px rgba(15, 27, 45, 0.1);
+}
+
+/* --------------------------------------------------------------------------
+   Modern Signature Upload Zone
+   -------------------------------------------------------------------------- */
+.settings-signature-card {
+  margin-top: 6px;
+  background: #f8fafc;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  transition: all 0.2s ease;
+}
+
+.settings-signature-card:hover {
+  border-color: #94a3b8;
+  background: #f1f5f9;
+}
+
+.settings-sig-preview-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-sig-thumbnail {
+  width: 80px;
+  height: 46px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.settings-sig-thumbnail img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.settings-sig-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.settings-sig-status {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f1b2d;
+}
+
+.settings-sig-meta {
+  font-size: 11.5px;
+  color: #64748b;
+}
+
+.settings-sig-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-upload-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 9px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.settings-upload-label:hover {
+  background: #0f1b2d;
+  color: #ffffff;
+  border-color: #0f1b2d;
+}
+
+.settings-sig-delete-btn {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #dc2626;
+  border: 0;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.settings-sig-delete-btn:hover {
+  background: #fecaca;
+  color: #b91c1c;
+}
+
+/* --------------------------------------------------------------------------
+   Preferences Tiles (Language, Themes)
+   -------------------------------------------------------------------------- */
+.settings-option-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.settings-choice-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: right;
+}
+
+.settings-choice-card:hover {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(15, 27, 45, 0.04);
+}
+
+.settings-choice-card.selected {
+  background: #ffffff;
+  border-color: var(--accent, #c9a35f);
+  box-shadow: 0 0 0 3px rgba(201, 163, 95, 0.18);
+}
+
+.settings-choice-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.settings-choice-icon {
+  color: #0f1b2d;
+}
+
+.settings-choice-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid #cbd5e1;
+  display: grid;
+  place-items: center;
+  color: transparent;
+  transition: all 0.18s ease;
+}
+
+.settings-choice-card.selected .settings-choice-check {
+  background: var(--accent, #c9a35f);
+  border-color: var(--accent, #c9a35f);
+  color: #ffffff;
+}
+
+.settings-choice-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f1b2d;
+}
+
+.settings-choice-desc {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Theme Swatches */
+.settings-themes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.settings-theme-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 10px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.settings-theme-tile:hover {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.settings-theme-tile.selected {
+  background: #ffffff;
+  border-color: var(--accent, #c9a35f);
+  box-shadow: 0 0 0 3px rgba(201, 163, 95, 0.18);
+}
+
+.settings-theme-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.settings-theme-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.settings-theme-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e293b;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Layout
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .teacher-settings-container {
+    padding: 12px 12px 36px;
+  }
+
+  .settings-hero-card {
+    padding: 18px 16px;
+  }
+
+  .settings-hero-main {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .settings-dual-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .school-identity-banner {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px 16px;
+  }
+
+  .settings-nav-tabs {
+    width: 100%;
+  }
+
+  .settings-nav-tab {
+    flex: 1;
+    justify-content: center;
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+}

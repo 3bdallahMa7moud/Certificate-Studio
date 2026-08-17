@@ -9,14 +9,19 @@ import { parseCsv } from '../context/helpers.js';
 /** File extensions that this parser supports */
 export const SUPPORTED_EXTENSIONS = ['.csv', '.xlsx', '.xls', '.tsv'];
 
+export function getFileExtension(filename = '') {
+  const dotIndex = String(filename || '').lastIndexOf('.');
+  return dotIndex !== -1 ? filename.slice(dotIndex).toLowerCase() : '';
+}
+
 /** Validate a file's extension before any parsing occurs */
 export function validateFileType(file) {
   if (!file) return { valid: false, error: 'لم يتم اختيار ملف' };
-  const ext = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
-  if (!SUPPORTED_EXTENSIONS.includes(ext)) {
+  const ext = getFileExtension(file.name);
+  if (!ext || !SUPPORTED_EXTENSIONS.includes(ext)) {
     return {
       valid: false,
-      error: `نوع الملف "${ext}" غير مدعوم. الأنواع المدعومة: ${SUPPORTED_EXTENSIONS.join(', ')}`,
+      error: `نوع الملف "${ext || 'بدون امتداد'}" غير مدعوم. الأنواع المدعومة: ${SUPPORTED_EXTENSIONS.join(', ')}`,
     };
   }
   const maxBytes = 10 * 1024 * 1024; // 10 MB
@@ -31,7 +36,7 @@ export function validateFileType(file) {
  * @returns {{ sheetNames: string[], sheetData: Record<string, string[][]> }}
  */
 export async function parseFileToSheets(file) {
-  const ext = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+  const ext = getFileExtension(file.name);
 
   if (ext === '.csv' || ext === '.tsv') {
     const text = await textFile(file);

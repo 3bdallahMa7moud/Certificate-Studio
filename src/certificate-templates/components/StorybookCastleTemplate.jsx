@@ -80,15 +80,6 @@ export default function StorybookCastleTemplate({ state, render }) {
 
       <header className="storybook-header">
         <div className="storybook-school-lockup">
-          <TemplateLogo
-            state={state}
-            className="storybook-logo"
-            containerProps={element('storybook-castle-logo', {
-              contentKey: 'logo',
-              occurrenceId: 'storybook-castle-logo',
-              preservePosition: true,
-            })}
-          />
           <div className="storybook-school-copy">
             {showAr && (
               <div

@@ -13,7 +13,7 @@ export default function SetupWizard({ state, updateState, onFinish, onDismiss, h
   const validateStep = (currentStep) => {
     const errs = {};
     if (currentStep === 1) {
-      // no validation needed for school name as it is fixed
+      if (!state.schoolNameAr?.trim()) errs.schoolNameAr = 'يرجى إدخال اسم المدرسة بالعربية';
     } else if (currentStep === 2) {
       if (!state.teacherNameAr?.trim()) errs.teacherNameAr = 'يرجى إدخال اسم المعلم/ة بالعربية';
     } else if (currentStep === 3) {
@@ -86,26 +86,31 @@ export default function SetupWizard({ state, updateState, onFinish, onDismiss, h
           {step === 1 && (
             <div className="setup-step">
               <p className="step-desc">يرجى إدخال البيانات الأساسية للمدرسة ليتم اعتمادها تلقائيًا في كل الشهادات.</p>
-              <div className="field">
-                <label className="field-label">اسم المدرسة</label>
-                <div className="field-input ar" style={{ background: '#f5f5f5', color: '#888', cursor: 'not-allowed' }}>
-                  {state.schoolNameAr || 'أم الفضل بنت الحارث ح ٢'}
-                </div>
-              </div>
+              <BoundInput
+                label="اسم المدرسة بالعربية *"
+                value={state.schoolNameAr}
+                onChange={schoolNameAr => {
+                  updateState({ schoolNameAr });
+                  if (errors.schoolNameAr) setErrors(e => ({ ...e, schoolNameAr: null }));
+                }}
+                ar
+                placeholder="مثال: مدرسة أم الفضل بنت الحارث"
+              />
+              {errors.schoolNameAr && <p className="field-error-msg" role="alert">{errors.schoolNameAr}</p>}
+
+              <BoundInput
+                label="School Name in English (اختياري)"
+                value={state.schoolNameEn}
+                onChange={schoolNameEn => updateState({ schoolNameEn })}
+                en
+                placeholder="e.g. Umm Al-Fadl School"
+              />
 
               <BoundInput
                 label="العام الدراسي"
                 value={state.academicYear}
                 onChange={academicYear => updateState({ academicYear })}
                 en
-              />
-
-              <UploadField
-                label="شعار المدرسة (اختياري)"
-                stateKey="logo"
-                preview={state.logo}
-                onFile={handleImage}
-                onClear={clearImage}
               />
             </div>
           )}

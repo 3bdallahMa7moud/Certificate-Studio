@@ -106,14 +106,15 @@ export function usePrintManager(paper, state, showToast) {
     } catch (err) {
       console.error('[usePrintManager] print failed:', err);
       showToast?.(`تعذّرت الطباعة: ${err.message || 'خطأ غير معروف'}`);
-      return outputFailed(err, { type: kind });
-    } finally {
       finishMeasurement?.();
       setPrintStudents(null);
       setPrintStateSnapshot(null);
       setIsPrinting(false);
       printingRef.current = false;
       applyPrintPageRule(paper.page);
+      return outputFailed(err, { type: kind });
+    } finally {
+      finishMeasurement?.();
     }
   };
 

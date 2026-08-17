@@ -260,8 +260,7 @@ export function getForcedDate(date = new Date()) {
 
 export function normalizeAcademicYear(value = ACADEMIC_YEAR) {
   const raw = String(value || '').trim();
-  if (!raw) return ACADEMIC_YEAR;
-  return ACADEMIC_YEAR;
+  return raw || ACADEMIC_YEAR;
 }
 
 export function displayAcademicYearValue(value = ACADEMIC_YEAR, locale = 'en') {

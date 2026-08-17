@@ -49,15 +49,6 @@ export default function MinimalTemplate({ state, render }) {
 
   return (
     <div className="cert-minimal">
-      <TemplateLogo
-        state={state}
-        className="cert-logo-minimal"
-        containerProps={element('minimal-logo', {
-          contentKey: 'logo',
-          occurrenceId: 'minimal-logo',
-          preservePosition: true,
-        })}
-      />
       <div
         {...(shouldShowEn(state)
           ? element(

@@ -361,9 +361,6 @@ function StudioPage() {
     } catch {}
   };
 
-  const confirmPrintCompletion = () => typeof window.confirm === 'function'
-    && window.confirm('هل اكتملت الطباعة أو حفظ PDF بنجاح؟');
-
   const beginPrintCurrent = async (snapshot = state) => {
     setIsPrintPending(true);
     try {
@@ -371,9 +368,11 @@ function StudioPage() {
         isDirectEditing: editor.isDirectEditing,
         isInteracting: editor.isInteracting,
       });
-      if (isOutputSuccess(result) && confirmPrintCompletion()) {
-        const saved = await history.markAsIssued(snapshot);
-        if (saved) updateState({ currentRecordId: saved.id });
+      if (isOutputSuccess(result)) {
+        try {
+          const saved = await history.markAsIssued(snapshot);
+          if (saved) updateState({ currentRecordId: saved.id });
+        } catch {}
       }
       return result;
     } catch {
@@ -394,8 +393,10 @@ function StudioPage() {
         isDirectEditing: editor.isDirectEditing,
         isInteracting: editor.isInteracting,
       });
-      if (isOutputSuccess(result) && confirmPrintCompletion()) {
-        await history.markBatchAsIssued(listToPrint, snapshot);
+      if (isOutputSuccess(result)) {
+        try {
+          await history.markBatchAsIssued(listToPrint, snapshot);
+        } catch {}
       }
       return result;
     } catch {
@@ -484,12 +485,19 @@ function StudioPage() {
     setMessageTemplateId(subjectTemplate ? subjectTemplate.id : 'general');
   }, [state.subject]);
 
-  const updateStudent = (index, patch) => setState(prev => ({
+  const updateStudent = (target, patch) => setState(prev => ({
     ...prev,
-    batchStudents: prev.batchStudents.map((student, i) => i === index ? { ...student, ...patch } : student),
+    batchStudents: prev.batchStudents.map((student, i) =>
+      (typeof target === 'string' ? student.rowId === target : i === target)
+        ? { ...student, ...patch }
+        : student
+    ),
   }));
 
-  const duplicateStudent = (index) => {
+  const duplicateStudent = (target) => {
+    const index = typeof target === 'string'
+      ? state.batchStudents.findIndex(s => s.rowId === target)
+      : target;
     const original = state.batchStudents[index];
     if (!original) return;
     const copy = { ...original, rowId: genRowId() };
@@ -497,6 +505,16 @@ function StudioPage() {
     next.splice(index + 1, 0, copy);
     updateState({ batchStudents: next });
     showToast('تم تكرار السجل');
+  };
+
+  const deleteStudent = (target) => {
+    setState(prev => ({
+      ...prev,
+      batchStudents: prev.batchStudents.filter((student, i) =>
+        (typeof target === 'string' ? student.rowId !== target : i !== target)
+      ),
+    }));
+    showToast('تم حذف الطالب');
   };
 
   const bulkDelete = (rowIds) => {
@@ -723,9 +741,7 @@ function StudioPage() {
                 students={state.batchStudents}
                 manager={studentManager}
                 updateStudent={updateStudent}
-                deleteStudent={index =>
-                  updateState({ batchStudents: state.batchStudents.filter((_, i) => i !== index) })
-                }
+                deleteStudent={deleteStudent}
                 duplicateStudent={duplicateStudent}
                 previewStudent={previewStudent}
                 bulkDelete={bulkDelete}
@@ -856,6 +872,7 @@ function StudioPage() {
                   onOpenAdvancedEditor={() => navigateMain('editor')}
                   onPrint={beginPrintCurrent}
                   onExportPng={doExportPng}
+                  onSaveDraft={handleSaveDraft}
                   isPrinting={isPrinting}
                   isExporting={isExporting}
                   editorStatus={{
@@ -970,11 +987,8 @@ function StudioPage() {
                       </Field>
                       <Slider value={state.nameFontSize} min={60} max={150} onChange={nameFontSize => updateState({ nameFontSize })} suffix="%" />
                     </Section>
-                    <Section title="الشعار والتوقيعات" sub="PLACEMENT">
+                    <Section title="التوقيعات" sub="PLACEMENT">
                       <div className="compact-sliders">
-                        <MiniSlider label="حجم الشعار" value={state.logoSize} min={60} max={180} onChange={logoSize => updateState({ logoSize })} />
-                        <MiniSlider label="إزاحة الشعار أفقيًا" value={state.logoX} min={-80} max={80} onChange={logoX => updateState({ logoX })} />
-                        <MiniSlider label="إزاحة الشعار رأسيًا" value={state.logoY} min={-80} max={80} onChange={logoY => updateState({ logoY })} />
                         <MiniSlider label="حجم توقيع المعلم/ة" value={state.teacherSigSize} min={60} max={180} onChange={teacherSigSize => updateState({ teacherSigSize })} />
                         <MiniSlider label="حجم توقيع المدير/ة" value={state.principalSigSize} min={60} max={180} onChange={principalSigSize => updateState({ principalSigSize })} />
                       </div>
@@ -998,13 +1012,8 @@ function StudioPage() {
                       </Field>
                     </Section>
                     <Section title="المدرسة" sub="SCHOOL">
-                      <div className="field">
-                        <label className="field-label">اسم المدرسة</label>
-                        <div className="field-input ar" style={{ background: '#f5f5f5', color: '#888', cursor: 'not-allowed' }}>
-                          {state.schoolNameAr || 'أم الفضل بنت الحارث ح ٢'}
-                        </div>
-                      </div>
-                      <UploadField label="شعار المدرسة (اختياري)" stateKey="logo" preview={state.logo} onFile={handleImage} onClear={clearImage} />
+                      <BoundInput label="اسم المدرسة بالعربية" value={state.schoolNameAr} onChange={schoolNameAr => updateState({ schoolNameAr })} ar />
+                      <BoundInput label="School Name in English" value={state.schoolNameEn} onChange={schoolNameEn => updateState({ schoolNameEn })} en />
                     </Section>
                     <Section title="التميّز والإنجاز" sub="ACHIEVEMENT">
                       <BoundInput label="نص التميّز بالعربية" value={state.achievementAr || ''} onChange={achievementAr => updateState({ achievementAr })} ar />
@@ -1075,9 +1084,7 @@ function StudioPage() {
                         students={state.batchStudents}
                         manager={studentManager}
                         updateStudent={updateStudent}
-                        deleteStudent={index =>
-                          updateState({ batchStudents: state.batchStudents.filter((_, i) => i !== index) })
-                        }
+                        deleteStudent={deleteStudent}
                         duplicateStudent={duplicateStudent}
                         previewStudent={previewStudent}
                         bulkDelete={bulkDelete}

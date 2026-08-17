@@ -180,17 +180,6 @@ export default function IslamicHeritageTemplate({ state, render }) {
       {/* ================= HEADER ================= */}
       <header className="islamic-header">
         <div className="islamic-school-lockup">
-          <div className="islamic-logo-frame">
-            <TemplateLogo
-              state={state}
-              className="cert-logo-islamic-heritage"
-              containerProps={element(`${PREFIX}-logo`, {
-                contentKey: 'logo',
-                occurrenceId: `${PREFIX}-logo`,
-                preservePosition: true,
-              })}
-            />
-          </div>
           <div className="islamic-school-copy">
             {showAr && (
               <div
