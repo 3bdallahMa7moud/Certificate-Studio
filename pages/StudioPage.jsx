@@ -93,46 +93,14 @@ const PRIMARY_NAV = [
   { id: 'settings', icon: 'Sliders', label: 'الإعدادات', target: 'settings' },
 ];
 
-const MAIN_ROUTE_IDS = new Set([
-  'home',
-  'single',
-  'batch',
-  'editor',
-  'certificates',
-  'students',
-  'templates',
-  'settings',
-]);
-
-const ROUTE_ALIASES = {
-  create: 'single',
-  library: 'certificates',
-};
-
-function normalizeMainRoute(value) {
-  const route = String(value || '').trim().replace(/^#?\/?/, '').replace(/\/+$/, '');
-  const normalized = ROUTE_ALIASES[route] || route || 'home';
-  return MAIN_ROUTE_IDS.has(normalized) ? normalized : 'home';
-}
-
-function readMainRouteFromLocation() {
-  if (typeof window === 'undefined') return 'home';
-  const hashRoute = window.location.hash.replace(/^#\/?/, '');
-  if (hashRoute) return normalizeMainRoute(hashRoute);
-  const pathRoute = window.location.pathname.split('/').filter(Boolean).pop();
-  return normalizeMainRoute(pathRoute);
-}
-
-function mainRouteHash(route) {
-  const normalized = normalizeMainRoute(route);
-  return normalized === 'home' ? '#/' : `#/${normalized}`;
-}
-
-function activePrimarySection(mainNav) {
-  if (['single', 'batch', 'editor'].includes(mainNav)) return 'create';
-  if (['certificates', 'students'].includes(mainNav)) return 'library';
-  return mainNav;
-}
+import {
+  ROUTE_CONFIG,
+  normalizeMainRoute,
+  readMainRouteFromLocation,
+  mainRoutePath,
+  mainRouteHash,
+  activePrimarySection,
+} from '../src/context/routes.js';
 
 function PrimaryNavigation({ mainNav, onNavigate }) {
   const [openMenu, setOpenMenu] = useState(null);
@@ -243,17 +211,36 @@ function StudioPage() {
     const next = normalizeMainRoute(target);
     setMainNav(next);
     if (typeof window === 'undefined') return;
-    const nextHash = mainRouteHash(next);
-    if (window.location.hash === nextHash) return;
+    const nextPath = mainRoutePath(next);
+    if (window.location.pathname === nextPath && !window.location.hash) return;
     const historyMethod = replace ? 'replaceState' : 'pushState';
-    window.history[historyMethod]({ mainNav: next }, '', nextHash);
+    window.history[historyMethod]({ mainNav: next }, '', nextPath);
   }, []);
 
+  // Update browser document.title on route change
   useEffect(() => {
-    const syncRoute = () => setMainNav(readMainRouteFromLocation());
+    const config = ROUTE_CONFIG[mainNav] || ROUTE_CONFIG.home;
+    if (typeof document !== 'undefined') {
+      document.title = config.title;
+    }
+  }, [mainNav]);
+
+  useEffect(() => {
+    const syncRoute = () => {
+      const current = readMainRouteFromLocation();
+      setMainNav(current);
+      const canonicalPath = mainRoutePath(current);
+      if (window.location.pathname !== canonicalPath || window.location.hash) {
+        window.history.replaceState({ mainNav: current }, '', canonicalPath);
+      }
+    };
     window.addEventListener('popstate', syncRoute);
     window.addEventListener('hashchange', syncRoute);
-    if (!window.location.hash) navigateMain(readMainRouteFromLocation(), { replace: true });
+    const initialRoute = readMainRouteFromLocation();
+    const canonicalPath = mainRoutePath(initialRoute);
+    if (window.location.pathname !== canonicalPath || window.location.hash) {
+      navigateMain(initialRoute, { replace: true });
+    }
     return () => {
       window.removeEventListener('popstate', syncRoute);
       window.removeEventListener('hashchange', syncRoute);

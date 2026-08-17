@@ -92,7 +92,6 @@ export function usePresetManager(
     const designConfig = {
       ...extractDesignPreset(state),
       category: categoryToSave,
-      customMessage: state.customMessage || '',
     };
     const next = { ...presets, [name]: designConfig };
     setSelectedPreset(name);

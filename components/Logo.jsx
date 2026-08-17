@@ -117,7 +117,7 @@ export default function Logo({
     return (
       <div className={`certificate-logo-image-wrap ${className}`} style={{ height: size }}>
         <img 
-          src="/logo.png" 
+          src="./logo.png" 
           alt="Certificate Studio Logo" 
           style={{ height: size, width: 'auto', borderRadius: '8px', objectFit: 'contain' }}
         />

@@ -197,3 +197,34 @@ test('Render State: normalizeCertificatePaperSize migrates portrait formats to l
   assert.equal(landscapeA4.id, 'a4-landscape');
   assert.equal(landscapeA4.migrated, false);
 });
+
+test('Navigation: Route configuration has expressive titles and slugs for all sections', async () => {
+  const { ROUTE_CONFIG, normalizeMainRoute, mainRoutePath, mainRouteHash } = await import('../src/context/routes.js');
+  assert.ok(ROUTE_CONFIG);
+  assert.equal(ROUTE_CONFIG.home.slug, 'home');
+  assert.equal(ROUTE_CONFIG.single.slug, 'single-certificate');
+  assert.equal(ROUTE_CONFIG.batch.slug, 'batch-certificates');
+  assert.equal(ROUTE_CONFIG.editor.slug, 'certificate-editor');
+  assert.equal(ROUTE_CONFIG.certificates.slug, 'certificate-history');
+  assert.equal(ROUTE_CONFIG.students.slug, 'student-manager');
+  assert.equal(ROUTE_CONFIG.templates.slug, 'templates-gallery');
+  assert.equal(ROUTE_CONFIG.settings.slug, 'studio-settings');
+
+  // Verify normalization and path routing without hash
+  assert.equal(normalizeMainRoute('single-certificate'), 'single');
+  assert.equal(normalizeMainRoute('single'), 'single');
+  assert.equal(normalizeMainRoute('batch-certificates'), 'batch');
+  assert.equal(normalizeMainRoute('student-manager'), 'students');
+  assert.equal(normalizeMainRoute('home'), 'home');
+  assert.equal(mainRoutePath('home'), '/home');
+  assert.equal(mainRoutePath('single'), '/single-certificate');
+  assert.equal(mainRoutePath('students'), '/student-manager');
+  assert.equal(mainRouteHash('home'), '#/home');
+
+  // Verify all titles are meaningful Arabic titles
+  for (const config of Object.values(ROUTE_CONFIG)) {
+    assert.ok(config.title.includes('Certificate Studio'));
+    assert.ok(config.label.length > 0);
+  }
+});
+
