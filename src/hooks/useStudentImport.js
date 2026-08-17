@@ -74,7 +74,7 @@ export function useStudentImport(
 
   const clearBatchStudents = () => {
     if (!state.batchStudents.length) return;
-    if (window.confirm && !window.confirm('هل أنت تأكد من مسح جميع الأسماء من القائمة؟')) return;
+    if (window.confirm && !window.confirm('هل أنت متأكد من مسح جميع الأسماء من القائمة؟')) return;
     updateState({ batchStudents: [] });
     setBatchText('');
     if (showToast) showToast('تم مسح القائمة');

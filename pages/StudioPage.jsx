@@ -614,7 +614,7 @@ function StudioPage() {
   };
 
   const resetSettings = async () => {
-    if (window.confirm && !window.confirm('هل أنت تأكد من إعادة ضبط كافة الإعدادات إلى الوضع الافتراضي؟')) return;
+    if (window.confirm && !window.confirm('هل أنت متأكد من إعادة ضبط كافة الإعدادات إلى الوضع الافتراضي؟')) return;
     const nextState = getDefaultState();
     try {
       await persistStateAsync(nextState, extractImageAssets(state));

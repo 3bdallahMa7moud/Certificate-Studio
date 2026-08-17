@@ -190,6 +190,9 @@ export default function StudentManager({
 
   const handleSingleDelete = () => {
     if (pendingDeleteStudent) {
+      if (selectedRowIds.has(pendingDeleteStudent.rowId)) {
+        toggleSelect(pendingDeleteStudent.rowId);
+      }
       deleteStudent(pendingDeleteStudent.rowId);
       setPendingDeleteStudent(null);
     }

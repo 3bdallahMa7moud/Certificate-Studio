@@ -75,7 +75,7 @@ export default function CertificateHistory({
   const handleBulkDelete = () => {
     const count = selectedIds.size;
     if (!count) return;
-    if (window.confirm(`هل أنت تأكد من حذف ${count} شهادة تما اختيارها؟`)) {
+    if (window.confirm(`هل أنت متأكد من حذف ${count} شهادة تم اختيارها؟`)) {
       deleteMultipleRecords(Array.from(selectedIds));
       setSelectedIds(new Set());
     }
@@ -110,13 +110,13 @@ export default function CertificateHistory({
   const handleDelete = (record) => {
     const name = record.student?.name || record.student?.englishName || 'الطالب';
     const typeLabel = CERTIFICATE_TYPES.find(t => t.id === record.certificate?.typeId)?.ar || 'الشهادة';
-    if (window.confirm(`هل أنت تأكد من حذف شهادة (${typeLabel}) للطالب "${name}"؟`)) {
+    if (window.confirm(`هل أنت متأكد من حذف شهادة (${typeLabel}) للطالب "${name}"؟`)) {
       deleteSingleRecord(record.id);
     }
   };
 
   const handleDeleteBatch = (batchId, batchCount) => {
-    if (window.confirm(`هل أنت تأكد من حذف كافة شهادات هذه الدفعة (${batchCount} شهادة)؟`)) {
+    if (window.confirm(`هل أنت متأكد من حذف كافة شهادات هذه الدفعة (${batchCount} شهادة)؟`)) {
       deleteBatchGroup(batchId);
     }
   };

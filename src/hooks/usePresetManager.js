@@ -149,7 +149,7 @@ export function usePresetManager(
 
   const deletePreset = async (name) => {
     if (!name || !presets[name]) return;
-    if (window.confirm && !window.confirm(`هل أنت تأكد من حذف القالب "${name}"؟`)) return;
+    if (window.confirm && !window.confirm(`هل أنت متأكد من حذف القالب "${name}"؟`)) return;
     const next = { ...presets };
     delete next[name];
     if (selectedPreset === name) {
